@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stats — Voyager Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links"><li><a href="dashboard.html">&larr; Dashboard</a></li></ul>
+  </nav>
+
+  <div class="va-lesson">
+    <h1>Analytics</h1>
+    <div id="stats-body"><p>Loading…</p></div>
+  </div>
+
+  <script src="js/courses-data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    async function init() {
+      const body = document.getElementById("stats-body");
+      const student = vaGetStudent();
+      if (!student || !student.is_admin) { body.innerHTML = "<p>Admin access required.</p>"; return; }
+
+      const token = vaGetToken();
+      const res = await fetch(`${API_BASE}/admin/stats`, { headers: { Authorization: `Bearer ${token}` } });
+      if (!res.ok) { body.innerHTML = "<p>Couldn't load stats.</p>"; return; }
+      const stats = await res.json();
+
+      const maxCompletions = Math.max(1, ...stats.lesson_completions.map((l) => l.completions));
+
+      body.innerHTML = `
+        <div class="va-stats-grid">
+          <div class="va-stats-card"><span class="va-stats-card__num">${stats.total_students}</span><span class="va-stats-card__label">Total Students</span></div>
+          <div class="va-stats-card"><span class="va-stats-card__num">${stats.recent_signups_30d}</span><span class="va-stats-card__label">Signups (30d)</span></div>
+          <div class="va-stats-card"><span class="va-stats-card__num">${stats.total_completions}</span><span class="va-stats-card__label">Lesson Completions</span></div>
+          <div class="va-stats-card"><span class="va-stats-card__num">${stats.total_posts}</span><span class="va-stats-card__label">Community Posts</span></div>
+        </div>
+
+        <h2 style="font-family:var(--font-heading);margin-bottom:var(--sp-3);">Lesson Completion Funnel</h2>
+        <p style="color:var(--va-text-muted);font-size:0.85rem;margin-bottom:var(--sp-3);">In curriculum order — a steep drop between two lessons shows exactly where students are stalling.</p>
+        <div id="funnel-rows"></div>
+      `;
+
+      document.getElementById("funnel-rows").innerHTML = stats.lesson_completions.map((l) => {
+        const meta = COURSE_DATA.find((c) => c.slug === l.slug);
+        const title = meta ? meta.title : l.slug;
+        const pct = Math.round((l.completions / maxCompletions) * 100);
+        return `
+          <div class="va-funnel-row">
+            <div class="va-funnel-row__label"><span>${title}</span><span>${l.completions}</span></div>
+            <div class="va-funnel-row__bar-bg"><div class="va-funnel-row__bar-fill" style="width:${pct}%"></div></div>
+          </div>`;
+      }).join("");
+    }
+    init();
+  </script>
+</body>
+</html>

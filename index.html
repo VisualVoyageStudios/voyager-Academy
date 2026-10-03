@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voyager Academy — Learn to Trade</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#111114">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+  
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <meta property="og:title" content="Voyager Academy — Free Trading Education">
+  <meta property="og:description" content="19 free lessons, beginner to advanced, plus a full TradingView course. Learn to read the market before you risk a cent.">
+  <meta property="og:image" content="https://visualvoyagestudios.github.io/voyager-Academy/assets/images/og-image.png">
+  <meta property="og:url" content="https://visualvoyagestudios.github.io/voyager-Academy/">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Voyager Academy — Free Trading Education">
+  <meta name="twitter:description" content="19 free lessons, beginner to advanced, plus a full TradingView course.">
+  <meta name="twitter:image" content="https://visualvoyagestudios.github.io/voyager-Academy/assets/images/og-image.png">
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+    <!-- add to courses, lessons, auth, dashboard (html) -->
+  </script>
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="courses.html">Courses</a></li>
+      <li><a href="community.html">Community</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="certificates.html">Certificates</a></li>
+      <li id="nav-auth-slot"><a href="auth.html">Log In</a></li>
+    </ul>
+  </nav>
+
+  <header class="va-hero-new">
+    <div class="tradingview-widget-container" style="border-bottom:1px solid rgba(255,255,255,0.08);">
+      <div class="tradingview-widget-container__widget"></div>
+    </div>
+    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+    {
+      "symbols": [
+        { "proName": "FX_IDC:EURUSD", "title": "EUR/USD" },
+        { "proName": "OANDA:XAUUSD", "title": "Gold" },
+        { "proName": "FX_IDC:GBPJPY", "title": "GBP/JPY" },
+        { "proName": "FX_IDC:USDZAR", "title": "USD/ZAR" },
+        { "proName": "FOREXCOM:SPXUSD", "title": "S&P 500" },
+        { "proName": "BITSTAMP:BTCUSD", "title": "Bitcoin" }
+      ],
+      "colorTheme": "dark",
+      "isTransparent": true,
+      "displayMode": "adaptive",
+      "locale": "en"
+    }
+    </script>
+
+    <div class="va-hero-grid">
+      <div>
+        <h1>Learn to read the market before you risk a cent in it.</h1>
+        <p class="va-hero-sub">Nineteen free lessons, beginner to advanced, plus a full TradingView course — built by a trader who's made every mistake in this book already, so you don't have to.</p>
+        <div class="va-hero-ctas">
+          <a href="courses.html" class="va-btn">Start Learning Free</a>
+          <a href="community.html" class="va-btn va-btn--outline">Join the Community</a>
+        </div>
+        <div class="va-hero-trust">NO CREDIT CARD · NO CATCH · BUILT IN SOUTH AFRICA</div>
+      </div>
+
+      <div class="hero-chart-wrap">
+        <svg class="hero-chart" viewBox="0 0 640 420" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <g stroke="rgba(255,255,255,0.06)" stroke-width="1">
+            <line x1="0" y1="80" x2="640" y2="80"/>
+            <line x1="0" y1="160" x2="640" y2="160"/>
+            <line x1="0" y1="240" x2="640" y2="240"/>
+            <line x1="0" y1="320" x2="640" y2="320"/>
+          </g>
+
+          <g class="hero-candle"><line x1="40" y1="325" x2="40" y2="355" stroke="#c8102e" stroke-width="2"/><rect x="26" y="300" width="28" height="40" fill="#c8102e"/></g>
+          <g class="hero-candle"><line x1="110" y1="285" x2="110" y2="335" stroke="#c8102e" stroke-width="2"/><rect x="96" y="300" width="28" height="20" fill="#c8102e"/></g>
+          <g class="hero-candle"><line x1="180" y1="245" x2="180" y2="335" stroke="#16a34a" stroke-width="2"/><rect x="166" y="260" width="28" height="60" fill="#16a34a"/></g>
+          <g class="hero-candle"><line x1="250" y1="245" x2="250" y2="290" stroke="#c8102e" stroke-width="2"/><rect x="236" y="260" width="28" height="15" fill="#c8102e"/></g>
+          <g class="hero-candle"><line x1="320" y1="185" x2="320" y2="290" stroke="#16a34a" stroke-width="2"/><rect x="306" y="200" width="28" height="75" fill="#16a34a"/></g>
+          <g class="hero-candle"><line x1="390" y1="185" x2="390" y2="230" stroke="#c8102e" stroke-width="2"/><rect x="376" y="200" width="28" height="15" fill="#c8102e"/></g>
+          <g class="hero-candle"><line x1="460" y1="125" x2="460" y2="230" stroke="#16a34a" stroke-width="2"/><rect x="446" y="140" width="28" height="75" fill="#16a34a"/></g>
+          <g class="hero-candle"><line x1="530" y1="125" x2="530" y2="170" stroke="#c8102e" stroke-width="2"/><rect x="516" y="140" width="28" height="15" fill="#c8102e"/></g>
+          <g class="hero-candle"><line x1="600" y1="45" x2="600" y2="170" stroke="#16a34a" stroke-width="2"/><rect x="586" y="60" width="28" height="95" fill="#16a34a"/></g>
+
+          <polyline class="hero-trendline" points="40,300 110,320 180,260 250,275 320,200 390,215 460,140 530,155 600,70" fill="none" stroke="#c8102e" stroke-width="3"/>
+          <circle class="hero-live-dot" cx="600" cy="70" r="6" fill="#c8102e"/>
+          <circle cx="600" cy="70" r="4" fill="#fff"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="va-stats">
+      <div class="va-stats__item"><span class="va-stats__num">19</span><span>Lessons</span></div>
+      <div class="va-stats__item"><span class="va-stats__num">4</span><span>Tracks</span></div>
+      <div class="va-stats__item"><span class="va-stats__num">$0</span><span>Cost, Forever</span></div>
+    </div>
+  </header>
+
+  <section class="va-path">
+    <div class="va-path__intro">
+      <h2>Your Learning Path</h2>
+      <p>Three stages, in order. Work through them at your own pace.</p>
+    </div>
+    <div class="va-path__track">
+      <a href="courses.html?track=beginner" class="va-path__stop">
+        <span class="va-path__num">01</span>
+        <h3>Beginner</h3>
+        <p>Forex fundamentals, risk management, and trading psychology.</p>
+      </a>
+      <a href="courses.html?track=intermediate" class="va-path__stop">
+        <span class="va-path__num">02</span>
+        <h3>Intermediate</h3>
+        <p>Chart patterns, candlesticks, Fibonacci, and trade planning.</p>
+      </a>
+      <a href="courses.html?track=advanced" class="va-path__stop">
+        <span class="va-path__num">03</span>
+        <h3>Advanced</h3>
+        <p>Liquidity theory, SMC/ICT, Elliott Wave, and COT positioning.</p>
+      </a>
+    </div>
+
+    <div class="va-path__branch">
+      <a href="courses.html?track=tradingview" class="va-path__optional">
+        <span class="va-path__tag">Optional detour — jump in anytime</span>
+        <h3>TradingView Mastery</h3>
+        <p>The platform itself: interface, drawing tools, indicators, alerts, and paper trading before you go live.</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="va-continue">
+    <div class="va-continue__inner" id="continue-inner">
+      <p>Loading…</p>
+    </div>
+  </section>
+
+  <footer class="va-footer-mega">
+    <div class="va-footer-mega__glow" aria-hidden="true">
+      <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+        <polyline points="0,160 40,120 70,140 110,60 150,90 190,30 230,70 300,20" fill="none" stroke="#c8102e" stroke-width="3" opacity="0.25"/>
+      </svg>
+    </div>
+
+    <div class="va-footer-mega__grid">
+      <div class="va-footer-mega__brand">
+        <div class="va-nav__logo" style="color:#fff;">Voyager <span>Academy</span></div>
+        <p>Free trading education, beginner to advanced. Part of the Voyager Analytics family.</p>
+      </div>
+      <div>
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="courses.html?track=beginner">Beginner Track</a></li>
+          <li><a href="courses.html?track=intermediate">Intermediate Track</a></li>
+          <li><a href="courses.html?track=advanced">Advanced Track</a></li>
+          <li><a href="courses.html?track=tradingview">TradingView Mastery</a></li>
+          <li><a href="certificates.html">Certificates</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Community</h4>
+        <ul>
+          <li><a href="community.html">Community</a></li>
+          <li><a href="auth.html">Log In</a></li>
+          <li><a href="auth.html">Create Account</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about.html">About</a></li>
+          <li><a href="https://visualvoyagestudios.github.io/vAnalytics">Voyager Analytics</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="terms.html">Terms of Use</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+          <li><a href="risk-disclaimer.html">Risk Disclaimer</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="va-footer-mega__bottom">
+      <span>&copy; 2026 Voyager Academy.</span>
+      <span>Forex trading involves significant risk of loss and is not suitable for all investors. Educational content only — not financial advice.</span>
+    </div>
+  </footer>
+
+  <script src="js/courses-data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    async function renderContinueModule() {
+      const el = document.getElementById("continue-inner");
+      const student = vaGetStudent();
+
+      if (!student) {
+        el.innerHTML = `
+          <div class="va-continue__eyebrow">FREE ACCOUNT</div>
+          <h3>Pick up where you left off — on any device.</h3>
+          <p>Create a free account to save your lesson progress and jump straight back in next time.</p>
+          <div class="va-hero-ctas">
+            <a href="auth.html" class="va-btn" style="background:var(--va-black);">Create Free Account</a>
+          </div>`;
+        return;
+      }
+
+      const progress = await vaGetProgress();
+      const completedSlugs = new Set(progress.map((p) => p.lesson_slug));
+      const total = COURSE_DATA.length;
+      const completed = COURSE_DATA.filter((c) => completedSlugs.has(c.slug)).length;
+      const next = COURSE_DATA.find((c) => !completedSlugs.has(c.slug));
+      const pct = Math.round((completed / total) * 100);
+      const firstName = student.name.split(" ")[0];
+
+      if (!next) {
+        el.innerHTML = `
+          <div class="va-continue__eyebrow">ALL CAUGHT UP</div>
+          <h3>Nice work, ${firstName} — you've completed every lesson.</h3>
+          <p>All ${total} lessons done. Keep an eye out as new ones get added.</p>
+          <a href="courses.html" class="va-btn">Review Courses</a>`;
+        return;
+      }
+
+      el.innerHTML = `
+        <div class="va-continue__eyebrow">WELCOME BACK</div>
+        <h3>${completed}/${total} lessons complete</h3>
+        <div class="va-progress-bar"><div class="va-progress-bar__fill" style="width:${pct}%"></div></div>
+        <p>Next up: <strong>${next.title}</strong></p>
+        <a href="lesson.html?slug=${next.slug}" class="va-btn">Continue Learning</a>`;
+    }
+
+    renderContinueModule();
+  </script>
+</body>
+</html>

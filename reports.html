@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports — Voyager Academy</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links"><li><a href="community.html">&larr; Community</a></li></ul>
+  </nav>
+  <div class="va-lesson">
+    <h1>Reported Posts</h1>
+    <div id="reports-list"><p>Loading…</p></div>
+  </div>
+  <script src="js/toast.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    async function loadReports() {
+      const student = vaGetStudent();
+      const list = document.getElementById("reports-list");
+      if (!student || !student.is_admin) { list.innerHTML = "<p>Admin access required.</p>"; return; }
+      const token = vaGetToken();
+      const res = await fetch(`${API_BASE}/community/reports`, { headers: { Authorization: `Bearer ${token}` } });
+      const posts = await res.json();
+      if (!posts.length) { list.innerHTML = "<p>No reported posts.</p>"; return; }
+      list.innerHTML = posts.map((p) => `
+        <div class="va-post-card">
+          <h3 style="font-family:var(--font-heading);">${vaEscapeHtml(p.title)}</h3>
+          <p>by ${vaEscapeHtml(p.student.name)}</p>
+          <a href="community-post.html?id=${p.id}" class="va-btn">Review &rarr;</a>
+        </div>`).join("");
+    }
+    loadReports();
+  </script>
+</body>
+</html>

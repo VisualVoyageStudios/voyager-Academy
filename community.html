@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community — Voyager Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#111114">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links">
+      <li><a href="dashboard.html">Home</a></li>
+      <li><a href="courses.html">Courses</a></li>
+      <li><a href="community.html" class="active">Community</a></li>
+      <li><a href="certificates.html">Certificates</a></li>
+      <li id="nav-auth-slot"><a href="auth.html">Log In</a></li>
+    </ul>
+  </nav>
+
+  <div class="va-lesson">
+    <div class="va-forum-header">
+      <h1 style="border:none;margin:0;">Community</h1>
+      <button class="va-btn" id="new-post-btn">New Post</button>
+    </div>
+
+    <div class="va-track-tabs" id="category-tabs" style="justify-content:flex-start;margin:0 0 var(--sp-4);">
+      <button class="va-track-tab active" data-cat="all">All</button>
+      <button class="va-track-tab" data-cat="general">General</button>
+      <button class="va-track-tab" data-cat="beginner-questions">Beginner Questions</button>
+      <button class="va-track-tab" data-cat="trade-setups">Trade Setups</button>
+      <button class="va-track-tab" data-cat="tradingview-help">TradingView Help</button>
+      <button class="va-track-tab" data-cat="wins-lessons">Wins & Lessons</button>
+    </div>
+
+    <div id="new-post-form" class="va-post-form" style="display:none;border:2px solid var(--va-black);border-radius:var(--radius-lg);padding:var(--sp-4);margin-bottom:var(--sp-4);">
+      <h3 style="font-family:var(--font-heading);margin-bottom:var(--sp-3);">New Post</h3>
+      <select id="post-category" class="va-input">
+        <option value="general">General</option>
+        <option value="beginner-questions">Beginner Questions</option>
+        <option value="trade-setups">Trade Setups</option>
+        <option value="tradingview-help">TradingView Help</option>
+        <option value="wins-lessons">Wins & Lessons</option>
+      </select>
+      <input type="text" id="post-title" class="va-input" placeholder="Title" maxlength="200">
+      <textarea id="post-body" class="va-input" placeholder="What's on your mind?" maxlength="5000"></textarea>
+      <button class="va-btn" id="submit-post-btn">Post</button>
+    </div>
+
+    <div id="posts-list"></div>
+    <div style="text-align:center;margin-top:var(--sp-4);">
+      <button class="va-btn va-btn--outline" id="load-more-btn"
+        style="display:none;background:transparent;border:2px solid var(--va-black);
+          color:var(--va-black);">Load More</button></div>
+  </div>
+
+  <footer class="va-footer-mega">
+    <div class="va-footer-mega__glow" aria-hidden="true">
+      <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+        <polyline points="0,160 40,120 70,140 110,60 150,90 190,30 230,70 300,20" fill="none" stroke="#c8102e" stroke-width="3" opacity="0.25"/>
+      </svg>
+    </div>
+    <div class="va-footer-mega__grid">
+      <div class="va-footer-mega__brand">
+        <div class="va-nav__logo" style="color:#fff;">Voyager <span>Academy</span></div>
+        <p>Free trading education, beginner to advanced. Part of the Voyager Analytics family.</p>
+      </div>
+      <div><h4>Learn</h4><ul>
+        <li><a href="courses.html?track=beginner">Beginner Track</a></li>
+        <li><a href="courses.html?track=intermediate">Intermediate Track</a></li>
+        <li><a href="courses.html?track=advanced">Advanced Track</a></li>
+        <li><a href="courses.html?track=tradingview">TradingView Mastery</a></li>
+        <li><a href="certificates.html">Certificates</a></li>
+      </ul></div>
+
+      <div><h4>Community</h4><ul>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="">Exness</a></li>
+        <li><a href="">TradingView</a></li>
+        <li><a href="">.....</a></li>
+        <li><a href="">.....</a></li>
+
+      </ul></div>
+      
+      <div><h4>Company</h4><ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="https://visualvoyagestudios.github.io/vAnalytics">Voyager Analytics</a></li>
+      </ul></div>
+      <div><h4>Legal</h4><ul>
+        <li><a href="terms.html">Terms of Use</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
+        <li><a href="risk-disclaimer.html">Risk Disclaimer</a></li>
+      </ul></div>
+    </div>
+    <div class="va-footer-mega__bottom">
+      <span>&copy; 2026 Voyager Academy.</span>
+      <span>Educational content only — not financial advice.</span>
+    </div>
+  </footer>
+
+  <script src="js/toast.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const CATEGORY_LABELS = {
+      general: "General", "beginner-questions": "Beginner Questions",
+      "trade-setups": "Trade Setups", "tradingview-help": "TradingView Help",
+      "wins-lessons": "Wins & Lessons",
+    };
+
+    function timeAgo(dateStr) {
+      const diff = (Date.now() - new Date(dateStr)) / 1000;
+      if (diff < 60) return "just now";
+      if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+      if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+      return `${Math.floor(diff / 86400)}d ago`;
+    }
+
+    let currentCategory = "all";
+    let currentPage = 1;
+    let allPosts = [];
+
+    async function loadPosts(category, page = 1, append = false) {
+      const list = document.getElementById("posts-list");
+      const loadMoreBtn = document.getElementById("load-more-btn");
+      if (!append) { list.innerHTML = "<p>Loading…</p>"; allPosts = []; }
+
+      const { items, has_more } = await vaGetPosts(category, page);
+      allPosts = append ? allPosts.concat(items) : items;
+
+      if (!allPosts.length) {
+        list.innerHTML = "<p>No posts here yet — be the first.</p>";
+        loadMoreBtn.style.display = "none";
+        return;
+      }
+
+      list.innerHTML = allPosts.map((p) => `
+        <a href="community-post.html?id=${p.id}" class="va-post-card">
+          <span class="va-post-card__category">${CATEGORY_LABELS[p.category] || p.category}</span>
+          <h3 style="font-family:var(--font-heading);margin:0;">${vaEscapeHtml(p.title)}</h3>
+          <div class="va-post-card__meta">by ${vaEscapeHtml(p.student.name)} · ${timeAgo(p.created_at)} · ${p.reply_count} ${p.reply_count === 1 ? "reply" : "replies"}</div>
+        </a>`).join("");
+
+      loadMoreBtn.style.display = has_more ? "inline-flex" : "none";
+    }
+
+    document.getElementById("load-more-btn").addEventListener("click", () => {
+      currentPage += 1;
+      loadPosts(currentCategory, currentPage, true);
+    });
+
+    document.querySelectorAll(".va-track-tab").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".va-track-tab").forEach((t) => t.classList.remove("active"));
+        tab.classList.add("active");
+        currentCategory = tab.dataset.cat;
+        currentPage = 1;
+        loadPosts(currentCategory, 1, false);
+      });
+    });
+
+    document.getElementById("new-post-btn").addEventListener("click", () => {
+      if (!vaGetToken()) { window.location.href = "auth.html"; return; }
+      const form = document.getElementById("new-post-form");
+      form.style.display = form.style.display === "none" ? "block" : "none";
+    });
+
+    document.getElementById("submit-post-btn").addEventListener("click", async () => {
+      const category = document.getElementById("post-category").value;
+      const title = document.getElementById("post-title").value.trim();
+      const body = document.getElementById("post-body").value.trim();
+      if (!title || !body) return vaToast("Please fill in both a title and a message.", "error");
+      try {
+        const post = await vaCreatePost(category, title, body);
+        window.location.href = `community-post.html?id=${post.id}`;
+      } catch (err) {
+        vaToast("Couldn't create your post — try again in a moment.", "error");
+      }
+    });
+
+    loadPosts("all", 1, false);
+  </script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz — Voyager Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#111114">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <meta property="og:title" content="Voyager Academy — Free Trading Lesson">
+  <meta property="og:description" content="Part of Voyager Academy's free, 19-lesson trading curriculum.">
+  <meta property="og:image" content="https://visualvoyagestudios.github.io/voyager-Academy/assets/images/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links">
+      <li><a href="courses.html">Courses</a></li>
+      <li id="nav-auth-slot"><a href="auth.html">Log In</a></li>
+    </ul>
+  </nav>
+
+  <div class="va-lesson">
+    <a href="#" id="back-to-lesson" class="va-lesson__back">&larr; Back to Lesson</a>
+    <div class="va-lesson__tag" id="quiz-tag"></div>
+    <h1 id="quiz-title">Loading…</h1>
+    <div id="quiz-area"><p>Loading…</p></div>
+  </div>
+
+  <footer class="va-footer-mega">
+    <div class="va-footer-mega__glow" aria-hidden="true">
+      <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+        <polyline points="0,160 40,120 70,140 110,60 150,90 190,30 230,70 300,20" fill="none" stroke="#c8102e" stroke-width="3" opacity="0.25"/>
+      </svg>
+    </div>
+    <div class="va-footer-mega__grid">
+      <div class="va-footer-mega__brand">
+        <div class="va-nav__logo" style="color:#fff;">Voyager <span>Academy</span></div>
+        <p>Free trading education, beginner to advanced. Part of the Voyager Analytics family.</p>
+      </div>
+      <div><h4>Learn</h4><ul>
+        <li><a href="courses.html?track=beginner">Beginner Track</a></li>
+        <li><a href="courses.html?track=intermediate">Intermediate Track</a></li>
+        <li><a href="courses.html?track=advanced">Advanced Track</a></li>
+        <li><a href="courses.html?track=tradingview">TradingView Mastery</a></li>
+        <li><a href="certificates.html">Certificates</a></li>
+      </ul></div>
+      <div><h4>Community</h4><ul>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="auth.html">Log In</a></li>
+      </ul></div>
+      <div><h4>Company</h4><ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="https://visualvoyagestudios.github.io/vAnalytics">Voyager Analytics</a></li>
+      </ul></div>
+      <div><h4>Legal</h4><ul>
+        <li><a href="terms.html">Terms of Use</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
+        <li><a href="risk-disclaimer.html">Risk Disclaimer</a></li>
+      </ul></div>
+    </div>
+    <div class="va-footer-mega__bottom">
+      <span>&copy; 2026 Voyager Academy.</span>
+      <span>Educational content only — not financial advice.</span>
+    </div>
+  </footer>
+
+  <script src="js/courses-data.js"></script>
+  <script src="js/quizzes.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const slug = new URLSearchParams(window.location.search).get("slug");
+    const meta = COURSE_DATA.find((c) => c.slug === slug);
+    const quiz = QUIZ_DATA[slug];
+    document.getElementById("back-to-lesson").href = `lesson.html?slug=${slug}`;
+
+    function nextLessonSlug() {
+      const idx = COURSE_DATA.findIndex((c) => c.slug === slug);
+      return idx >= 0 && idx < COURSE_DATA.length - 1 ? COURSE_DATA[idx + 1].slug : null;
+    }
+
+    function renderQuiz() {
+      const area = document.getElementById("quiz-area");
+      area.innerHTML = `
+        <form id="quiz-form">
+          ${quiz.map((item, qi) => `
+            <div class="va-quiz__question">
+              <p class="va-quiz__q-text">${qi + 1}. ${item.q}</p>
+              ${item.options.map((opt, oi) => `
+                <label class="va-quiz__option">
+                  <input type="radio" name="q${qi}" value="${oi}" required>
+                  <span>${opt}</span>
+                </label>
+              `).join("")}
+            </div>
+          `).join("")}
+          <button type="submit" class="va-btn">Submit Quiz</button>
+        </form>
+        <div id="quiz-result"></div>`;
+
+      document.getElementById("quiz-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        let correctCount = 0;
+        quiz.forEach((item, qi) => {
+          const inputs = document.querySelectorAll(`input[name="q${qi}"]`);
+          const selected = document.querySelector(`input[name="q${qi}"]:checked`);
+          inputs.forEach((input) => {
+            const label = input.closest(".va-quiz__option");
+            label.classList.remove("correct", "incorrect");
+            if (parseInt(input.value) === item.correct) label.classList.add("correct");
+            else if (input.checked) label.classList.add("incorrect");
+          });
+          if (selected && parseInt(selected.value) === item.correct) correctCount++;
+        });
+
+        const pct = Math.round((correctCount / quiz.length) * 100);
+        const passed = pct >= 70;
+        document.getElementById("quiz-form").querySelector("button[type=submit]").disabled = true;
+        const resultEl = document.getElementById("quiz-result");
+
+        if (passed) {
+          resultEl.innerHTML = `
+            <p class="va-quiz__score">${correctCount}/${quiz.length} correct (${pct}%) — nice work!</p>
+            <button class="va-btn" id="complete-btn">Mark Lesson Complete</button>`;
+          document.getElementById("complete-btn").addEventListener("click", async () => {
+            try {
+              await vaMarkComplete(slug);
+              showCompletedState();
+            } catch (err) {
+              vaToast("Couldn't save progress — try again in a moment.", "error");
+            }
+          });
+        } else {
+          resultEl.innerHTML = `
+            <p class="va-quiz__score">${correctCount}/${quiz.length} correct (${pct}%) — review the highlighted answers and try again.</p>
+            <button type="button" class="va-btn va-btn--outline" id="retry-quiz">Try Again</button>`;
+          document.getElementById("retry-quiz").addEventListener("click", renderQuiz);
+        }
+      });
+    }
+
+    function showCompletedState() {
+      const next = nextLessonSlug();
+      document.getElementById("quiz-area").innerHTML = `
+        <p class="va-quiz__score">Lesson complete ✓</p>
+        ${next
+          ? `<a href="lesson.html?slug=${next}" class="va-btn">Continue to Next Lesson &rarr;</a>`
+          : `<a href="certificates.html" class="va-btn">View Your Certificates</a>`}`;
+    }
+
+    async function init() {
+      if (!meta || !quiz) {
+        document.getElementById("quiz-title").textContent = "No quiz for this lesson";
+        document.getElementById("quiz-area").innerHTML = `<p>This lesson doesn't have a quiz yet.</p>`;
+        return;
+      }
+      document.title = `Quiz: ${meta.title} — Voyager Academy`;
+      document.getElementById("quiz-tag").textContent = meta.track;
+      document.getElementById("quiz-title").textContent = `Quiz: ${meta.title}`;
+
+      if (!vaGetToken()) {
+        document.getElementById("quiz-area").innerHTML = `<p>Please <a href="auth.html">log in</a> to take this quiz and save your progress.</p>`;
+        return;
+      }
+
+      const progress = await vaGetProgress();
+      if (progress.some((p) => p.lesson_slug === slug)) {
+        showCompletedState();
+        return;
+      }
+      renderQuiz();
+    }
+
+    init();
+  </script>
+</body>
+</html>

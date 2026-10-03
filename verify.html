@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Certificate — Voyager Academy</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links"><li><a href="index.html">Home</a></li></ul>
+  </nav>
+  <div class="va-lesson" style="max-width:480px;text-align:center;">
+    <h1>Certificate Verification</h1>
+    <input class="va-input" type="text" id="cert-input" placeholder="Enter Cert ID (e.g. VA-1-BEGINNER)">
+    <button class="va-btn" id="verify-btn">Verify</button>
+    <div id="verify-result" style="margin-top:var(--sp-4);"></div>
+  </div>
+  <script>
+    const API_BASE = "https://voyager-academy.onrender.com";
+    async function checkId(id) {
+      const result = document.getElementById("verify-result");
+      result.innerHTML = "Checking…";
+      try {
+        const res = await fetch(`${API_BASE}/certificates/verify/${encodeURIComponent(id)}`);
+        if (!res.ok) { result.innerHTML = `<p style="color:var(--va-red);">✗ No certificate found for that ID.</p>`; return; }
+        const data = await res.json();
+        result.innerHTML = `
+          <p style="color:var(--va-bull);font-weight:700;">✓ Verified</p>
+          <p>${data.student_name} completed the ${data.track} track on ${new Date(data.completed_at).toLocaleDateString()}.</p>`;
+      } catch { result.innerHTML = `<p style="color:var(--va-red);">Something went wrong.</p>`; }
+    }
+    document.getElementById("verify-btn").addEventListener("click", () => checkId(document.getElementById("cert-input").value.trim()));
+    const idFromUrl = new URLSearchParams(window.location.search).get("id");
+    if (idFromUrl) { document.getElementById("cert-input").value = idFromUrl; checkId(idFromUrl); }
+  </script>
+</body>
+</html>

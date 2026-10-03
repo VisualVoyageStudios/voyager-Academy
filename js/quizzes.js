@@ -1,0 +1,152 @@
+const QUIZ_DATA = {
+
+  // Basic
+  "what-is-forex": [
+  { q: "In EUR/USD, which is the base currency?", options: ["EUR", "USD", "Both equally", "Neither — it depends on the broker"], correct: 0 },
+  { q: "If you believe a pair's price will rise, what do you do?", options: ["Sell", "Hold", "Buy", "Short"], correct: 2 },
+  { q: "Why does forex trade around the clock on weekdays?", options: ["One central exchange stays open 24/7", "It's a network of banks and institutions handing off across time zones", "Only automated bots trade it overnight", "It's mandated by international law"], correct: 1 },
+  { q: "What ultimately determines whether a trade profits or loses?", options: ["How many indicators you used", "Whether price moved the direction you predicted", "The candle's color", "How long you held it"], correct: 1 },
+  { q: "What's a 'cross pair'?", options: ["Any pair traded at night", "A pair that doesn't include the US dollar", "A pair with very high leverage", "A pair only banks can trade"], correct: 1 },
+  { q: "Roughly how much trades through the global forex market each day?", options: ["A few million dollars", "A few billion dollars", "Several trillion dollars", "It's not measured"], correct: 2 },
+    ],
+    "risk-management-basics": [
+    { q: "On a $100 account risking 2% per trade, how much is at risk?", options: ["$0.20", "$2", "$20", "$10"], correct: 1 },
+    { q: "With a 1:3 risk-to-reward ratio and $2 at risk, what's the profit target?", options: ["$3", "$4", "$6", "$9"], correct: 2 },
+    { q: "What does leverage actually do?", options: ["Gives you free extra capital to keep", "Amplifies your exposure to price movement, both ways", "Guarantees bigger profits", "Eliminates risk on a trade"], correct: 1 },
+    { q: "What should decide when a losing trade gets closed?", options: ["How you feel in the moment", "Waiting for it to come back", "Your pre-set stop loss", "A signal group's advice"], correct: 2 },
+    { q: "After a 50% account loss, what gain is needed just to break even?", options: ["50%", "75%", "100%", "150%"], correct: 2 },
+    { q: "Expectancy combines which two things?", options: ["Leverage and lot size", "Win rate and average win/loss size", "Spread and slippage", "Session time and volatility"], correct: 1 },
+    ],
+    "trading-psychology-basics": [
+    { q: "What's the seatbelt analogy meant to illustrate?", options: ["You should wear safety gear while trading", "Risk management matters most on the rare trade that goes badly wrong", "Trading is like driving fast", "Seatbelts prevent all losses"], correct: 1 },
+    { q: "According to the lesson, what can you actually control in the market?", options: ["Price direction", "Other traders' decisions", "Your own reactions", "The economic calendar"], correct: 2 },
+    { q: "What's the real warning sign about a paid signal seller?", options: ["Charging a monthly fee", "Being sold on promised results rather than a verifiable track record", "Using Telegram", "Having many subscribers"], correct: 1 },
+    { q: "Which is described as learnable in a matter of months?", options: ["Emotional discipline", "Patience under losses", "Technical skills like chart patterns and indicators", "Trading psychology overall"], correct: 2 },
+    { q: "What is confirmation bias, in a trading context?", options: ["Confirming your broker's fees", "Seeking information that supports your existing position while ignoring signs you're wrong", "Double-checking your stop loss", "Using two confirmations before entry"], correct: 1 },
+    { q: "What's a sensible use of a daily loss limit?", options: ["Increase size once you hit it", "Stop trading for the day once you hit a pre-set loss threshold", "Only apply it on Fridays", "Ignore it if you feel confident"], correct: 1 },
+    ],
+
+  // Intermediate concepts quizzes
+  "support-resistance-and-zones": [
+  { q: "After resistance breaks and price returns to retest it, what often happens?", options: ["It gets rejected again", "It tends to act as support", "Price always reverses down", "Nothing — the level is void"], correct: 1 },
+  { q: "How many points of contact does a valid trend line need?", options: ["One", "Two", "At least three", "Five or more"], correct: 2 },
+  { q: "Which of these was NOT listed as a way to spot a zone?", options: ["Congestion areas", "Swing points", "Long wicks/tails", "Moving average crossovers"], correct: 3 },
+  { q: "What do pivot points use to calculate the current period's levels?", options: ["Random price intervals", "The prior period's high, low, and close", "The 200-day moving average", "News sentiment scores"], correct: 1 },
+  { q: "What's the key difference between a supply/demand zone and support/resistance?", options: ["They're exactly the same thing", "Supply/demand marks where a move originated; S/R marks where price has reacted repeatedly", "Supply/demand only applies to stocks", "S/R is always more reliable"], correct: 1 },
+  { q: "Why does a 'fresh' zone generally carry more weight than a heavily tested one?", options: ["Fresh zones are always wider", "Each retest uses up some of the orders originally resting there", "Tested zones are plotted incorrectly", "There's no real difference"], correct: 1 },
+  ],
+  "chart-patterns-and-fakeouts": [
+    { q: "Which pattern type can break in either direction?", options: ["Reversal", "Continuation", "Bilateral", "None of them"], correct: 2 },
+    { q: "A Head & Shoulders pattern typically signals what?", options: ["Continuation", "A potential reversal", "A fakeout", "Low volatility"], correct: 1 },
+    { q: "A bullish flag or pennant is what type of pattern?", options: ["Reversal", "Bilateral", "Continuation", "Neutral"], correct: 2 },
+    { q: "What's a key tell of a market fakeout?", options: ["A strong volume spike", "Repeated, weakening attempts to close outside the trendline before reversing", "Three green candles in a row", "A very wide-range bar"], correct: 1 },
+    { q: "A retest of a broken resistance level, on the way to continuing higher, is called a:", options: ["Pullback", "Throwback", "Breakaway", "Rejection"], correct: 1 },
+    { q: "What does the 'measured move' technique use to project a target?", options: ["The pattern's height, projected from the breakout point", "The previous day's range", "A fixed 50-pip target always", "The 200 EMA"], correct: 0 },
+  ],
+  "candlestick-confirmations": [
+    { q: "A small body with long wicks on both ends usually shows what?", options: ["Strong trend continuation", "Rejection — the market got pushed back", "A guaranteed reversal", "Low liquidity only"], correct: 1 },
+    { q: "Which pattern is a three-candle reversal sequence?", options: ["Engulfing", "Doji", "Morning Star / Evening Star", "Harami"], correct: 2 },
+    { q: "In 'accumulation, manipulation, distribution,' what is the manipulation phase?", options: ["Quiet positioning", "A push to trigger stops or trap traders", "The real move", "The market closing"], correct: 1 },
+    { q: "What does the Harami / inside bar pattern generally suggest?", options: ["An imminent crash", "A pause before continuation", "A confirmed reversal", "Nothing meaningful"], correct: 1 },
+    { q: "A Tweezer Top is identified by:", options: ["Three candles of decreasing size", "Two candles with matching (or near-matching) highs", "A single long-wicked candle", "A gap between two candles"], correct: 1 },
+    { q: "Why should candle size be judged relative to Average True Range?", options: ["It shouldn't be — size is always absolute", "The same pip move means very different things on a quiet vs. volatile pair", "ATR is only used for stop placement", "Candle size doesn't matter at all"], correct: 1 },
+  ],
+  "fibonacci-and-market-structure": [
+    { q: "What's the Golden Zone range?", options: ["23.6%–38.2%", "50%–61.8%", "78.6%–88.6%", "100%–123.6%"], correct: 2 },
+    { q: "Which levels are called 'manipulation levels' in the lesson?", options: ["78.6% and 88.6%", "23.6%, 38.2%, 50%, 61.8%", "0% and 100% only", "150% and 200%"], correct: 1 },
+    { q: "What does BOS stand for?", options: ["Break of Support", "Break of Structure", "Bias of Session", "Bottom of Swing"], correct: 1 },
+    { q: "What does CHoCH indicate?", options: ["A new indicator setting", "The market's behavior flipping bullish/bearish or vice versa", "A change in broker", "A candlestick pattern"], correct: 1 },
+    { q: "What's the main rule for choosing which swing to anchor a Fibonacci tool to?", options: ["Always use the most recent 10 candles", "Anchor to the most obvious, significant swing other traders would also pick", "It doesn't matter which swing you pick", "Only use swings from the 1-minute chart"], correct: 1 },
+    { q: "What do Fibonacci extensions (127.2%, 161.8%, 200%) help estimate?", options: ["Where a pullback will start", "A reasonable profit target beyond the original move", "The exact time of a reversal", "The spread on a pair"], correct: 1 },
+  ],
+  "trade-planning-essentials": [
+    { q: "A 'buy stop' order fills once price does what?", options: ["Falls below your level", "Rises past your level, confirming momentum", "Touches your entry exactly", "Reaches your take profit"], correct: 1 },
+    { q: "In 'boxing the market,' what's step 1?", options: ["Establish your bias", "Draw your visual/psychological support and resistance", "Create a plan", "Check chart patterns"], correct: 1 },
+    { q: "When is the highest-volatility window mentioned in the lesson?", options: ["Sydney/Tokyo overlap", "London/New York overlap", "Right at market open Monday", "During the Asian lunch break"], correct: 1 },
+    { q: "Which of these was NOT listed as a pre-trade check?", options: ["Your motivation and time commitment", "A fixed risk-to-reward ratio", "Whether you're journaling the trade", "The exact win rate of the last 100 traders on this setup"], correct: 3 },
+    { q: "What does moving a stop loss to breakeven accomplish?", options: ["Guarantees the maximum possible profit", "Means a once-profitable trade can no longer turn into a loss", "Closes the trade immediately", "Increases your position size"], correct: 1 },
+    { q: "What's the purpose of grading a setup (A+/B/C) before entering?", options: ["To impress other traders", "To force an honest assessment instead of justifying the trade afterward", "It's purely cosmetic", "To qualify for a certificate"], correct: 1 },
+  ],
+
+  // Advanced concepts quizzes
+  "smc-ict-foundations": [
+  { q: "What is an 'order block'?", options: ["Any red candle", "The last candle before a strong impulsive move", "A support/resistance zone drawn by hand", "A type of pending order"], correct: 1 },
+  { q: "What does DOL stand for?", options: ["Direction of Liquidity", "Draw on Liquidity", "Depth of Level", "Daily Open Line"], correct: 1 },
+  { q: "Bullish order flow is defined by what?", options: ["Breaking below lows and rejecting highs", "Breaking above highs and rejecting below lows", "Sideways consolidation", "High volume alone"], correct: 1 },
+  { q: "Order blocks are usually first identified on which timeframe?", options: ["1-minute", "5-minute", "Higher timeframes like 4H or Daily", "It doesn't matter"], correct: 2 },
+  { q: "What makes an order block 'valid' rather than just any candle before a move?", options: ["It must be red", "It must be followed by a genuine break of structure or imbalance", "It must be on a Monday", "Nothing — all pre-move candles count"], correct: 1 },
+  { q: "A bullish order block is:", options: ["The last up-close candle before a move down", "The last down-close candle before a move up", "Any candle with a long wick", "Always the biggest candle on the chart"], correct: 1 },
+  ],
+  "liquidity-crt-and-ranges": [
+    { q: "In the 3-candle CRT model, what happens on candle 2?", options: ["Liquidity is generated", "Liquidity is purged via a rejection wick", "Liquidity is neutralized", "Nothing significant"], correct: 1 },
+    { q: "What's the simplest liquidity read mentioned in the lesson?", options: ["Fibonacci extensions", "Previous day/week/month highs and lows", "The 50 EMA", "RSI divergence"], correct: 1 },
+    { q: "What's the difference between a close beyond a level and a wick through it?", options: ["No difference at all", "A close suggests a genuine break; a wick suggests a liquidity grab", "A wick is always more significant", "Wicks only matter on weekly charts"], correct: 1 },
+    { q: "In range dynamics, what's typically your first draw on liquidity?", options: ["The range's high", "The range's low", "The range's 50% midpoint", "The opening price"], correct: 2 },
+    { q: "Why does liquidity cluster just beyond obvious swing highs/lows?", options: ["It's random", "Retail stop losses cluster there too", "Brokers place orders there manually", "It only happens on Fridays"], correct: 1 },
+    { q: "Which session's range is commonly swept right after the London open, per the lesson?", options: ["The New York session", "The Asian session", "The Frankfurt session", "There's no such pattern"], correct: 1 },
+  ],
+  "irl-erl-and-fvg": [
+    { q: "What does ERL stand for?", options: ["External Range Liquidity", "Extended Retracement Level", "Entry Risk Limit", "Equal Range Line"], correct: 0 },
+    { q: "In premium/discount theory, where should you generally look to buy?", options: ["The premium zone", "The discount zone", "Exactly at the midpoint", "Anywhere with high volume"], correct: 1 },
+    { q: "Which FVG type is 'low probability' and likely to get filled?", options: ["Expansion FVG", "Consolidation FVG", "Deep Retracement FVG", "Sneaky Breakaway Gap"], correct: 2 },
+    { q: "Which FVG type tends NOT to retest?", options: ["Deep Retracement", "Expansion/Breakaway", "Consolidation", "All of them retest eventually"], correct: 1 },
+    { q: "What is 'CE' (Consequent Encroachment)?", options: ["A type of order block", "The 50% midpoint of a Fair Value Gap", "A candlestick pattern", "A session overlap"], correct: 1 },
+    { q: "Why does it matter when an FVG overlaps with an order block?", options: ["It doesn't — they're unrelated", "It creates a stronger, combined zone from two independent concepts", "It cancels both signals out", "It only matters on weekly charts"], correct: 1 },
+  ],
+  "elliott-wave-and-market-cycles": [
+    { q: "How many waves make up the basic impulse sequence?", options: ["Three", "Four", "Five", "Seven"], correct: 2 },
+    { q: "How many waves make up the corrective sequence?", options: ["Two", "Three (A-B-C)", "Five", "Six"], correct: 1 },
+    { q: "Where do order blocks often form, per the lesson?", options: ["After wave 1", "After wave 4 of the impulse", "Only during corrections", "At the very start of wave 1"], correct: 1 },
+    { q: "What caution does the lesson give about Elliott Wave?", options: ["It's always 100% accurate", "Wave counts are subjective — use as one piece of confluence, not a standalone trigger", "It only works on forex, not indices", "It requires Pine Script"], correct: 1 },
+    { q: "What is an 'ending diagonal'?", options: ["A type of order block", "A wedge-shaped, overlapping variant of a final wave signaling exhaustion", "A Fibonacci extension level", "A synthetic index"], correct: 1 },
+    { q: "Which wave is classically described as the longest and most powerful?", options: ["Wave 1", "Wave 2", "Wave 3", "Wave 5"], correct: 2 },
+  ],
+  "mt4-mt5-and-synthetic-indices": [
+    { q: "Which MT4/5 tab shows Balance, Equity, and Margin?", options: ["Quotes", "Trade", "History", "Chart"], correct: 1 },
+    { q: "How does the Crash Index typically behave, per the lesson?", options: ["Trends down steadily all day", "Trends upward in small ticks before a sudden drop", "Never moves", "Only trades during London session"], correct: 1 },
+    { q: "What does the 1% Rule say?", options: ["Only trade 1% of the time", "Never risk more than 1% of your account per trade", "Use 1% leverage only", "Check charts once a day"], correct: 1 },
+    { q: "What should you do before trading a strategy live, per the lesson?", options: ["Post it on social media first", "Test it on a demo account", "Risk 10% to see if it works fast", "Skip testing and go straight in"], correct: 1 },
+    { q: "What does a trailing stop do?", options: ["Closes the trade immediately", "Automatically moves your stop loss as price moves in your favor", "Increases your position size over time", "Only works on synthetic indices"], correct: 1 },
+    { q: "What's a key difference between demo and live execution, per the lesson?", options: ["There is none", "Slippage and execution speed can differ on a live server", "Demo accounts use real money", "Live accounts are always faster"], correct: 1 },
+  ],
+  "cot-positioning": [
+    { q: "Who publishes the COT report?", options: ["The Federal Reserve", "The CFTC", "TradingView", "Individual brokers"], correct: 1 },
+    { q: "What can extreme, one-sided positioning by large speculators signal?", options: ["Guaranteed continuation", "A trend may be stretched and due for exhaustion", "Nothing useful", "A change in leverage rules"], correct: 1 },
+    { q: "Why is COT data considered 'lagging'?", options: ["It's updated every second", "It reflects positions as of the prior Tuesday, already days old", "It only covers stocks", "It's an average over 10 years"], correct: 1 },
+    { q: "COT data is best used as what kind of tool?", options: ["A precise entry trigger", "A medium-term sentiment/positioning tool", "A stop-loss calculator", "A replacement for a trading plan"], correct: 1 },
+    { q: "What does the COT Index (0-100 scale) help you judge?", options: ["The spread on a pair", "Where current positioning sits relative to its recent historical range", "The exact entry price", "Broker execution speed"], correct: 1 },
+    { q: "In the worked example, what did a falling net position (while still positive) suggest?", options: ["Nothing — only the sign (+/-) matters", "Large speculators were reducing bullish bets, an early fade-of-enthusiasm signal", "The market was about to crash immediately", "COT data had become invalid"], correct: 1 },
+  ],
+
+  // TradingView-specific quizzes
+  "tradingview-interface-tour": [
+    { q: "Where do you switch chart timeframe?", options: ["The left toolbar", "The interval selector next to symbol search", "The Trading Panel", "The Screener"], correct: 1 },
+    { q: "What lives in TradingView's left toolbar?", options: ["Your watchlist", "Drawing tools", "Account balance", "News feed"], correct: 1 },
+    { q: "What do layout tabs let you save and switch between?", options: ["Just your account settings", "Multiple chart setups with their own symbols/indicators/drawings", "Alert history only", "Your password"], correct: 1 },
+    { q: "Where do paper trading and broker connections live?", options: ["The right sidebar", "The top toolbar", "The bottom Trading Panel", "Symbol search"], correct: 2 },
+  ],
+  "tradingview-drawing-tools": [
+    { q: "What does Magnet Mode do?", options: ["Deletes old drawings", "Snaps your drawing precisely to candle wicks and closes", "Adds indicators automatically", "Locks the whole chart"], correct: 1 },
+    { q: "How do you use the measure tool?", options: ["Double-click the chart", "Hold Alt (or Option) and drag across the chart", "Right-click and select Measure", "It's not available on TradingView"], correct: 1 },
+    { q: "What happens when you lock a drawing?", options: ["It becomes invisible", "It won't accidentally move if dragged later", "It gets deleted after a day", "It syncs to another account"], correct: 1 },
+    { q: "What can you save to auto-apply your preferred drawing style?", options: ["A watchlist", "A drawing template", "An alert", "A screener filter"], correct: 1 },
+  ],
+  "tradingview-indicators-and-strategies": [
+    { q: "How many indicators can you run per chart on the free plan?", options: ["1", "2", "5", "Unlimited"], correct: 1 },
+    { q: "What do you need to know to simply USE a community-published indicator?", options: ["Pine Script", "Python", "Nothing — add it with one click", "JavaScript"], correct: 2 },
+    { q: "Where do you change an indicator's colors and inputs?", options: ["The Alerts panel", "The gear icon next to its name in the chart legend", "The Screener", "Your account settings"], correct: 1 },
+    { q: "What is Pine Script?", options: ["A charting pattern", "TradingView's own scripting language for custom indicators/strategies", "A type of candlestick", "A broker integration"], correct: 1 },
+  ],
+  "tradingview-alerts-and-watchlists": [
+    { q: "How many active alerts does the free plan allow?", options: ["1", "3", "10", "Unlimited"], correct: 1 },
+    { q: "What happens to free-plan alerts over time?", options: ["They run forever", "They expire after a period", "They upgrade automatically", "They convert to emails only"], correct: 1 },
+    { q: "How many symbols can a free-plan watchlist hold?", options: ["10", "30", "100", "1,000"], correct: 1 },
+    { q: "What's the Screener used for?", options: ["Drawing trend lines", "Filtering the market by criteria like price change or volume", "Placing trades", "Backtesting strategies"], correct: 1 },
+  ],
+  "tradingview-paper-and-live-trading": [
+    { q: "What's the default virtual balance for paper trading?", options: ["$1,000", "$10,000", "$100,000", "$1,000,000"], correct: 2 },
+    { q: "Why reset your paper balance to match your real trading size?", options: ["It's required by TradingView", "An unrealistic size can build bad risk-management habits", "It unlocks more indicators", "It's not possible to reset it"], correct: 1 },
+    { q: "Do you need a broker connection to use paper trading?", options: ["Yes, always", "No", "Only on mobile", "Only for forex pairs"], correct: 1 },
+    { q: "What determines which real brokers you can connect for live trading?", options: ["It's the same everywhere", "It varies by broker and region", "Only US brokers are supported", "You must use MT4"], correct: 1 },
+  ],
+};

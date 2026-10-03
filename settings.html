@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Settings — Voyager Academy</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links"><li><a href="dashboard.html">&larr; Dashboard</a></li></ul>
+  </nav>
+  <div class="va-lesson" style="max-width:480px;">
+    <h1>Account Settings</h1>
+    <h3 style="font-family:var(--font-heading);margin-top:var(--sp-4);">Profile</h3>
+    <form id="profile-form">
+      <input class="va-input" type="text" id="settings-name" placeholder="Name" required>
+      <input class="va-input" type="email" id="settings-email" placeholder="Email" required>
+      <button type="submit" class="va-btn">Save Profile</button>
+    </form>
+
+    <h3 style="font-family:var(--font-heading);margin-top:var(--sp-5);">Change Password</h3>
+    <form id="password-form">
+      <input class="va-input" type="password" id="current-password" placeholder="Current password" required>
+      <input class="va-input" type="password" id="new-password" placeholder="New password (min. 8 characters)" minlength="8" required>
+      <button type="submit" class="va-btn">Change Password</button>
+    </form>
+  </div>
+  <script src="js/toast.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    async function init() {
+      if (!vaGetToken()) { window.location.href = "auth.html"; return; }
+      const student = await vaGetMe();
+      document.getElementById("settings-name").value = student.name;
+      document.getElementById("settings-email").value = student.email;
+    }
+    document.getElementById("profile-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        await vaUpdateProfile(document.getElementById("settings-name").value, document.getElementById("settings-email").value);
+        vaToast("Profile updated.", "success");
+      } catch (err) { vaToast(err.message, "error"); }
+    });
+    document.getElementById("password-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        await vaChangePassword(document.getElementById("current-password").value, document.getElementById("new-password").value);
+        vaToast("Password changed.", "success");
+        e.target.reset();
+      } catch (err) { vaToast(err.message, "error"); }
+    });
+    init();
+  </script>
+</body>
+</html>
