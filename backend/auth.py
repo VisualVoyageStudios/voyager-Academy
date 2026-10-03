@@ -50,26 +50,3 @@ def get_current_student(
         raise credentials_error
     return student
 
-
-async function vaForgotPassword(email) {
-  const res = await vaFetchWithWakeupHint(`${API_BASE}/auth/forgot-password`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email }),
-  });
-  if (!res.ok) throw new Error("Something went wrong. Try again.");
-  return res.json();
-}
-
-async function vaResetPassword(token, newPassword) {
-  const res = await vaFetchWithWakeupHint(`${API_BASE}/auth/reset-password`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ token, new_password: newPassword }),
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.detail || "Couldn't reset password.");
-  }
-  return res.json();
-}
