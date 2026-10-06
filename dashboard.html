@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Voyager Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#111114">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo"><a href="index.html">Voyager <span>Academy</span></a></div>
+    <ul class="va-nav__links">
+      <li><a href="courses.html">Courses</a></li>
+      <li><a href="community.html">Community</a></li>
+      <li><a href="certificates.html">Certificates</a></li>
+      <li id="nav-auth-slot"><a href="auth.html">Log In</a></li>
+    </ul>
+  </nav>
+
+  <div class="va-lesson">
+    <div class="va-dash-header">
+      <h1>Welcome back, <span id="greeting-name">…</span></h1>
+      <span class="va-dash-header__stat" id="overall-stat"></span>
+    </div>
+
+    <div class="va-continue__inner" id="continue-card" style="margin-bottom:var(--sp-5);">
+      <div id="continue-card-body"><p>Loading…</p></div>
+    </div>
+
+    <div class="va-dash-section-title">Your Tracks</div>
+    <div class="va-dashboard-grid" id="track-grid"></div>
+
+    <div class="va-dash-section-title">Certificates</div>
+    <div class="va-continue__inner" style="margin-bottom:var(--sp-5);">
+      <p id="cert-teaser">Loading…</p>
+      <a href="certificates.html" class="va-btn va-btn--outline" style="background:transparent;border:2px solid var(--va-black);color:var(--va-black);">View Certificates</a>
+    </div>
+
+    <div class="va-dash-section-title">Quick Links</div>
+    <div class="va-dashboard-grid">
+      <div class="va-track-card">
+        <h3>Live Chart</h3>
+        <p>Practice reading a real, live market.</p>
+        <a href="live-chart.html">Open Live Chart →</a>
+      </div>
+      <div class="va-track-card">
+        <h3>Community</h3>
+        <p>Ask questions, share setups, trade ideas.</p>
+        <a href="community.html">Go to Community →</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="va-footer-mega">
+    <div class="va-footer-mega__glow" aria-hidden="true">
+      <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+        <polyline points="0,160 40,120 70,140 110,60 150,90 190,30 230,70 300,20" fill="none" stroke="#c8102e" stroke-width="3" opacity="0.25"/>
+      </svg>
+    </div>
+    <div class="va-footer-mega__grid">
+      <div class="va-footer-mega__brand">
+        <div class="va-nav__logo" style="color:#fff;">Voyager <span>Academy</span></div>
+        <p>Free trading education, beginner to advanced. Part of the Voyager Analytics family.</p>
+      </div>
+      <div><h4>Learn</h4>
+        <ul>
+          <li><a href="courses.html?track=beginner">Liftoff (Beginner)</a></li>
+          <li><a href="courses.html?track=intermediate">Ascent (Intermediate)</a></li>
+          <li><a href="courses.html?track=advanced">Summit (Advanced)</a></li>
+          <li><a href="courses.html?track=macro">Mission Control (Macro)</a></li>
+          <li><a href="courses.html?track=tradingview">The Bridge (TradingView)</a></li>
+          <li><a href="certificates.html">Certificates</a></li>
+        </ul>
+      </div>
+      <div><h4>Community</h4><ul>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="">Exness</a></li>
+        <li><a href="">TradingView</a></li>
+        <li><a href="">.....</a></li>
+        <li><a href="">.....</a></li>
+
+      </ul></div>
+      <div><h4>Company</h4><ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="https://visualvoyagestudios.github.io/vAnalytics">Voyager Analytics</a></li>
+      </ul></div>
+      <div><h4>Legal</h4><ul>
+        <li><a href="terms.html">Terms of Use</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
+        <li><a href="risk-disclaimer.html">Risk Disclaimer</a></li>
+      </ul></div>
+    </div>
+    <div class="va-footer-mega__bottom">
+      <span>&copy; 2026 Voyager Academy.</span>
+      <span>Educational content only — not financial advice.</span>
+    </div>
+  </footer>
+
+  <script src="js/courses-data.js"></script>
+  <script src="js/toast.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const TRACK_LABELS = {
+      beginner: "Liftoff (Beginner)",
+      intermediate: "Ascent (Intermediate)",
+      advanced: "Summit (Advanced)",
+      macro: "Mission Control",
+      tradingview: "The Bridge (TradingView)",
+      master: "Full Curriculum",
+    };
+
+    async function initDashboard() {
+      const student = vaGetStudent();
+      if (!student) {
+        window.location.href = "auth.html";
+        return;
+      }
+      document.getElementById("greeting-name").textContent = student.name.split(" ")[0];
+
+      const [progress, certs] = await Promise.all([vaGetProgress(), vaGetCertificates()]);
+      const completedSlugs = new Set(progress.map((p) => p.lesson_slug));
+      const total = COURSE_DATA.length;
+      const completed = COURSE_DATA.filter((c) => completedSlugs.has(c.slug)).length;
+      document.getElementById("overall-stat").textContent = `${completed}/${total} lessons complete`;
+
+      // Continue Learning
+      const next = COURSE_DATA.find((c) => !completedSlugs.has(c.slug));
+      const continueBody = document.getElementById("continue-card-body");
+      if (!next) {
+        continueBody.innerHTML = `
+          <div class="va-continue__eyebrow">ALL CAUGHT UP</div>
+          <h3>You've completed every lesson — nice work.</h3>
+          <p>Check your Certificates for what you've unlocked.</p>
+          <a href="certificates.html" class="va-btn">View Certificates</a>`;
+      } else {
+        const pct = Math.round((completed / total) * 100);
+        continueBody.innerHTML = `
+          <div class="va-continue__eyebrow">CONTINUE LEARNING</div>
+          <div class="va-progress-bar"><div class="va-progress-bar__fill" style="width:${pct}%"></div></div>
+          <p>Next up: <strong>${next.title}</strong> (${TRACK_LABELS[next.track]})</p>
+          <a href="lesson.html?slug=${next.slug}" class="va-btn">Continue Learning</a>`;
+      }
+
+      // Track breakdown
+      const grid = document.getElementById("track-grid");
+      grid.innerHTML = Object.keys(TRACK_LABELS).map((t) => {
+        const lessons = COURSE_DATA.filter((c) => c.track === t);
+        const done = lessons.filter((c) => completedSlugs.has(c.slug)).length;
+        const pct = Math.round((done / lessons.length) * 100);
+        return `
+          <div class="va-track-card">
+            <h3>${TRACK_LABELS[t]}</h3>
+            <div class="va-progress-bar"><div class="va-progress-bar__fill" style="width:${pct}%"></div></div>
+            <p>${done}/${lessons.length} lessons complete</p>
+            <a href="courses.html?track=${t}">View lessons →</a>
+          </div>`;
+      }).join("");
+
+      // Certificates teaser
+      const earned = certs.filter((c) => c.earned && c.track !== "master").length;
+      const masterEarned = certs.find((c) => c.track === "master")?.earned;
+      document.getElementById("cert-teaser").textContent =
+        `${earned}/4 track certificates earned` + (masterEarned ? " — plus the Full Curriculum certificate!" : ".");
+    }
+
+    initDashboard();
+  </script>
+</body>
+</html>

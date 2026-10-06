@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Post — Voyager Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links">
+      <li><a href="community.html">&larr; Back to Community</a></li>
+      <li id="nav-auth-slot"><a href="auth.html">Log In</a></li>
+    </ul>
+  </nav>
+
+  <div class="va-lesson" id="post-container"><p>Loading…</p></div>
+
+  <script src="js/toast.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const CATEGORY_LABELS = {
+      general: "General", "beginner-questions": "Beginner Questions",
+      "trade-setups": "Trade Setups", "tradingview-help": "TradingView Help",
+      "wins-lessons": "Wins & Lessons",
+    };
+
+    function timeAgo(dateStr) {
+      const diff = (Date.now() - new Date(dateStr)) / 1000;
+      if (diff < 60) return "just now";
+      if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+      if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+      return `${Math.floor(diff / 86400)}d ago`;
+    }
+
+    const postId = new URLSearchParams(window.location.search).get("id");
+
+    async function render() {
+      const container = document.getElementById("post-container");
+      let post;
+      try {
+        post = await vaGetPost(postId);
+      } catch (err) {
+        container.innerHTML = "<p>That post couldn't be found.</p>";
+        return;
+      }
+
+      document.title = `${post.title} — Voyager Academy`;
+      container.innerHTML = `
+        <span class="va-post-card__category">${CATEGORY_LABELS[post.category] || post.category}</span>
+        <h1 style="border:none;margin:var(--sp-2) 0;">${vaEscapeHtml(post.title)}</h1>
+        <div class="va-post-card__meta" style="margin-bottom:var(--sp-4);">by ${vaEscapeHtml(post.student.name)} · ${timeAgo(post.created_at)}</div>
+        <div class="va-lesson__body" style="margin-bottom:var(--sp-5);">${vaEscapeHtml(post.body).replace(/\n/g, "<br>")}</div>
+        <h2>${post.replies.length} ${post.replies.length === 1 ? "Reply" : "Replies"}</h2>
+        <div id="replies-list"></div>
+        <div id="reply-form-slot" style="margin-top:var(--sp-4);"></div>`;
+
+      const student = vaGetStudent();
+      const canModerate = student && (student.id === post.student.id || student.is_admin);
+      document.getElementById("post-container").insertAdjacentHTML("beforeend", `
+        <div style="margin:var(--sp-3) 0;display:flex;gap:var(--sp-2);">
+          ${student ? `<button class="va-btn va-btn--outline" id="report-btn" style="background:transparent;border:2px solid var(--va-border);color:var(--va-text-muted);">Report</button>` : ""}
+          ${canModerate ? `<button class="va-btn va-btn--outline" id="delete-post-btn" style="background:transparent;border:2px solid var(--va-red);color:var(--va-red);">Delete Post</button>` : ""}
+        </div>
+      `);
+      if (student) {
+        document.getElementById("report-btn")?.addEventListener("click", async () => {
+          try { await vaReportPost(postId); vaToast("Post reported. Thank you.", "success"); }
+          catch (e) { vaToast("Couldn't report post.", "error"); }
+        });
+      }
+      document.getElementById("delete-post-btn")?.addEventListener("click", async () => {
+        if (!confirm("Delete this post permanently?")) return;
+        try { await vaDeletePost(postId); window.location.href = "community.html"; }
+        catch (e) { vaToast("Couldn't delete post.", "error"); }
+      });
+
+
+      document.getElementById("replies-list").innerHTML = post.replies.map((r) => {
+      const canDeleteReply = student && (student.id === r.student.id || student.is_admin);
+      return `
+        <div class="va-reply">
+          <div class="va-reply__meta">${vaEscapeHtml(r.student.name)} · ${timeAgo(r.created_at)}
+          ${canDeleteReply ? ` · <a href="#" data-reply-id="${r.id}" class="delete-reply-link" style="color:var(--va-red);">Delete</a>` : ""}</div>
+          <div>${vaEscapeHtml(r.body).replace(/\n/g, "<br>")}</div>
+        </div>`;
+    }).join("");
+
+    document.querySelectorAll(".delete-reply-link").forEach((link) => {
+      link.addEventListener("click", async (e) => {
+        e.preventDefault();
+        if (!confirm("Delete this reply?")) return;
+        try { await vaDeleteReply(postId, link.dataset.replyId); render(); }
+        catch (err) { vaToast("Couldn't delete reply.", "error"); }
+      });
+    });
+
+        
+
+      const slot = document.getElementById("reply-form-slot");
+      if (vaGetToken()) {
+        slot.innerHTML = `
+          <textarea id="reply-body" class="va-input" placeholder="Write a reply…" maxlength="2000" style="min-height:100px;"></textarea>
+          <button class="va-btn" id="submit-reply-btn">Reply</button>`;
+        document.getElementById("submit-reply-btn").addEventListener("click", async () => {
+          const body = document.getElementById("reply-body").value.trim();
+          if (!body) return;
+          try {
+            await vaCreateReply(postId, body);
+            render();
+          } catch (err) {
+            vaToast("Couldn't post your reply — try again in a moment.", "error");
+          }
+        });
+      } else {
+        slot.innerHTML = `<p><a href="auth.html">Log in</a> to join the discussion.</p>`;
+      }
+    }
+
+    render();
+  </script>
+</body>
+</html>

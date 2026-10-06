@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glossary — Voyager Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#111114">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+  <style>
+    .va-glossary h2 { font-family: var(--font-heading); color: var(--va-red); font-size: 1.1rem; margin: var(--sp-5) 0 var(--sp-3); text-transform: uppercase; letter-spacing: 0.04em; }
+    .va-glossary dt { font-family: var(--font-heading); font-weight: 700; color: var(--va-black); margin-top: var(--sp-3); }
+    .va-glossary dd { color: var(--va-text-muted); margin: var(--sp-1) 0 0; }
+  </style>
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links">
+      <li><a href="./dashboard.html">Home</a></li>
+      <li><a href="./courses.html">Courses</a></li>
+      <li><a href="./glossary.html" class="active">Glossary</a></li>
+      <li id="nav-auth-slot"><a href="./auth.html">Log In</a></li>
+    </ul>
+  </nav>
+
+  <div class="va-lesson va-glossary">
+    <h1>Glossary</h1>
+    <p style="color:var(--va-text-muted);">Every term introduced across the 19 lessons, in one place.</p>
+
+    <h2>Core Trading Terms</h2>
+    <dl>
+      <dt>Pip</dt><dd>The smallest standard price movement in a pair — usually the fourth decimal place.</dd>
+      <dt>Lot</dt><dd>A standardized trade size: standard = 100,000 units, mini = 10,000, micro = 1,000.</dd>
+      <dt>Spread</dt><dd>The gap between the buy (ask) and sell (bid) price — the built-in cost of entering a trade.</dd>
+      <dt>Leverage</dt><dd>Lets a smaller amount of capital control a larger position — amplifies gains and losses equally.</dd>
+      <dt>Drawdown</dt><dd>How far an account has fallen from a prior peak, usually shown as a percentage.</dd>
+      <dt>Risk-to-Reward Ratio</dt><dd>How much you stand to make versus how much you're risking on a trade (e.g., 1:3).</dd>
+      <dt>Expectancy</dt><dd>(Win Rate × Average Win) − (Loss Rate × Average Loss) — the number that actually predicts long-run profitability.</dd>
+    </dl>
+
+    <h2>Technical Analysis</h2>
+    <dl>
+      <dt>Support / Resistance</dt><dd>Price zones where the market has repeatedly reacted — potential turning points.</dd>
+      <dt>Fibonacci Retracement</dt><dd>A tool that plots likely pullback levels (23.6%–88.6%) within a prior price swing.</dd>
+      <dt>BOS (Break of Structure)</dt><dd>A support or resistance level breaks, signaling a trend continuing or shifting.</dd>
+      <dt>CHoCH (Change of Character)</dt><dd>The market's behavior flips from bullish to bearish, or vice versa.</dd>
+      <dt>EQH / EQL (Equal Highs / Equal Lows)</dt><dd>Liquidity resting above a double top or below a double bottom.</dd>
+    </dl>
+
+    <h2>Smart Money / ICT Concepts</h2>
+    <dl>
+      <dt>Order Block</dt><dd>The last candle before a strong impulsive move — the market's "footprint."</dd>
+      <dt>Breaker Block</dt><dd>A failed order block that flips and acts as the opposite kind of zone.</dd>
+      <dt>Fair Value Gap (FVG)</dt><dd>An imbalance left when price moves so fast it skips a price range entirely.</dd>
+      <dt>IRL (Internal Range Liquidity)</dt><dd>FVGs, inverted FVGs, and order blocks sitting inside a range.</dd>
+      <dt>ERL (External Range Liquidity)</dt><dd>The swing highs and lows that bound a range.</dd>
+      <dt>DOL (Draw on Liquidity)</dt><dd>Where the market is being "pulled" toward — usually a liquidity pool.</dd>
+      <dt>CRT (Candle Range Theory)</dt><dd>A 3-candle model: liquidity made, purged, then neutralized.</dd>
+      <dt>Premium / Discount</dt><dd>The top half (sell zone) and bottom half (buy zone) of a price range.</dd>
+      <dt>Equilibrium</dt><dd>The exact midpoint of a range, separating premium from discount.</dd>
+      <dt>Consequent Encroachment (CE)</dt><dd>The 50% midpoint of a Fair Value Gap — often all price needs to reach before reacting.</dd>
+      <dt>BISI / SIBI</dt><dd>Formal ICT names for a bullish FVG (Buyside Imbalance, Sellside Inefficiency) and bearish FVG (reverse).</dd>
+    </dl>
+
+    <h2>Platform & Account</h2>
+    <dl>
+      <dt>Paper Trading</dt><dd>Risk-free simulated trading with virtual funds — no broker required.</dd>
+      <dt>Bracket Order</dt><dd>An order that sets entry, stop loss, and take profit together before it fills.</dd>
+      <dt>Bar Replay</dt><dd>Rewinds a chart to a past date and steps forward candle by candle for practice.</dd>
+      <dt>VWAP</dt><dd>Volume Weighted Average Price — the average price paid, weighted by volume, from a chosen point.</dd>
+      <dt>Trailing Stop</dt><dd>A stop loss that automatically moves as price moves in your favor.</dd>
+      <dt>COT Report</dt><dd>A weekly CFTC report showing how large speculators, commercials, and small traders are positioned.</dd>
+    </dl>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificates — Voyager Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <style>
+    .va-cert-card {
+      border: 2px solid var(--va-border);
+      border-radius: var(--radius-lg);
+      padding: var(--sp-4);
+      text-align: center;
+      opacity: 1;
+    }
+    .va-cert-card.locked { opacity: 0.55; }
+    .va-cert-card__icon { font-size: 2rem; margin-bottom: var(--sp-2); }
+    .va-cert-card h3 { font-family: var(--font-heading); color: var(--va-black); margin-bottom: var(--sp-1); }
+    .va-cert-card p { color: var(--va-text-muted); font-size: 0.85rem; margin-bottom: var(--sp-3); }
+    .va-cert-card.master { grid-column: 1 / -1; border: 2px solid var(--va-black); background: var(--va-off-white); }
+  </style>
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="courses.html">Courses</a></li>
+      <li><a href="community.html">Community</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="certificates.html" class="active">Certificates</a></li>
+      <li id="nav-auth-slot"><a href="auth.html">Log In</a></li>
+    </ul>
+  </nav>
+
+  <div class="va-lesson">
+    <h1 style="border:none;">Your Certificates</h1>
+    <div class="va-grid" id="cert-grid" style="padding:0;"></div>
+  </div>
+
+  <footer class="va-footer">&copy; 2026 Voyager Academy.</footer>
+
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const TRACK_LABELS = {
+      beginner: "Liftoff (Beginner)",
+      intermediate: "Ascent (Intermediate)",
+      advanced: "Summit (Advanced)",
+      macro: "Mission Control",
+      tradingview: "The Bridge (TradingView)",
+      master: "Full Curriculum",
+    };
+
+    async function renderCertificates() {
+      const grid = document.getElementById("cert-grid");
+      if (!vaGetToken()) {
+        grid.innerHTML = `<p>Log in to track and unlock your certificates. <a href="auth.html">Log in →</a></p>`;
+        return;
+      }
+      const certs = await vaGetCertificates();
+      grid.innerHTML = certs
+        .map((c) => {
+          const isMaster = c.track === "master";
+          return `
+            <div class="va-cert-card ${c.earned ? "" : "locked"} ${isMaster ? "master" : ""}">
+              <div class="va-cert-card__icon">${c.earned ? "🏆" : "🔒"}</div>
+              <h3>${TRACK_LABELS[c.track]}</h3>
+              <p>${c.earned ? "Earned " + new Date(c.completed_at).toLocaleDateString() : c.progress + " lessons complete"}</p>
+              ${c.earned ? `<a href="certificate.html?track=${c.track}" class="va-btn">View Certificate</a>` : ""}
+            </div>`;
+        })
+        .join("");
+    }
+    renderCertificates();
+  </script>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson — Voyager Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#111114">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <meta property="og:title" content="Voyager Academy — Free Trading Lesson">
+  <meta property="og:description" content="Part of Voyager Academy's free, 19-lesson trading curriculum.">
+  <meta property="og:image" content="https://visualvoyagestudios.github.io/voyager-Academy/assets/images/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+</head>
+<body> 
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="courses.html" class="active">Courses</a></li>
+      <li><a href="community.html">Community</a></li>
+      <li><a href="certificates.html">Certificates</a></li>
+      <li id="nav-auth-slot"><a href="auth.html">Log In</a></li>
+    </ul>
+  </nav>
+
+  <div class="va-lesson">
+    <a href="courses.html" class="va-lesson__back">&larr; Back to Courses</a>
+    <div class="va-lesson__tag" id="lesson-tag"></div>
+    <h1 id="lesson-title">Loading…</h1>
+    <div class="va-lesson__body" id="lesson-body"></div>
+
+    <div id="lesson-cta" style="margin-top:var(--sp-5);"><p>Loading…</p></div>
+
+    <div class="va-lesson-pager" id="lesson-pager"></div>
+
+    <div class="va-lesson__tag" id="lesson-tag"></div>
+    <div id="lesson-position" style="font-size:0.85rem;color:var(--va-text-muted);margin-bottom:var(--sp-2);"></div>
+    <h1 id="lesson-title">Loading…</h1>
+
+    <div class="va-disclaimer">
+      Forex trading involves significant risk of loss and is not suitable for
+      all investors. Educational content only — not financial advice.
+    </div>
+  </div>
+
+  <footer class="va-footer-mega">
+    <div class="va-footer-mega__glow" aria-hidden="true">
+      <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+        <polyline points="0,160 40,120 70,140 110,60 150,90 190,30 230,70 300,20" fill="none" stroke="#c8102e" stroke-width="3" opacity="0.25"/>
+      </svg>
+    </div>
+    <div class="va-footer-mega__grid">
+      <div class="va-footer-mega__brand">
+        <div class="va-nav__logo" style="color:#fff;">Voyager <span>Academy</span></div>
+        <p>Free trading education, beginner to advanced. Part of the Voyager Analytics family.</p>
+      </div>
+      <div><h4>Learn</h4>
+        <ul>
+          <li><a href="courses.html?track=beginner">Liftoff (Beginner)</a></li>
+          <li><a href="courses.html?track=intermediate">Ascent (Intermediate)</a></li>
+          <li><a href="courses.html?track=advanced">Summit (Advanced)</a></li>
+          <li><a href="courses.html?track=macro">Mission Control (Macro)</a></li>
+          <li><a href="courses.html?track=tradingview">The Bridge (TradingView)</a></li>
+          <li><a href="certificates.html">Certificates</a></li>
+        </ul>
+      </div>
+      <div><h4>Community</h4><ul>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="auth.html">Log In</a></li>
+      </ul></div>
+      <div><h4>Company</h4><ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="https://visualvoyagestudios.github.io/vAnalytics">Voyager Analytics</a></li>
+      </ul></div>
+      <div><h4>Legal</h4><ul>
+        <li><a href="terms.html">Terms of Use</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
+        <li><a href="risk-disclaimer.html">Risk Disclaimer</a></li>
+      </ul></div>
+    </div>
+    <div class="va-footer-mega__bottom">
+      <span>&copy; 2026 Voyager Academy.</span>
+      <span>Educational content only — not financial advice.</span>
+    </div>
+  </footer>
+
+  <script src="js/courses-data.js"></script>
+  <script src="js/diagrams.js"></script>
+  <script src="js/quizzes.js"></script>
+  <script src="js/video-content.js"></script>
+  <script src="js/lessons-content.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get("slug");
+    const meta = COURSE_DATA.find((c) => c.slug === slug);
+    const body = LESSON_CONTENT[slug];
+
+    if (meta && body) {
+      document.title = `${meta.title} — Voyager Academy`;
+      document.getElementById("lesson-tag").textContent = meta.track;
+      document.getElementById("lesson-title").textContent = meta.title;
+      document.getElementById("lesson-body").innerHTML = body;
+
+      document.querySelectorAll("#lesson-body script").forEach((oldScript) => {
+        const newScript = document.createElement("script");
+        Array.from(oldScript.attributes).forEach((attr) => newScript.setAttribute(attr.name, attr.value));
+        newScript.textContent = oldScript.textContent;
+        oldScript.parentNode.replaceChild(newScript, oldScript);
+      });
+
+      renderPager();
+      renderPositionBadge();
+      setupLessonCta();
+    } else {
+      document.getElementById("lesson-tag").textContent = "Coming Soon";
+      document.getElementById("lesson-title").textContent = "This lesson isn't written yet";
+      document.getElementById("lesson-body").innerHTML = "<p>Check back soon.</p>";
+      document.getElementById("lesson-cta").innerHTML = "";
+    }
+
+    function renderPager() {
+      const idx = COURSE_DATA.findIndex((c) => c.slug === slug);
+      const prev = idx > 0 ? COURSE_DATA[idx - 1] : null;
+      const next = idx < COURSE_DATA.length - 1 ? COURSE_DATA[idx + 1] : null;
+      document.getElementById("lesson-pager").innerHTML = `
+        ${prev ? `<a href="lesson.html?slug=${prev.slug}"><div class="va-lesson-pager__label">&larr; Previous</div><div class="va-lesson-pager__title">${prev.title}</div></a>` : "<div></div>"}
+        ${next ? `<a href="lesson.html?slug=${next.slug}" class="va-lesson-pager--next"><div class="va-lesson-pager__label">Next &rarr;</div><div class="va-lesson-pager__title">${next.title}</div></a>` : "<div></div>"}
+      `;
+    }
+
+    const TRACK_LABELS = {
+      beginner: "Liftoff", intermediate: "Ascent", advanced: "Summit",
+      macro: "Mission Control", tradingview: "The Bridge",
+    };
+
+    function renderPositionBadge() {
+      const label = TRACK_LABELS[meta.track] || meta.track;
+      document.getElementById("lesson-tag").textContent = label;
+      const trackLessons = COURSE_DATA.filter((c) => c.track === meta.track);
+      const posInTrack = trackLessons.findIndex((c) => c.slug === slug) + 1;
+      document.getElementById("lesson-position").textContent = `Lesson ${posInTrack} of ${trackLessons.length}`;
+    
+    }
+
+    async function setupLessonCta() {
+      const cta = document.getElementById("lesson-cta");
+      const hasQuiz = !!QUIZ_DATA[slug];
+
+      if (!vaGetToken()) {
+        cta.innerHTML = `<a href="auth.html" class="va-btn">Log In to Track Progress</a>`;
+        return;
+      }
+
+      const progress = await vaGetProgress();
+      const isDone = progress.some((p) => p.lesson_slug === slug);
+
+      if (isDone) {
+        cta.innerHTML = `<span class="va-btn" style="background:var(--va-bull);pointer-events:none;">Completed ✓</span>`;
+        return;
+      }
+
+      if (hasQuiz) {
+        cta.innerHTML = `<a href="quiz.html?slug=${slug}" class="va-btn">Take the Quiz &rarr;</a>`;
+      } else {
+        cta.innerHTML = `<button class="va-btn" id="mark-complete-btn">Mark Lesson Complete</button>`;
+        document.getElementById("mark-complete-btn").addEventListener("click", async () => {
+          try {
+            await vaMarkComplete(slug);
+            setupLessonCta();
+          } catch (err) {
+            vaToast("Couldn't save progress — try again in a moment.", "error");
+          }
+        });
+      }
+    }
+  </script>
+</body>
+</html>

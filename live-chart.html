@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Chart — Voyager Academy</title>
+  <link rel="stylesheet" href="css/main.css">
+
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <style>
+    .va-chart-page { padding: var(--sp-4); max-width: 1200px; margin: 0 auto; }
+    .tradingview-widget-container { width: 100%; }
+  </style>
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="courses.html">Courses</a></li>
+      <li><a href="live-chart.html" class="active">Live Chart</a></li>
+      <li><a href="community.html">Community</a></li>
+      <li id="nav-auth-slot"><a href="auth.html">Log In</a></li>
+    </ul>
+  </nav>
+
+  <div class="va-chart-page">
+    <h1 style="font-family:var(--font-heading);margin-bottom:var(--sp-3);">Practice on a Real Chart</h1>
+    <div class="tradingview-widget-container">
+      <div class="tradingview-widget-container__widget" style="height:100%;"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+        {
+          "width": "100%",
+          "height": 700,
+          "symbol": "FX_IDC:EURUSD",
+          "interval": "60",
+          "timezone": "Etc/UTC",
+          "theme": "dark",
+          "style": "1",
+          "locale": "en",
+          "allow_symbol_change": true,
+          "support_host": "https://www.tradingview.com"
+        }
+      </script>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

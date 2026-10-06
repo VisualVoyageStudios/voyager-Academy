@@ -1,0 +1,40 @@
+:root {
+  /* Base palette — Rapture-inspired red/black/white */
+  --va-white: #ffffff;
+  --va-off-white: #f7f7f8;
+  --va-black: #111114;
+  --va-black-soft: #1c1c20;
+  --va-border: #e6e6e9;
+
+  /* Accent */
+  --va-red: #c8102e;
+  --va-red-dark: #8c0c20;
+  --va-text: #17171a;
+  --va-text-muted: #6b6b72;
+
+  /* Spacing scale */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 16px;
+  --sp-4: 24px;
+  --sp-5: 40px;
+  --sp-6: 64px;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+
+  /* Fonts */
+  --font-base: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Inter', sans-serif;
+
+  --font-heading: 'Space Grotesk', 'Inter', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  --va-red-glow: #ff2d4d;
+  --va-bull: #16a34a;
+
+
+
+
+}
