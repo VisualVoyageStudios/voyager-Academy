@@ -14,7 +14,6 @@ import time
 from fastapi import WebSocket, WebSocketDisconnect
 from jose import jwt
 from starlette.concurrency import run_in_threadpool
-from extras import router as extras_router
 
 import os
 import secrets
@@ -50,7 +49,14 @@ app.add_middleware(
 limiter = Limiter(key_func=get_remote_address)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
-app.include_router(extras_router)
+
+import traceback
+try:
+    from extras import router as extras_router
+    app.include_router(extras_router)
+except Exception:
+    print("[startup] extras failed to load — chat/streak disabled:")
+    traceback.print_exc()
 
 
 @app.post("/auth/register", response_model=schemas.TokenResponse)
