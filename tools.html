@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function() {
+      const saved = localStorage.getItem("va_theme");
+      if (saved === "dark" || (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Trading Calculators — Voyager Academy</title>
+  <meta name="description" content="Free position size, risk-to-reward, and drawdown recovery calculators for forex traders.">
+  <meta property="og:title" content="Free Trading Calculators — Voyager Academy">
+  <meta property="og:description" content="Position size, risk-to-reward, and drawdown recovery calculators — free, no sign-up.">
+  <meta property="og:image" content="https://visualvoyagestudios.github.io/voyager-Academy/assets/images/og-image.png">
+  <meta property="og:url" content="https://visualvoyagestudios.github.io/voyager-Academy/tools.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#111114">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+  <style>
+    .va-calc { border: 2px solid var(--color-border, #e6e6e9); border-radius: var(--radius-lg); padding: var(--sp-4); margin-bottom: var(--sp-5); background: var(--color-surface, #fff); }
+    .va-calc h2 { font-family: var(--font-heading); font-size: 1.2rem; margin: 0 0 var(--sp-1); color: var(--color-text, #111114); }
+    .va-calc__hint { color: var(--color-text-muted, #6b6b72); font-size: 0.9rem; margin: 0 0 var(--sp-3); }
+    .va-calc__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--sp-3); margin-bottom: var(--sp-3); }
+    .va-calc label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-text-muted, #6b6b72); margin-bottom: 4px; }
+    .va-calc .va-input { margin-bottom: 0; }
+    .va-calc__results { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--sp-2); }
+    .va-calc__card { background: var(--color-surface-2, #f7f7f8); border-radius: var(--radius-md); padding: var(--sp-3); display: flex; flex-direction: column; }
+    .va-calc__label { font-size: 0.75rem; color: var(--color-text-muted, #6b6b72); }
+    .va-calc__value { font-family: var(--font-mono); font-weight: 700; font-size: 1.3rem; color: var(--va-red); }
+    .va-calc__sub { font-size: 0.75rem; color: var(--color-text-muted, #6b6b72); margin-top: 2px; }
+    .va-calc__msg { grid-column: 1 / -1; font-size: 0.9rem; color: var(--color-text-muted, #6b6b72); margin: 0; }
+    .va-calc__msg--warn { color: var(--va-red); }
+    .va-calc__note { font-size: 0.8rem; color: var(--color-text-muted, #6b6b72); margin: var(--sp-3) 0 0; }
+    .va-calc .va-pos { color: var(--va-bull); }
+    .va-calc table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: var(--sp-3); color: var(--color-text, #111114); }
+    .va-calc th, .va-calc td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--color-border, #e6e6e9); }
+    .va-calc td { font-family: var(--font-mono); }
+  </style>
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="courses.html">Courses</a></li>
+      <li><a href="tools.html" class="active">Tools</a></li>
+      <li id="nav-auth-slot"><a href="auth.html">Log In</a></li>
+    </ul>
+  </nav>
+
+  <div class="va-lesson">
+    <h1>Trading Calculators</h1>
+    <p style="color:var(--color-text-muted,#6b6b72);">The formulas from the Risk Management lesson, ready to use. Everything runs in your browser — nothing is saved or sent anywhere.</p>
+
+    <!-- 1. Position size -->
+    <section class="va-calc" id="calc-position">
+      <h2>Position Size Calculator</h2>
+      <p class="va-calc__hint">How many lots to trade so a stop-out costs exactly the amount you chose to risk.</p>
+      <div class="va-calc__grid">
+        <div><label for="ps-balance">Account balance</label><input class="va-input" type="number" id="ps-balance" value="1000" min="0" step="any" inputmode="decimal"></div>
+        <div><label for="ps-risk">Risk per trade (%)</label><input class="va-input" type="number" id="ps-risk" value="1" min="0" step="any" inputmode="decimal"></div>
+        <div><label for="ps-stop">Stop loss (pips)</label><input class="va-input" type="number" id="ps-stop" value="20" min="0" step="any" inputmode="decimal"></div>
+        <div style="grid-column: 1 / -1;">
+          <label for="ps-type">Pair type</label>
+          <select class="va-input" id="ps-type">
+            <option value="usdquote">EUR/USD, GBP/USD</option>
+            <option value="usdbase">USD/CHF, USD/CAD</option>
+            <option value="usdjpy">USD/JPY</option>
+            <option value="custom">Other / custom</option>
+          </select>
+        </div>
+        <div id="ps-price-wrap" hidden><label for="ps-price">Current price</label><input class="va-input" type="number" id="ps-price" min="0" step="any" inputmode="decimal" placeholder="e.g. 150.00"></div>
+        <div id="ps-custom-wrap" hidden><label for="ps-custom">Pip value per standard lot</label><input class="va-input" type="number" id="ps-custom" min="0" step="any" inputmode="decimal" placeholder="e.g. 10.00"></div>
+      </div>
+      <div class="va-calc__results" id="ps-results" aria-live="polite"></div>
+      <p class="va-calc__note">The presets assume a USD account. "EUR/USD, GBP/USD" covers any pair where USD is the second currency (AUD/USD, NZD/USD and so on); "USD/CHF, USD/CAD" covers pairs where USD comes first. On a different account currency, or for gold, indices or crypto, choose "Other / custom" and enter the pip/point value from your broker's contract specifications, in the same currency as your balance. Always verify against your broker before trading.</p>
+    </section>
+
+    <!-- 2. Risk : Reward -->
+    <section class="va-calc" id="calc-rr">
+      <h2>Risk-to-Reward &amp; Break-even Win Rate</h2>
+      <p class="va-calc__hint">Enter your planned trade to see the ratio — and how often you need to win for it to pay.</p>
+      <div class="va-calc__grid">
+        <div><label for="rr-entry">Entry price</label><input class="va-input" type="number" id="rr-entry" value="1.1000" step="any" inputmode="decimal"></div>
+        <div><label for="rr-stop">Stop loss price</label><input class="va-input" type="number" id="rr-stop" value="1.0950" step="any" inputmode="decimal"></div>
+        <div><label for="rr-target">Take profit price</label><input class="va-input" type="number" id="rr-target" value="1.1150" step="any" inputmode="decimal"></div>
+        <div><label for="rr-win">Your win rate % (optional)</label><input class="va-input" type="number" id="rr-win" step="any" inputmode="decimal" placeholder="e.g. 40"></div>
+      </div>
+      <div class="va-calc__results" id="rr-results" aria-live="polite"></div>
+    </section>
+
+    <!-- 3. Drawdown recovery -->
+    <section class="va-calc" id="calc-dd">
+      <h2>Drawdown Recovery</h2>
+      <p class="va-calc__hint">The bigger the loss, the disproportionately bigger the gain needed just to get back to even.</p>
+      <div class="va-calc__grid">
+        <div><label for="dd-loss">Account loss (%)</label><input class="va-input" type="number" id="dd-loss" value="25" min="0" max="99.99" step="any" inputmode="decimal"></div>
+      </div>
+      <div class="va-calc__results" id="dd-results" aria-live="polite"></div>
+      <div id="dd-table"></div>
+    </section>
+
+    <p style="font-size:0.8rem;color:var(--color-text-muted,#6b6b72);">Educational tools only — not financial advice. Results depend on the numbers you enter and your broker's actual contract specifications.</p>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const num = (id) => parseFloat($(id).value);
+    const fmt = (n, d = 2) => n.toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d });
+    const card = (label, value, sub = "", cls = "") =>
+      `<div class="va-calc__card"><span class="va-calc__label">${label}</span><span class="va-calc__value ${cls}">${value}</span>${sub ? `<span class="va-calc__sub">${sub}</span>` : ""}</div>`;
+    const msg = (text, warn = false) => `<p class="va-calc__msg ${warn ? "va-calc__msg--warn" : ""}">${text}</p>`;
+
+    function calcPosition() {
+      const type = $("ps-type").value;
+      $("ps-price-wrap").hidden = !(type === "usdbase" || type === "usdjpy");
+      $("ps-custom-wrap").hidden = type !== "custom";
+
+      const out = $("ps-results");
+      const balance = num("ps-balance"), riskPct = num("ps-risk"), stop = num("ps-stop");
+      if (!(balance > 0 && riskPct > 0 && stop > 0)) { out.innerHTML = msg("Enter a balance, risk % and stop loss to see your position size."); return; }
+
+      let pipValue;
+      if (type === "usdquote") pipValue = 10;
+      else if (type === "usdbase" || type === "usdjpy") {
+        const price = num("ps-price");
+        if (!(price > 0)) { out.innerHTML = msg("Enter the current price of the pair to calculate pip value."); return; }
+        pipValue = (type === "usdjpy" ? 1000 : 10) / price;
+      } else {
+        pipValue = num("ps-custom");
+        if (!(pipValue > 0)) { out.innerHTML = msg("Enter the pip value per standard lot from your broker."); return; }
+      }
+
+      const riskAmount = balance * riskPct / 100;
+      const rawLots = riskAmount / (stop * pipValue);
+      const lots = Math.floor(rawLots * 100 + 1e-9) / 100; // round DOWN so risk never exceeds the target
+      if (lots < 0.01) {
+        out.innerHTML = card("Amount at risk", fmt(riskAmount), "account currency") +
+          msg("At this risk and stop distance the position would be smaller than 0.01 lots (the usual minimum). Widen your risk %, tighten your stop, or check whether your broker offers smaller sizes.", true);
+        return;
+      }
+      const actualRisk = lots * stop * pipValue;
+      out.innerHTML =
+        card("Amount at risk", fmt(riskAmount), "account currency") +
+        card("Pip value / std lot", fmt(pipValue), "account currency") +
+        card("Position size", `${lots.toFixed(2)} lots`, `${Math.round(lots * 100000).toLocaleString()} units`) +
+        card("Actual risk", fmt(actualRisk), `${fmt(actualRisk / balance * 100)}% of balance`);
+    }
+
+    function calcRR() {
+      const out = $("rr-results");
+      const entry = num("rr-entry"), stop = num("rr-stop"), target = num("rr-target"), win = num("rr-win");
+      if ([entry, stop, target].some(Number.isNaN)) { out.innerHTML = msg("Enter your entry, stop loss and take profit prices."); return; }
+      const isLong = stop < entry && target > entry;
+      const isShort = stop > entry && target < entry;
+      if (!isLong && !isShort) { out.innerHTML = msg("Your stop and target need to sit on opposite sides of your entry.", true); return; }
+
+      const R = Math.abs(target - entry) / Math.abs(entry - stop);
+      const breakEven = 100 / (1 + R);
+      let html =
+        card("Direction", isLong ? "Long" : "Short") +
+        card("Risk : Reward", `1 : ${R.toFixed(2)}`) +
+        card("Break-even win rate", `${breakEven.toFixed(1)}%`, "win more often than this and the ratio alone is profitable");
+      if (win > 0 && win < 100) {
+        const w = win / 100;
+        const exp = w * R - (1 - w);
+        html += card("Expectancy", `${exp >= 0 ? "+" : ""}${exp.toFixed(2)}R`, "average result per trade, in units of risk", exp >= 0 ? "va-pos" : "");
+      }
+      out.innerHTML = html;
+    }
+
+    function calcDD() {
+      const out = $("dd-results");
+      const loss = num("dd-loss");
+      if (!(loss > 0 && loss < 100)) { out.innerHTML = msg("Enter a loss between 0% and 100%.", true); return; }
+      const gain = (1 / (1 - loss / 100) - 1) * 100;
+      out.innerHTML = card("Gain needed to recover", `${gain.toFixed(1)}%`, `after a ${loss}% loss`);
+    }
+
+    function buildDDTable() {
+      const rows = [10, 20, 30, 40, 50, 60, 70, 80, 90].map((l) => {
+        const g = (1 / (1 - l / 100) - 1) * 100;
+        return `<tr><td>${l}%</td><td>${g.toFixed(1)}%</td></tr>`;
+      }).join("");
+      $("dd-table").innerHTML = `<table><thead><tr><th>Loss</th><th>Gain needed to recover</th></tr></thead><tbody>${rows}</tbody></table>`;
+    }
+
+    [["calc-position", calcPosition], ["calc-rr", calcRR], ["calc-dd", calcDD]].forEach(([id, fn]) => {
+      $(id).addEventListener("input", fn);
+      $(id).addEventListener("change", fn);
+    });
+    calcPosition(); calcRR(); calcDD(); buildDDTable();
+  </script>
+</body>
+</html>

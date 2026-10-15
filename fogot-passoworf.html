@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forgot Password — Voyager Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    .va-auth-wrap { max-width: 400px; margin: var(--sp-6) auto; padding: 0 var(--sp-5); }
+    .va-auth-card { border: 2px solid var(--va-border); border-radius: var(--radius-lg); padding: var(--sp-5); }
+    .va-input { width: 100%; padding: var(--sp-2) var(--sp-3); margin-bottom: var(--sp-3); border: 2px solid var(--va-border); border-radius: var(--radius-sm); font-family: var(--font-base); font-size: 1rem; }
+  </style>
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links"><li><a href="auth.html">&larr; Back to Log In</a></li></ul>
+  </nav>
+
+  <div class="va-auth-wrap">
+    <div class="va-auth-card">
+      <h3 style="font-family:var(--font-heading);margin-bottom:var(--sp-3);">Reset Your Password</h3>
+      <p id="fp-intro" style="color:var(--va-text-muted);font-size:0.9rem;margin-bottom:var(--sp-3);">
+        Enter the email on your account and we'll send you a reset link.
+      </p>
+      <form id="fp-form">
+        <input class="va-input" type="email" id="fp-email" placeholder="Email" required>
+        <button type="submit" class="va-btn" style="width:100%;">Send Reset Link</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/toast.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.getElementById("fp-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("fp-email").value;
+      try {
+        await vaForgotPassword(email);
+        document.getElementById("fp-form").style.display = "none";
+        document.getElementById("fp-intro").textContent =
+          "If that email is registered, a reset link is on its way — check your inbox.";
+      } catch (err) {
+        vaToast("Something went wrong. Please try again.", "error");
+      }
+    });
+  </script>
+</body>
+</html>

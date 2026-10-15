@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found — Voyager Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#111114">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="courses.html">Courses</a></li>
+      <li id="nav-auth-slot"><a href="auth.html">Log In</a></li>
+    </ul>
+  </nav>
+
+  <div style="max-width:600px;margin:var(--sp-6) auto;padding:0 var(--sp-5);text-align:center;">
+    <div style="font-family:var(--font-mono);color:var(--va-red);font-size:0.9rem;margin-bottom:var(--sp-3);">ERROR 404</div>
+    <h1 style="border:none;font-family:var(--font-heading);">This page doesn't exist.</h1>
+    <p style="color:var(--va-text-muted);margin:var(--sp-3) 0 var(--sp-4);">
+      The lesson or page you're looking for may have moved, or the link's a
+      bit off. Let's get you back on track.
+    </p>
+    <a href="index.html" class="va-btn">Back to Home</a>
+    <a href="courses.html" class="va-btn va-btn--outline" style="background:transparent;border:2px solid var(--va-black);color:var(--va-black);">Browse Courses</a>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

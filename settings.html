@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function() {
+      const saved = localStorage.getItem("va_theme");
+      if (saved === "dark" || (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings — Voyager Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#111114">
+  <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+  <style>
+    .st-sec { margin-top: var(--sp-5); padding-top: var(--sp-5); border-top: 1px solid var(--color-border, #e6e6e9); scroll-margin-top: 80px; }
+    .st-sec h2 { font-family: var(--font-heading); font-size: 1.15rem; margin: 0 0 var(--sp-1); color: var(--color-text, #111114); }
+    .st-hint { color: var(--color-text-muted, #6b6b72); font-size: 0.85rem; margin: 0 0 var(--sp-3); }
+    .st-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-text-muted, #6b6b72); margin-bottom: 4px; }
+    .st-row { display: flex; justify-content: space-between; align-items: center; gap: var(--sp-3); padding: var(--sp-2) 0; flex-wrap: wrap; font-size: 0.95rem; color: var(--color-text, #111114); }
+    .st-row input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--va-red); }
+    .st-jump { display: flex; gap: var(--sp-3); flex-wrap: wrap; font-size: 0.85rem; margin-bottom: var(--sp-2); }
+    .seg { display: inline-flex; flex-wrap: wrap; border: 2px solid var(--color-border, #e6e6e9); border-radius: var(--radius-sm); overflow: hidden; }
+    .seg button { background: transparent; border: none; padding: 6px 12px; font: inherit; font-size: 0.85rem; cursor: pointer; color: var(--color-text-muted, #6b6b72); }
+    .seg button[aria-pressed="true"] { background: var(--color-text, #111114); color: var(--color-bg, #fff); }
+    .swatches { display: flex; gap: 10px; }
+    .swatch { width: 28px; height: 28px; border-radius: 50%; border: 3px solid transparent; cursor: pointer; padding: 0; }
+    .swatch[aria-pressed="true"] { border-color: var(--color-text, #111114); }
+    .va-badge { display: inline-block; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.03em; }
+    .va-badge--admin { background: rgba(200,16,46,0.1); color: var(--va-red); }
+    .va-badge--student { background: var(--color-surface-2, #f7f7f8); color: var(--color-text-muted, #6b6b72); }
+    .st-ghost { background: transparent; border: 2px solid var(--color-border, #e6e6e9); color: var(--color-text, #111114); }
+    .st-danger { border: 2px solid var(--va-red); border-radius: var(--radius-md); padding: var(--sp-4); margin-top: var(--sp-4); }
+  </style>
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="courses.html">Courses</a></li>
+      <li><a href="community.html">Community</a></li>
+      <li><a href="certificates.html">Certificates</a></li>
+      <li id="nav-auth-slot"><a href="auth.html">Log In</a></li>
+    </ul>
+  </nav>
+
+  <div class="va-lesson" style="max-width:640px;">
+    <h1>Settings</h1>
+    <div class="st-jump">
+      <a href="#account">Account</a><a href="#appearance">Appearance</a><a href="#learning">Learning</a>
+      <a href="#notifications">Notifications</a><a href="#app">App</a><a href="#privacy">Privacy &amp; data</a><a href="#security">Security</a>
+    </div>
+    <p id="account-error" class="st-hint" hidden style="color:var(--va-red);">Couldn't load your account — the server may be waking up. Refresh in a moment, or <a href="auth.html">log in again</a>.</p>
+
+    <section class="st-sec" id="account">
+      <h2>Account</h2>
+      <div class="st-row"><span>Account type</span><span id="account-type-badge">—</span></div>
+      <div class="st-row"><span>Member since</span><span id="member-since">—</span></div>
+      <form id="profile-form" style="margin-top:var(--sp-3);">
+        <label class="st-label" for="settings-name">Name</label>
+        <input class="va-input" id="settings-name" required maxlength="100" style="margin-bottom:4px;">
+        <p class="st-hint">Shown on your certificates, community posts and chat.</p>
+        <label class="st-label" for="settings-email">Email</label>
+        <input class="va-input" type="email" id="settings-email" required>
+        <div id="email-pw-wrap" hidden>
+          <label class="st-label" for="email-password">Current password (needed to change your email)</label>
+          <input class="va-input" type="password" id="email-password" autocomplete="current-password">
+        </div>
+        <button class="va-btn" type="submit">Save profile</button>
+      </form>
+    </section>
+
+    <section class="st-sec" id="appearance">
+      <h2>Appearance</h2>
+      <p class="st-hint">Saved on this device only. Changes apply instantly.</p>
+      <div id="appearance-body"></div>
+      <button class="va-btn st-ghost" id="reset-appearance" type="button" style="margin-top:var(--sp-3);">Reset appearance</button>
+    </section>
+
+    <section class="st-sec" id="learning">
+      <h2>Learning</h2>
+      <p class="st-hint">Saved on this device only.</p>
+      <div class="st-row"><label for="pref-streak">Show my streak on the dashboard</label><input type="checkbox" id="pref-streak"></div>
+    </section>
+
+    <section class="st-sec" id="notifications">
+      <h2>Notifications</h2>
+      <div class="st-row"><label for="notify-toggle">Email me when someone replies to my posts</label><input type="checkbox" id="notify-toggle"></div>
+    </section>
+
+    <section class="st-sec" id="app">
+      <h2>Install the app</h2>
+      <p class="st-hint">On iPhone or iPad: tap Share, then "Add to Home Screen". On Android and desktop Chrome, an Install button appears below when your browser allows it.</p>
+      <button class="va-btn" id="install-btn" type="button" hidden>Install Voyager Academy</button>
+    </section>
+
+    <section class="st-sec" id="privacy">
+      <h2>Privacy &amp; data</h2>
+      <p class="st-hint">Download a copy of what we hold about you — profile, lesson progress, posts, replies and chat messages — as a JSON file. Your password is never included. See our <a href="privacy.html">Privacy Policy</a>.</p>
+      <button class="va-btn st-ghost" id="export-btn" type="button">Download my data</button>
+    </section>
+
+    <section class="st-sec" id="security">
+      <h2>Security</h2>
+      <form id="password-form">
+        <label class="st-label" for="current-password">Current password</label>
+        <input class="va-input" type="password" id="current-password" autocomplete="current-password" required>
+        <label class="st-label" for="new-password">New password (min. 8 characters)</label>
+        <input class="va-input" type="password" id="new-password" minlength="8" autocomplete="new-password" required>
+        <button class="va-btn" type="submit">Change password</button>
+      </form>
+      <button class="va-btn st-ghost" id="logout-btn" type="button" style="margin-top:var(--sp-3);">Log out of this device</button>
+
+      <div class="st-danger">
+        <h2 style="color:var(--va-red);">Danger zone</h2>
+        <p class="st-hint">Permanently deletes your account, posts, replies, chat messages and lesson progress. This can't be undone.</p>
+        <button class="va-btn" id="delete-account-btn" type="button" style="background:var(--va-red);">Delete my account</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="js/toast.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const toast = (m, t) => (typeof vaToast === "function" ? vaToast(m, t) : alert(m));
+    let originalEmail = "";
+
+    function savePrefs(patch) {
+      localStorage.setItem("va_prefs", JSON.stringify({ ...vaGetPrefs(), ...patch }));
+      vaApplyPreferences();
+    }
+
+    function applyTheme(mode) {
+      if (mode === "system") localStorage.removeItem("va_theme");
+      else localStorage.setItem("va_theme", mode);
+      const dark = mode === "dark" || (mode === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+      document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+      const btn = $("theme-toggle-btn");
+      if (btn) btn.textContent = dark ? "☀️" : "🌙";
+    }
+
+    const SEGMENTS = {
+      text: ["Text size", [["sm", "Small"], ["md", "Default"], ["lg", "Large"], ["xl", "X-large"]], "md"],
+      font: ["Reading font", [["inter", "Inter"], ["system", "System"], ["serif", "Serif"]], "inter"],
+      width: ["Lesson width", [["narrow", "Narrow"], ["normal", "Comfortable"], ["wide", "Wide"]], "normal"],
+      density: ["Spacing", [["comfortable", "Comfortable"], ["compact", "Compact"]], "comfortable"],
+    };
+
+    function renderAppearance() {
+      const p = vaGetPrefs();
+      const mode = localStorage.getItem("va_theme") || "system";
+      let html = `<div class="st-row"><span>Theme</span><div class="seg">${
+        [["system", "System"], ["light", "Light"], ["dark", "Dark"]]
+          .map(([v, l]) => `<button type="button" data-theme-val="${v}" aria-pressed="${mode === v}">${l}</button>`).join("")
+      }</div></div>`;
+      html += `<div class="st-row"><span>Accent colour</span><div class="swatches">${
+        Object.entries(VA_ACCENTS)
+          .map(([k, c]) => `<button type="button" class="swatch" data-accent="${k}" style="background:${c[0]}" aria-label="${k}" aria-pressed="${(p.accent || "red") === k}"></button>`).join("")
+      }</div></div>`;
+      Object.entries(SEGMENTS).forEach(([key, [label, opts, def]]) => {
+        const cur = p[key] || def;
+        html += `<div class="st-row"><span>${label}</span><div class="seg" data-seg="${key}">${
+          opts.map(([v, l]) => `<button type="button" data-val="${v}" aria-pressed="${cur === v}">${l}</button>`).join("")
+        }</div></div>`;
+      });
+      html += `<div class="st-row"><label for="pref-motion">Reduce motion</label><input type="checkbox" id="pref-motion" ${p.reduceMotion ? "checked" : ""}></div>`;
+      $("appearance-body").innerHTML = html;
+    }
+
+    $("appearance-body").addEventListener("click", (e) => {
+      const t = e.target.closest("button");
+      if (!t) return;
+      if (t.dataset.themeVal) applyTheme(t.dataset.themeVal);
+      else if (t.dataset.accent) savePrefs({ accent: t.dataset.accent });
+      else if (t.dataset.val) savePrefs({ [t.closest("[data-seg]").dataset.seg]: t.dataset.val });
+      else return;
+      renderAppearance();
+    });
+    $("appearance-body").addEventListener("change", (e) => {
+      if (e.target.id === "pref-motion") savePrefs({ reduceMotion: e.target.checked });
+    });
+
+    $("reset-appearance").addEventListener("click", () => {
+      localStorage.removeItem("va_prefs");
+      applyTheme("system");
+      vaApplyPreferences();
+      renderAppearance();
+      $("pref-streak").checked = true;
+      toast("Appearance reset.", "success");
+    });
+
+    $("pref-streak").addEventListener("change", (e) => savePrefs({ showStreak: e.target.checked }));
+
+    // Install prompt
+    let deferredPrompt = null;
+    window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferredPrompt = e; $("install-btn").hidden = false; });
+    window.addEventListener("appinstalled", () => { $("install-btn").hidden = true; });
+    $("install-btn").addEventListener("click", async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      $("install-btn").hidden = true;
+    });
+
+    // Profile
+    $("settings-email").addEventListener("input", () => {
+      $("email-pw-wrap").hidden = $("settings-email").value.trim() === originalEmail;
+    });
+    $("profile-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        const s = await vaUpdateProfile($("settings-name").value, $("settings-email").value.trim(), $("email-password").value);
+        originalEmail = s.email;
+        $("email-pw-wrap").hidden = true;
+        $("email-password").value = "";
+        toast("Profile updated.", "success");
+      } catch (err) { toast(err.message, "error"); }
+    });
+
+    // Notifications
+    $("notify-toggle").addEventListener("change", async (e) => {
+      try {
+        await vaUpdateNotifications(e.target.checked);
+        toast("Notification preference saved.", "success");
+      } catch (err) {
+        toast(err.message, "error");
+        e.target.checked = !e.target.checked;
+      }
+    });
+
+    // Data export
+    $("export-btn").addEventListener("click", async () => {
+      try {
+        const data = await vaExportData();
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "voyager-academy-my-data.json";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(a.href);
+        toast("Your data has been downloaded.", "success");
+      } catch (err) { toast(err.message, "error"); }
+    });
+
+    // Security
+    $("password-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        await vaChangePassword($("current-password").value, $("new-password").value);
+        toast("Password changed.", "success");
+        e.target.reset();
+      } catch (err) { toast(err.message, "error"); }
+    });
+    $("logout-btn").addEventListener("click", () => vaLogout());
+    $("delete-account-btn").addEventListener("click", async () => {
+      if (!confirm("This permanently deletes your account, posts, replies, chat messages and progress. Are you absolutely sure?")) return;
+      if (!confirm("Really sure? This cannot be undone.")) return;
+      try {
+        await vaDeleteAccount();
+        vaLogout();
+      } catch (err) { toast(err.message, "error"); }
+    });
+
+    async function init() {
+      if (!vaGetToken()) { window.location.href = "auth.html"; return; }
+      renderAppearance();
+      $("pref-streak").checked = vaGetPrefs().showStreak !== false;
+
+      let student = null;
+      try { student = await vaGetMe(); } catch (e) {}
+      if (!student) { $("account-error").hidden = false; return; }
+
+      originalEmail = student.email;
+      $("settings-name").value = student.name;
+      $("settings-email").value = student.email;
+      $("notify-toggle").checked = student.notify_on_reply;
+      $("account-type-badge").innerHTML = student.is_admin
+        ? `<span class="va-badge va-badge--admin">Administrator</span>`
+        : `<span class="va-badge va-badge--student">Student</span>`;
+      $("member-since").textContent = new Date(student.created_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+    }
+    init();
+  </script>
+</body>
+</html>

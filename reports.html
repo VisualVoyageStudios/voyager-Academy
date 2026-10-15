@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function() {
+      const saved = localStorage.getItem("va_theme");
+      if (saved === "dark" || (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports — Voyager Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links">
+      <li><a href="community.html">Community</a></li>
+      <li id="nav-auth-slot"><a href="auth.html">Log In</a></li>
+    </ul>
+  </nav>
+
+  <div class="va-lesson">
+    <h1>Reported Posts</h1>
+    <p style="color:var(--color-text-muted,#6b6b72);">Posts members have flagged. Dismiss a report if the post is fine, or delete the post.</p>
+    <div id="reports-list"><p>Loading…</p></div>
+  </div>
+
+  <script src="js/toast.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const list = document.getElementById("reports-list");
+
+    async function loadReports() {
+      const student = vaGetStudent();
+      if (!student || !student.is_admin) { list.innerHTML = "<p>Admin access required.</p>"; return; }
+      let posts;
+      try { posts = await vaGetReports(); }
+      catch (e) { list.innerHTML = "<p>Couldn't load reports.</p>"; return; }
+      if (!posts.length) { list.innerHTML = "<p>No reported posts. 🎉</p>"; return; }
+      list.innerHTML = posts.map((p) => `
+        <div class="va-post-card" data-id="${p.id}">
+          <span class="va-post-card__category">${vaEscapeHtml(p.category)}</span>
+          <h3 style="font-family:var(--font-heading);margin:0;">${vaEscapeHtml(p.title)}</h3>
+          <div class="va-post-card__meta">by ${vaEscapeHtml(p.student.name)} · ${new Date(p.created_at).toLocaleDateString()} · ${p.reply_count} replies</div>
+          <div style="display:flex;gap:var(--sp-2);flex-wrap:wrap;margin-top:var(--sp-3);">
+            <a href="community-post.html?id=${p.id}" class="va-btn">Review</a>
+            <button class="va-btn va-btn--outline" data-action="dismiss" data-id="${p.id}" style="background:transparent;border:2px solid var(--color-border,#e6e6e9);color:var(--color-text,#111114);">Dismiss report</button>
+            <button class="va-btn" data-action="delete" data-id="${p.id}" style="background:var(--va-red);">Delete post</button>
+          </div>
+        </div>`).join("");
+    }
+
+    list.addEventListener("click", async (e) => {
+      const btn = e.target.closest("[data-action]");
+      if (!btn) return;
+      const id = btn.dataset.id;
+      try {
+        if (btn.dataset.action === "dismiss") {
+          await vaDismissReport(id);
+          vaToast("Report dismissed.", "success");
+        } else {
+          if (!confirm("Delete this post permanently?")) return;
+          await vaDeletePost(id);
+          vaToast("Post deleted.", "success");
+        }
+        loadReports();
+      } catch (err) { vaToast(err.message, "error"); }
+    });
+
+    loadReports();
+  </script>
+</body>
+</html>

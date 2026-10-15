@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function() {
+      const saved = localStorage.getItem("va_theme");
+      if (saved === "dark" || (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Review Mode — Voyager Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#111114">
+  <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+  <style>
+    .rv-card { border: 2px solid var(--color-border, #e6e6e9); border-radius: var(--radius-lg); padding: var(--sp-4); background: var(--color-surface, #fff); }
+    .rv-meta { font-size: 0.8rem; color: var(--color-text-muted, #6b6b72); margin-bottom: var(--sp-2); }
+    .rv-q { font-family: var(--font-heading); font-size: 1.2rem; margin: 0 0 var(--sp-3); color: var(--color-text, #111114); }
+    .rv-opt { width: 100%; text-align: left; font: inherit; color: var(--color-text, #111114); }
+    .rv-opt:disabled { opacity: 1; cursor: default; }
+    .rv-card ul { color: var(--color-text, #111114); }
+  </style>
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="courses.html">Courses</a></li>
+      <li><a href="community.html">Community</a></li>
+      <li><a href="certificates.html">Certificates</a></li>
+      <li id="nav-auth-slot"><a href="auth.html">Log In</a></li>
+    </ul>
+  </nav>
+
+  <div class="va-lesson">
+    <h1>Review Mode</h1>
+    <p style="color:var(--color-text-muted,#6b6b72);">Random questions from lessons you've already completed. A few minutes of recall practice is one of the best ways to make them stick.</p>
+    <div id="rv-area"><p>Loading…</p></div>
+  </div>
+
+  <script src="js/courses-data.js"></script>
+  <script src="js/quizzes.js"></script>
+  <script src="js/toast.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const area = $("rv-area");
+    const titleOf = (slug) => (COURSE_DATA.find((c) => c.slug === slug) || {}).title || slug;
+    let pool = [], session = [], idx = 0, score = 0, missed = [];
+
+    function shuffle(a) {
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function showStart() {
+      const lessons = new Set(pool.map((p) => p.slug)).size;
+      const n = Math.min(10, pool.length);
+      area.innerHTML = `<div class="rv-card">
+        <h2 class="rv-q">${pool.length} questions ready</h2>
+        <p style="color:var(--color-text-muted,#6b6b72);">From the ${lessons} lesson${lessons === 1 ? "" : "s"} you've completed. Each round picks ${n} at random, with the answers shuffled.</p>
+        <button class="va-btn" id="rv-start">Start (${n} questions)</button>
+      </div>`;
+      $("rv-start").addEventListener("click", startSession);
+    }
+
+    function startSession() {
+      session = shuffle(pool.slice()).slice(0, 10).map((p) => ({
+        slug: p.slug, q: p.q,
+        options: shuffle(p.options.map((t, i) => ({ t, ok: i === p.correct }))),
+      }));
+      idx = 0; score = 0; missed = [];
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const item = session[idx];
+      area.innerHTML = `<div class="rv-card">
+        <div class="rv-meta">Question ${idx + 1} of ${session.length} · from ${titleOf(item.slug)}</div>
+        <h2 class="rv-q">${item.q}</h2>
+        <div id="rv-opts">${item.options.map((o, i) => `<button class="va-quiz__option rv-opt" data-i="${i}">${o.t}</button>`).join("")}</div>
+        <div id="rv-feedback"></div>
+      </div>`;
+      document.querySelectorAll(".rv-opt").forEach((btn) => btn.addEventListener("click", () => answer(btn)));
+    }
+
+    function answer(btn) {
+      const item = session[idx];
+      const chosen = item.options[Number(btn.dataset.i)];
+      document.querySelectorAll(".rv-opt").forEach((b, i) => {
+        b.disabled = true;
+        if (item.options[i].ok) b.classList.add("correct");
+      });
+      if (chosen.ok) score++; else { btn.classList.add("incorrect"); missed.push(item.slug); }
+      $("rv-feedback").innerHTML = `<p class="va-quiz__score">${chosen.ok ? "Correct ✓" : "Not quite — the right answer is highlighted."}</p>
+        <button class="va-btn" id="rv-next">${idx + 1 < session.length ? "Next question" : "See results"}</button>`;
+      $("rv-next").addEventListener("click", () => { idx++; idx < session.length ? showQuestion() : showResults(); });
+    }
+
+    function showResults() {
+      const again = [...new Set(missed)];
+      area.innerHTML = `<div class="rv-card">
+        <h2 class="rv-q">${score} / ${session.length} correct</h2>
+        ${again.length
+          ? `<p style="color:var(--color-text-muted,#6b6b72);">Worth another look:</p><ul>${again.map((s) => `<li><a href="lesson.html?slug=${s}">${titleOf(s)}</a></li>`).join("")}</ul>`
+          : `<p>Clean sweep — nothing to revisit.</p>`}
+        <button class="va-btn" id="rv-again">Review again</button>
+      </div>`;
+      $("rv-again").addEventListener("click", startSession);
+    }
+
+    async function init() {
+      if (!vaGetToken()) {
+        area.innerHTML = `<p>Please <a href="auth.html">log in</a> to review the lessons you've completed.</p>`;
+        return;
+      }
+      try {
+        const progress = await vaGetProgress();
+        progress.forEach((p) => (QUIZ_DATA[p.lesson_slug] || []).forEach((q) => pool.push({ slug: p.lesson_slug, ...q })));
+      } catch (e) {
+        area.innerHTML = "<p>Couldn't load your progress — try again in a moment.</p>";
+        return;
+      }
+      if (!pool.length) {
+        area.innerHTML = `<p>Complete your first lesson and quiz, then come back — review mode uses the lessons you've finished.</p><a href="courses.html" class="va-btn">Browse courses</a>`;
+        return;
+      }
+      showStart();
+    }
+    init();
+  </script>
+</body>
+</html>
