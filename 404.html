@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="/voyager-Academy/">
+  <script>
+    (function() {
+      const saved = localStorage.getItem("va_theme");
+      if (saved === "dark" || (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page not found — Voyager Academy</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="courses.html">Courses</a></li>
+      <li><a href="community.html">Community</a></li>
+      <li><a href="certificates.html">Certificates</a></li>
+      <li id="nav-auth-slot"><a href="auth.html">Log In</a></li>
+    </ul>
+  </nav>
+
+  <main class="nf">
+    <div class="nf__code">404</div>
+    <h1>This page wandered off the chart</h1>
+    <p>The page you're looking for doesn't exist or has moved. Search for what you need, or jump back in.</p>
+    <div class="nf__actions">
+      <button class="va-btn" id="nf-search" type="button">Search the site</button>
+      <a class="va-btn nf__ghost" href="courses.html">Browse courses</a>
+    </div>
+    <div class="nf__links">
+      <a href="courses.html">Courses<small>Every lesson and track</small></a>
+      <a href="tools.html">Calculators<small>Position size, risk and reward</small></a>
+      <a href="community.html">Community<small>Ask questions, share setups</small></a>
+      <a href="glossary.html">Glossary<small>Trading terms in plain English</small></a>
+    </div>
+  </main>
+
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    document.getElementById("nf-search").addEventListener("click", () =>
+      document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", ctrlKey: true, bubbles: true })));
+  </script>
+</body>
+</html>

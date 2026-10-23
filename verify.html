@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Certificate — Voyager Academy</title>
+  <meta name="description" content="Check that a Voyager Academy certificate is genuine.">
+  <meta property="og:title" content="Verify a Voyager Academy certificate">
+  <meta property="og:description" content="Enter a certificate ID to check it was issued by Voyager Academy.">
+  <meta property="og:image" content="https://visualvoyagestudios.github.io/voyager-Academy/assets/images/og-image.png">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links"><li><a href="index.html">Home</a></li></ul>
+  </nav>
+  <div class="va-lesson" style="max-width:560px;text-align:center;">
+    <h1>Certificate Verification</h1>
+    <input class="va-input" type="text" id="cert-input" placeholder="Enter your certificate ID">
+    <button class="va-btn" id="verify-btn">Verify</button>
+    <div id="verify-result" style="margin-top:var(--sp-4);text-align:left;"></div>
+  </div>
+  <script src="js/courses-data.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js" integrity="sha384-8FWZA6BGMXhsfO+BLtrJK0We6gg5o1JyO8xQm6peWDEUs17ACA5ziE/NIAkl9z2k" crossorigin="anonymous"></script>
+  <script>
+    const API_BASE = "https://voyager-academy.onrender.com";
+    const TRACK_LABELS = {
+      beginner: "Liftoff (Beginner)", intermediate: "Ascent (Intermediate)", advanced: "Summit (Advanced)",
+      macro: "Mission Control", tradingview: "The Bridge (TradingView)", funded: "Proving Ground (Funded Prep)",
+      master: "Full Curriculum",
+    };
+    const result = document.getElementById("verify-result");
+
+    function node(tag, text, css) {
+      const e = document.createElement(tag);
+      e.textContent = text;
+      if (css) e.style.cssText = css;
+      return e;
+    }
+
+    async function checkId(id) {
+      result.textContent = "Checking…";
+      try {
+        const res = await fetch(`${API_BASE}/certificates/verify/${encodeURIComponent(id)}`);
+        if (!res.ok) { result.replaceChildren(node("p", "✗ No certificate found for that ID.", "color:var(--va-red);")); return; }
+        const d = await res.json();
+        const out = [
+          node("p", "✓ Verified", "color:var(--va-bull);font-weight:700;font-size:1.2rem;"),
+          node("p", `${d.student_name} completed ${TRACK_LABELS[d.track] || d.track} on ${new Date(d.completed_at).toLocaleDateString()}.`),
+        ];
+        if (d.avg_score != null) out.push(node("p", `Average quiz score: ${d.avg_score}% across ${d.assessed} assessed lessons.`));
+        const titles = (d.lesson_slugs || []).map((s) => (COURSE_DATA.find((c) => c.slug === s) || {}).title).filter(Boolean);
+        if (titles.length) {
+          out.push(node("h2", "Lessons covered", "font-size:1rem;margin:var(--sp-3) 0 var(--sp-1);"));
+          const ul = document.createElement("ul");
+          ul.style.cssText = "margin:0 0 var(--sp-3) var(--sp-4);";
+          titles.forEach((t) => ul.appendChild(node("li", t)));
+          out.push(ul);
+        }
+        out.push(node("p", "A certificate of course completion. Not an accredited qualification or financial advice.", "font-size:0.8rem;color:var(--va-text-muted);"));
+        result.replaceChildren(...out);
+      } catch { result.replaceChildren(node("p", "Something went wrong.", "color:var(--va-red);")); }
+    }
+
+    document.getElementById("verify-btn").addEventListener("click", () => checkId(document.getElementById("cert-input").value.trim()));
+    const idFromUrl = new URLSearchParams(window.location.search).get("id");
+    if (idFromUrl) { document.getElementById("cert-input").value = idFromUrl; checkId(idFromUrl); }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voyager Academy — Free Trading Education, Beginner to Advanced</title>
+  <meta name="description" content="Free trading lessons from your first trade to advanced concepts, with quizzes, certificates, live charts and a community.">
+  <link rel="canonical" href="https://visualvoyagestudios.github.io/voyager-Academy/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Voyager Academy — Learn to read the market before you risk a cent">
+  <meta property="og:description" content="Free lessons from your first trade to advanced concepts, with quizzes, certificates and live charts.">
+  <meta property="og:image" content="https://visualvoyagestudios.github.io/voyager-Academy/assets/images/og-image.png">
+  <meta property="og:url" content="https://visualvoyagestudios.github.io/voyager-Academy/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Voyager Academy — Free Trading Education">
+  <meta name="twitter:description" content="Free trading lessons with quizzes, certificates and live charts — beginner to advanced.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="css/loader.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#000000">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"EducationalOrganization","name":"Voyager Academy","url":"https://visualvoyagestudios.github.io/voyager-Academy/","description":"Free trading education, beginner to advanced."}</script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+
+    html, body {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      background-color: #000000;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    body {
+      min-height: 500vh;
+      font-family: 'Outfit', sans-serif;
+      color: #ffffff;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    * { cursor: none !important; }
+    ::-webkit-scrollbar { display: none; width: 0; }
+
+    a:focus-visible, button:focus-visible { outline: 2px solid #ffffff; outline-offset: 3px; }
+
+    #webgl {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 1;
+      outline: none;
+    }
+
+    /* ---------- Cursor ---------- */
+    .cursor-inner {
+      position: fixed; top: 0; left: 0;
+      width: 6px; height: 6px;
+      border: 2px solid rgba(255, 255, 255, 1);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 9999;
+    }
+    .cursor-outer {
+      position: fixed; top: 0; left: 0;
+      width: 40px; height: 40px;
+      border: 1.5px solid rgba(255, 255, 255, 0.7);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 9998;
+      transition: width 0.3s, height 0.3s, background 0.3s;
+    }
+    .cursor-outer.hover { width: 64px; height: 64px; background: rgba(255, 255, 255, 0.08); }
+
+    /* ---------- Overlay ---------- */
+    .cinematic-container {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 10;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 0 60px 40px 60px;
+      box-sizing: border-box;
+    }
+
+    .main-header {
+      display: flex; justify-content: space-between; align-items: center;
+      width: 100%; z-index: 20;
+      pointer-events: auto;
+      padding: 20px 0;
+    }
+    .brand { font-size: 14px; font-weight: 600; letter-spacing: 5px; text-transform: uppercase; }
+    .header-nav { display: flex; align-items: center; gap: 24px; }
+    .nav-link {
+      color: #ffffff; text-decoration: none;
+      font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
+      font-weight: 500; transition: color 0.3s;
+    }
+    .nav-dot { width: 3px; height: 3px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; }
+    .header-actions { display: flex; align-items: center; gap: 22px; }
+    .header-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 24px;
+      background: #ffffff; color: #000000;
+      text-decoration: none;
+      font-size: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
+      border-radius: 20px;
+      transition: transform 0.3s, background 0.3s;
+    }
+    .btn-circle {
+      display: inline-block; width: 6px; height: 6px;
+      border: 1px solid #000000; border-radius: 50%; background: transparent;
+    }
+    .header-btn:hover { transform: scale(1.05); background: #f0f0f0; }
+
+    /* ---------- Slides ---------- */
+    .slide { position: absolute; bottom: 12%; pointer-events: none; }
+
+    #slide-1 { left: 0; width: 100%; }
+    #slide-1 .slide-title { margin-left: 60px; }
+    #slide-1 .desc-row { position: relative; display: flex; width: 100%; }
+    #slide-1 .col-1 { margin-left: 60px; width: calc(25vw - 60px); max-width: calc(25vw - 60px); }
+    #slide-1 .col-2 { position: absolute; left: calc(25vw + 40px); width: calc(25vw - 60px); max-width: calc(25vw - 60px); }
+    #slide-1 .slide-actions, #slide-1 .slide-meta { margin-left: 60px; }
+
+    #slide-2 { left: 0; width: 100%; }
+    #slide-2-img {
+      position: fixed;
+      top: 90px;
+      left: 60px;
+      width: calc(25vw - 60px);
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      z-index: 2;
+      pointer-events: none;
+      clip-path: inset(0 0 100% 0);
+      transition: clip-path 1.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease;
+      opacity: 0;
+      background: #0b0b0e;
+    }
+    #slide-2-img svg {
+      width: 100%; height: 100%; display: block;
+      transform: scale(1.15);
+      transition: transform 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #slide-2-img.active { clip-path: inset(0 0 0 0); opacity: 1; }
+    #slide-2-img.active svg { transform: scale(1); }
+    #slide-2 .slide-title { margin-left: calc(25vw + 40px); }
+    #slide-2 .slide-desc, #slide-2 .slide-links {
+      margin-left: calc(50vw + 20px);
+      width: calc(25vw - 60px);
+      max-width: calc(25vw - 60px);
+    }
+
+    #slide-3 { left: calc(50vw + 20px); width: calc(25vw - 60px); max-width: calc(25vw - 60px); }
+    #slide-3 .slide-title { white-space: nowrap; }
+
+    #slide-4 { left: calc(25% + 40px); max-width: 600px; }
+
+    .slide-title {
+      font-family: 'Italiana', serif;
+      font-size: clamp(52px, 8vw, 116px);
+      line-height: 1.0;
+      font-weight: 400;
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+      color: #fff6ed;
+    }
+    .slide-desc {
+      font-size: 16px; line-height: 1.7; font-weight: 300;
+      color: #d1d5db; letter-spacing: 0.5px;
+    }
+    .slide-desc, .slide-meta, .slide-actions, .slide-links {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+      transition-delay: 0.4s;
+    }
+    .slide-actions, .slide-links, .slide-meta { transition-delay: 0.6s; }
+    .slide.active .slide-desc, .slide.active .slide-meta,
+    .slide.active .slide-actions, .slide.active .slide-links { opacity: 1; transform: translateY(0); }
+
+    .slide-title .char {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(50px);
+      filter: blur(12px);
+      transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1),
+                  transform 0.8s cubic-bezier(0.25, 1, 0.5, 1),
+                  filter 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .slide.active .slide-title .char { opacity: 1; transform: translateY(0); filter: blur(0); }
+    .slide.active { pointer-events: auto; }
+
+    .slide-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 26px;
+      border-radius: 24px;
+      font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; font-weight: 600;
+      text-decoration: none;
+      transition: transform 0.3s, background 0.3s, border-color 0.3s;
+    }
+    .btn-solid { background: #ffffff; color: #000000; }
+    .btn-solid:hover { transform: scale(1.05); background: #f0f0f0; }
+    .btn-ghost { color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.35); }
+    .btn-ghost:hover { transform: scale(1.05); border-color: #ffffff; }
+
+    .slide-meta {
+      margin-top: 22px;
+      font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.55);
+    }
+    .slide-links {
+      display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 22px;
+      font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+    }
+    .slide-links a { color: #ffffff; text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, 0.35); padding-bottom: 2px; transition: border-color 0.3s; }
+    .slide-links a:hover { border-color: #ffffff; }
+
+    /* ---------- Grid ---------- */
+    .story-dashes {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .story-dash { width: 2px; height: 40px; background: rgba(255, 255, 255, 0.15); border-radius: 2px; }
+    .story-dash-fill { width: 100%; height: 0%; background: #ffffff; border-radius: 2px; }
+
+    .grid-horizontal-line {
+      position: fixed; top: 70px; left: 0; right: 0;
+      width: 100%; height: 1px;
+      background: rgba(255, 255, 255, 0.12);
+      z-index: 5; pointer-events: none;
+    }
+    .grid-lines {
+      position: fixed; top: 0; left: 40px; right: 40px;
+      width: calc(100% - 80px); height: 100vh;
+      display: flex; justify-content: space-between;
+      z-index: 5; pointer-events: none;
+    }
+    .grid-line { position: relative; width: 1px; height: 100%; background: rgba(255, 255, 255, 0.12); }
+    .grid-line:nth-child(3) { margin-top: 70px; height: calc(100vh - 70px); }
+    .grid-dot {
+      position: absolute; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(255, 255, 255, 0.35);
+      box-shadow: 0 0 4px rgba(255, 255, 255, 0.15);
+    }
+
+    /* ---------- Footer strip (legal links + disclaimer) ---------- */
+    .footer-bar {
+      position: fixed; left: 0; right: 0; bottom: 12px;
+      z-index: 20;
+      display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 4px 16px;
+      padding: 0 24px;
+      font-size: 10px; letter-spacing: 0.5px;
+      color: rgba(255, 255, 255, 0.45);
+      pointer-events: none;
+    }
+    .footer-bar a { color: rgba(255, 255, 255, 0.7); text-decoration: none; pointer-events: auto; }
+    .footer-bar a:hover { color: #ffffff; }
+
+    /* ---------- Fallbacks ---------- */
+    html.no-webgl body { min-height: 100vh; }
+    html.no-webgl .slide:not(#slide-1), html.no-webgl #slide-2-img { display: none; }
+    html.no-webgl #slide-1 { pointer-events: auto; }
+    html.no-webgl #slide-1 .slide-desc, html.no-webgl #slide-1 .slide-meta,
+    html.no-webgl #slide-1 .slide-actions { opacity: 1; transform: none; }
+    html.no-webgl .slide-title .char { opacity: 1; transform: none; filter: none; }
+
+    /* ---------- Touch + small screens ---------- */
+    @media (hover: none), (pointer: coarse) { .cursor-inner, .cursor-outer { display: none; } }
+
+    @media (max-width: 1000px) {
+      .cinematic-container { padding: 0 24px 28px 24px; }
+      .header-nav { display: none; }
+      .header-actions { gap: 16px; }
+      .slide-title { font-size: clamp(46px, 12.5vw, 84px); }
+      .slide-desc { font-size: 15px; }
+      #slide-1, #slide-2, #slide-3, #slide-4 { left: 0; width: 100%; max-width: none; padding: 0 24px; bottom: 9%; }
+      #slide-1 .slide-title, #slide-2 .slide-title { margin-left: 0; }
+      #slide-1 .desc-row { flex-direction: column; gap: 14px; }
+      #slide-1 .col-1, #slide-1 .col-2 { position: static; margin-left: 0; width: auto; max-width: 36ch; }
+      #slide-1 .slide-actions, #slide-1 .slide-meta { margin-left: 0; }
+      #slide-2 .slide-desc, #slide-2 .slide-links { margin-left: 0; width: auto; max-width: 36ch; }
+      #slide-3 .slide-title { white-space: normal; }
+      #slide-3 .slide-desc { max-width: 36ch; }
+      #slide-4 .slide-desc { max-width: 36ch; }
+      #slide-2-img { top: 72px; left: 24px; width: min(46vw, 220px); }
+      .grid-lines { left: 16px; right: 16px; width: calc(100% - 32px); }
+      .grid-line:nth-child(2), .grid-line:nth-child(4) { display: none; }
+      .footer-bar .fb-copy { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .slide-title .char, .slide-desc, .slide-meta, .slide-actions, .slide-links, #slide-2-img, #slide-2-img svg {
+        transition-duration: 0.01s !important;
+        transition-delay: 0s !important;
+      }
+
+    #preloader { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; background: #000; transition: opacity 0.7s ease, visibility 0.7s; }
+    #preloader.done { opacity: 0; visibility: hidden; pointer-events: none; }
+    .pl-inner { display: flex; flex-direction: column; align-items: center; gap: 22px; text-align: center; }
+    .pl-brand { font-size: 12px; font-weight: 600; letter-spacing: 6px; text-transform: uppercase; }
+    .pl-sub { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255, 255, 255, 0.45); }
+    html.no-webgl #preloader { display: none; }
+    .btn i { font-size: 0.8em; transition: transform 0.3s; }
+    .btn:hover i { transform: translateX(3px); }
+    
+    }
+  </style>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/examples/jsm/environments/RoomEnvironment.js": "https://unpkg.com/three@0.160.0/examples/jsm/environments/RoomEnvironment.js"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div class="cursor-inner"></div>
+  <div class="cursor-outer"></div>
+
+      <div class="cinematic-container">
+        <div class="main-header">
+            <div id="preloader" role="status" aria-live="polite">
+        <div class="pl-inner">
+          <div class="va-loader va-loader--lg" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+          <p class="pl-brand">Voyager Academy</p>
+          <p class="pl-sub">Loading the chart…</p>
+        </div>
+      </div>
+
+      <nav class="header-nav" aria-label="Sections">
+        <a href="#slide-1" class="nav-link">Start</a>
+        <span class="nav-dot"></span>
+        <a href="#slide-2" class="nav-link">Tracks</a>
+        <span class="nav-dot"></span>
+        <a href="#slide-3" class="nav-link">Practice</a>
+        <span class="nav-dot"></span>
+        <a href="#slide-4" class="nav-link">Join</a>
+      </nav>
+      <div class="header-actions">
+        <a href="courses.html" class="nav-link">Courses</a>
+        <a href="auth.html" class="header-btn" id="header-btn"><span id="header-btn-label">Log in</span> <span class="btn-circle"></span></a>
+      </div>
+    </div>
+
+    <div class="slide" id="slide-1">
+      <h1 class="slide-title">Read the <br>Market</h1>
+      <div class="desc-row">
+        <p class="slide-desc col-1">Free lessons from your first trade to advanced liquidity concepts, written plainly and built to be practised, not just read.</p>
+        <p class="slide-desc col-2">Quizzes, daily streaks and certificates anyone can verify, with live charts and a community beside every lesson.</p>
+      </div>
+      <div class="slide-actions">
+        <a href="lesson.html?slug=what-is-forex" class="btn btn-solid" id="cta-start">Start learning — it's free <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        <a href="courses.html" class="btn btn-ghost">Browse courses</a>
+      </div>
+      <p class="slide-meta"><span id="stat-lessons">34</span> lessons &middot; 6 tracks &middot; free forever</p>
+    </div>
+
+    <div class="slide-image-mask" id="slide-2-img" aria-hidden="true">
+      <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" font-family="Outfit, sans-serif">
+        <defs>
+          <radialGradient id="tg-glow" cx="0.15" cy="1" r="1">
+            <stop offset="0" stop-color="#c8102e" stop-opacity="0.35"/>
+            <stop offset="1" stop-color="#c8102e" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="tg-area" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#c8102e" stop-opacity="0.28"/>
+            <stop offset="1" stop-color="#c8102e" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <rect width="300" height="300" fill="#0b0b0e"/>
+        <rect width="300" height="300" fill="url(#tg-glow)"/>
+        <g stroke="#ffffff" stroke-opacity="0.07">
+          <path d="M0 50H300M0 100H300M0 150H300M0 200H300M50 0V200M100 0V200M150 0V200M200 0V200M250 0V200" fill="none"/>
+        </g>
+        <polygon points="28,176 76,150 108,162 156,112 192,126 252,60 252,196 28,196" fill="url(#tg-area)"/>
+        <polyline points="28,176 76,150 108,162 156,112 192,126 252,60" fill="none" stroke="#ffffff" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+        <g font-size="9" font-weight="600" text-anchor="middle" fill="#ffffff">
+          <circle cx="28" cy="176" r="8" fill="#c8102e"/><text x="28" y="179.2">1</text>
+          <circle cx="76" cy="150" r="8" fill="#c8102e"/><text x="76" y="153.2">2</text>
+          <circle cx="108" cy="162" r="8" fill="#c8102e"/><text x="108" y="165.2">3</text>
+          <circle cx="156" cy="112" r="8" fill="#c8102e"/><text x="156" y="115.2">4</text>
+          <circle cx="192" cy="126" r="8" fill="#c8102e"/><text x="192" y="129.2">5</text>
+          <circle cx="252" cy="60" r="8" fill="#c8102e"/><text x="252" y="63.2">6</text>
+        </g>
+        <g font-size="12" fill="#ffffff">
+          <text x="24" y="226"><tspan fill="#ff5a72" font-weight="600">1</tspan>  Liftoff</text>
+          <text x="24" y="252"><tspan fill="#ff5a72" font-weight="600">2</tspan>  Ascent</text>
+          <text x="24" y="278"><tspan fill="#ff5a72" font-weight="600">3</tspan>  Summit</text>
+          <text x="158" y="226"><tspan fill="#ff5a72" font-weight="600">4</tspan>  Mission Control</text>
+          <text x="158" y="252"><tspan fill="#ff5a72" font-weight="600">5</tspan>  The Bridge</text>
+          <text x="158" y="278"><tspan fill="#ff5a72" font-weight="600">6</tspan>  Proving Ground</text>
+        </g>
+      </svg>
+    </div>
+    <div class="slide" id="slide-2">
+      <h2 class="slide-title">Six <br>Tracks</h2>
+      <p class="slide-desc">Liftoff, Ascent and Summit carry you from your first pip to liquidity theory. Mission Control, The Bridge and Proving Ground add macro, TradingView and funded-trader prep.</p>
+      <div class="slide-links"><a href="courses.html">Browse every lesson</a></div>
+    </div>
+
+    <div class="slide" id="slide-3">
+      <h2 class="slide-title">Live Charts</h2>
+      <p class="slide-desc">Real TradingView charts and a live economic calendar sit beside the lessons, with guided exercises and risk calculators to practise on before the market costs you anything.</p>
+      <div class="slide-links">
+        <a href="tools.html">Calculators</a>
+        <a href="calendar.html">Calendar</a>
+        <a href="live-chart.html">Live chart</a>
+      </div>
+    </div>
+
+    <div class="slide" id="slide-4">
+      <h2 class="slide-title">Start <br>Free</h2>
+      <p class="slide-desc">Every lesson, quiz and certificate is free, with no card and no upsell. Build a streak, earn a certificate anyone can verify, and learn alongside a community.</p>
+      <div class="slide-actions">
+        <a href="auth.html?tab=register" class="btn btn-solid" id="cta-join">Create free account <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        <a href="courses.html" class="btn btn-ghost">Browse courses <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-horizontal-line"></div>
+  <div class="grid-lines">
+    <div class="grid-line"><div class="grid-dot top"></div><div class="grid-dot bottom"></div></div>
+    <div class="grid-line"><div class="grid-dot top"></div><div class="grid-dot bottom"></div></div>
+    <div class="grid-line"><div class="grid-dot top"></div><div class="grid-dot bottom"></div></div>
+    <div class="grid-line"><div class="grid-dot top"></div><div class="grid-dot bottom"></div></div>
+    <div class="grid-line story-progress-container">
+      <div class="grid-dot top"></div>
+      <div class="grid-dot bottom"></div>
+      <div class="story-dashes">
+        <div class="story-dash"><div class="story-dash-fill" id="dash-fill-1"></div></div>
+        <div class="story-dash"><div class="story-dash-fill" id="dash-fill-2"></div></div>
+        <div class="story-dash"><div class="story-dash-fill" id="dash-fill-3"></div></div>
+        <div class="story-dash"><div class="story-dash-fill" id="dash-fill-4"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <span class="fb-copy">&copy; 2026 Voyager Academy &middot; Built in South Africa</span>
+    <span>Educational content only — not financial advice</span>
+    <a href="risk-disclaimer.html">Risk</a>
+    <a href="terms.html">Terms</a>
+    <a href="privacy.html">Privacy</a>
+  </div>
+
+  <canvas id="webgl"></canvas>
+
+  <script src="js/courses-data.js"></script>
+  <script>
+    // If the 3D scripts never start (CDN blocked, old browser), show a static first screen instead of a black page.
+    setTimeout(function () { var p = document.getElementById('preloader'); if (p) p.classList.add('done'); }, 12000);
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+    }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+
+    window.__vaScene = true;
+
+    const canvas = document.querySelector('#webgl');
+    let scene, camera, renderer;
+    let centerpiece;   // the candlestick sculpture
+    let modelPivot;    // pivot group for perfect center-rotation
+    const clock = new THREE.Clock();
+    let currentScroll = 0;
+
+    let mouseX = 0, mouseY = 0, targetMouseX = 0, targetMouseY = 0;
+    let cursorX = window.innerWidth / 2, cursorY = window.innerHeight / 2;
+    let outerCursorX = window.innerWidth / 2, outerCursorY = window.innerHeight / 2;
+
+    let bgMaterial;
+    const shaderUniforms = {
+      uTime: { value: 0 },
+      uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+      uMouse: { value: new THREE.Vector2(0, 0) },
+      uScroll: { value: 0 }
+    };
+
+    let sparkParticles;
+    const sparkCount = 450;
+    const sparkData = [];
+
+    const sizes = { width: window.innerWidth, height: window.innerHeight };
+    const SCROLL_EASE = 0.045;   // was 0.025. Higher = the scene follows your scroll faster
+    const CAMERA_EASE = 0.045;   // was 0.025. Higher = the camera orbit catches up faster
+    
+    const maxPixelRatio = () => Math.min(window.devicePixelRatio, sizes.width < 1000 ? 1.5 : 2);
+
+    // Cached DOM nodes (filled in init)
+    let slideEls = [], dashFills = [], gridDots = [], slide2Img, cursorInnerEl, cursorOuterEl;
+
+    /* ---------------- Background: liquid-wave shader ---------------- */
+    function createBackgroundShader() {
+      const vertexShader = `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `;
+
+      const fragmentShader = `
+        varying vec2 vUv;
+        uniform float uTime;
+        uniform vec2 uResolution;
+        uniform vec2 uMouse;
+        uniform float uScroll;
+
+        float hash(float n) { return fract(sin(n) * 43758.5453123); }
+        float noise(in vec3 x) {
+          vec3 p = floor(x);
+          vec3 f = fract(x);
+          f = f*f*(3.0-2.0*f);
+          float n = p.x + p.y*57.0 + 113.0*p.z;
+          return mix(mix(mix(hash(n+  0.0), hash(n+  1.0), f.x),
+                         mix(hash(n+ 57.0), hash(n+ 58.0), f.x), f.y),
+                     mix(mix(hash(n+113.0), hash(n+114.0), f.x),
+                         mix(hash(n+170.0), hash(n+171.0), f.x), f.y), f.z);
+        }
+
+        void main() {
+          vec2 uv = (gl_FragCoord.xy - 0.5 * uResolution.xy) / uResolution.y;
+          float aspect = uResolution.x / uResolution.y;
+
+          float time = uTime * 0.08;
+          float scroll = uScroll;
+
+          float angle1 = 0.6;
+          float angle2 = -0.7;
+          float angle3 = 1.2;
+
+          float freq1 = 2.4;
+          float freq2 = 3.2;
+          float freq3 = 4.0;
+
+          vec2 warpedUv = uv;
+          float scrollDeform = scroll * 5.0;
+
+          warpedUv.x += sin(uv.y * 2.5 + time * 0.2 + scrollDeform) * 0.35;
+          warpedUv.y += cos(uv.x * 2.5 - time * 0.15 - scrollDeform * 0.8) * 0.35;
+
+          warpedUv.x += sin(uv.y * 1.2 - time * 0.1 - scrollDeform * 1.5) * 0.25;
+          warpedUv.y += cos(uv.x * 1.2 + time * 0.18 + scrollDeform * 1.2) * 0.25;
+
+          vec2 scrollDrift = vec2(scroll * 0.04, -scroll * 0.02);
+          vec2 mouseShift = vec2(uMouse.x * aspect * 0.05, uMouse.y * 0.05);
+          warpedUv += scrollDrift + mouseShift;
+
+          vec2 dir1 = vec2(cos(angle1), sin(angle1));
+          vec2 dir2 = vec2(cos(angle2), sin(angle2));
+          vec2 dir3 = vec2(cos(angle3), sin(angle3));
+
+          float w1 = sin(dot(warpedUv, dir1) * freq1 + time * 1.0);
+          float w2 = cos(dot(warpedUv, dir2) * freq2 - time * 1.4 + w1 * 0.4);
+          float w3 = sin(dot(warpedUv, dir3) * freq3 + time * 1.8 + w2 * 0.5);
+
+          float waveField = w1 * 0.50 + w2 * 0.35 + w3 * 0.15;
+
+          float wideSheen = pow(max(0.0, 1.0 - abs(waveField - 0.1)), 2.5);
+          float crispSpecular = pow(max(0.0, 1.0 - abs(waveField - 0.15)), 8.0);
+          float crest = wideSheen * 0.5 + crispSpecular * 0.9;
+
+          // Top palette (scroll = 0): molten crimson, the Academy red
+          vec3 c0_shadow = vec3(0.0010, 0.0004, 0.0005);
+          vec3 c0_wave1  = vec3(0.090, 0.010, 0.022);
+          vec3 c0_wave2  = vec3(0.052, 0.006, 0.012);
+          vec3 c0_crest  = vec3(0.50, 0.09, 0.14);
+
+          // Bottom palette (scroll = 1): deep sapphire
+          vec3 c1_shadow = vec3(0.0004, 0.0006, 0.0012);
+          vec3 c1_wave1  = vec3(0.015, 0.035, 0.065);
+          vec3 c1_wave2  = vec3(0.008, 0.020, 0.045);
+          vec3 c1_crest  = vec3(0.18, 0.35, 0.55);
+
+          float t = smoothstep(0.0, 1.0, scroll);
+          vec3 colShadow = mix(c0_shadow, c1_shadow, t);
+          vec3 colWave1  = mix(c0_wave1, c1_wave1, t);
+          vec3 colWave2  = mix(c0_wave2, c1_wave2, t);
+          vec3 colCrest  = mix(c0_crest, c1_crest, t);
+
+          vec3 color = colShadow;
+          color = mix(color, colWave2, smoothstep(-0.6, 0.2, waveField));
+          color = mix(color, colWave1, smoothstep(0.0, 0.8, waveField));
+          color += colCrest * crest * 1.4;
+
+          float vignette = 1.0 - dot(uv, uv) * 0.12;
+          color *= vignette;
+
+          gl_FragColor = vec4(color, 1.0);
+        }
+      `;
+
+      bgMaterial = new THREE.ShaderMaterial({
+        vertexShader: vertexShader,
+        fragmentShader: fragmentShader,
+        uniforms: shaderUniforms,
+        depthWrite: false,
+        depthTest: false
+      });
+
+      const bgMesh = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), bgMaterial);
+      bgMesh.position.set(0.0, 0.0, -8.0);
+      bgMesh.renderOrder = -10;
+      camera.add(bgMesh);
+    }
+
+    /* ---------------- Market ticks (sparks) ---------------- */
+    function createSparkTexture() {
+      const c = document.createElement('canvas');
+      c.width = 16; c.height = 16;
+      const ctx = c.getContext('2d');
+      const gradient = ctx.createRadialGradient(8, 8, 0, 8, 8, 8);
+      gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+      gradient.addColorStop(0.25, 'rgba(255, 255, 255, 0.85)');
+      gradient.addColorStop(0.6, 'rgba(255, 255, 255, 0.3)');
+      gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, 16, 16);
+      return new THREE.CanvasTexture(c);
+    }
+
+    function createSparks() {
+      const geometry = new THREE.BufferGeometry();
+      const positions = new Float32Array(sparkCount * 3);
+      const colors = new Float32Array(sparkCount * 3);
+
+      for (let i = 0; i < sparkCount; i++) {
+        positions[i * 3]     = (Math.random() - 0.5) * 6.5;
+        positions[i * 3 + 1] = (Math.random() - 0.5) * 5.0 - 0.5;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 6.5;
+
+        if (Math.random() < 0.6) {
+          // Academy red
+          colors[i * 3] = 1.0;
+          colors[i * 3 + 1] = 0.10 + Math.random() * 0.12;
+          colors[i * 3 + 2] = 0.16 + Math.random() * 0.12;
+        } else {
+          // cool white-blue (matches the rim light)
+          colors[i * 3] = 0.78 + Math.random() * 0.15;
+          colors[i * 3 + 1] = 0.86 + Math.random() * 0.10;
+          colors[i * 3 + 2] = 1.0;
+        }
+
+        sparkData.push({
+          speedX: (Math.random() - 0.5) * 0.4,
+          speedY: 0.15 + Math.random() * 0.3,
+          speedZ: (Math.random() - 0.5) * 0.4,
+          swaySpeed: 0.5 + Math.random() * 1.5,
+          swayRadius: 0.05 + Math.random() * 0.15,
+          phase: Math.random() * Math.PI * 2
+        });
+      }
+
+      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+      const material = new THREE.PointsMaterial({
+        size: 0.025,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.85,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        map: createSparkTexture()
+      });
+
+      sparkParticles = new THREE.Points(geometry, material);
+      scene.add(sparkParticles);
+    }
+
+    /* ---------------- Centerpiece: a spiral of candlesticks ---------------- */
+    // Two turns of candles climbing around a glowing red trend line. It is built in code,
+    // so there is no model file to host, and it looks different from every side as the camera orbits.
+    function buildCenterpiece() {
+      const group = new THREE.Group();
+      const envI = 0.6;
+
+      const bullMat = new THREE.MeshStandardMaterial({ color: '#ececf0', roughness: 0.3, metalness: 0.88, envMapIntensity: envI });
+      const bearMat = new THREE.MeshStandardMaterial({ color: '#c8102e', roughness: 0.34, metalness: 0.82, emissive: '#2a0006', envMapIntensity: envI });
+      const wickMat = new THREE.MeshStandardMaterial({ color: '#b9b9c0', roughness: 0.35, metalness: 0.9, envMapIntensity: envI });
+      const glowMat = new THREE.MeshStandardMaterial({ color: '#ff2d4d', emissive: '#ff2d4d', emissiveIntensity: 1.8, roughness: 0.4, metalness: 0.0 });
+      const starMat = new THREE.MeshStandardMaterial({ color: '#fff1f3', emissive: '#ffffff', emissiveIntensity: 2.2, roughness: 0.3, metalness: 0.0 });
+
+      const candleCount = 26, turns = 2, radius = 1.05, yMin = -1.15, yMax = 1.25;
+
+      // seeded random so the sculpture is identical on every visit
+      let seed = 7;
+      const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+      for (let i = 0; i < candleCount; i++) {
+        const t = i / (candleCount - 1);
+        const angle = t * Math.PI * 2 * turns;
+        const bull = rand() > 0.38;                 // mostly bullish: an uptrend
+        const bodyH = 0.16 + rand() * 0.34;
+        const wickUp = 0.06 + rand() * 0.16;
+        const wickDown = 0.06 + rand() * 0.16;
+
+        const candle = new THREE.Group();
+        const body = new THREE.Mesh(new THREE.BoxGeometry(0.15, bodyH, 0.15), bull ? bullMat : bearMat);
+        const wick = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, bodyH + wickUp + wickDown, 8), wickMat);
+        wick.position.y = (wickUp - wickDown) / 2;
+        candle.add(wick, body);
+
+        candle.position.set(
+          Math.cos(angle) * radius,
+          yMin + t * (yMax - yMin) + (rand() - 0.5) * 0.12,
+          Math.sin(angle) * radius
+        );
+        candle.rotation.y = -angle;
+        group.add(candle);
+      }
+
+      // glowing trend line spiralling up the middle
+      const pts = [];
+      const steps = 140;
+      for (let i = 0; i <= steps; i++) {
+        const t = i / steps;
+        const a = t * Math.PI * 2 * turns * 1.5;
+        pts.push(new THREE.Vector3(Math.cos(a) * 0.5, yMin + t * (yMax - yMin + 0.25), Math.sin(a) * 0.5));
+      }
+      group.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 260, 0.016, 8, false), glowMat));
+
+      // apex star and base ring
+      const star = new THREE.Mesh(new THREE.SphereGeometry(0.07, 24, 24), starMat);
+      star.position.set(0, yMax + 0.42, 0);
+      group.add(star);
+
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(1.3, 0.012, 8, 160), glowMat);
+      ring.rotation.x = Math.PI / 2;
+      ring.position.y = yMin - 0.2;
+      group.add(ring);
+
+      group.traverse((child) => {
+        if (child.isMesh) { child.castShadow = true; child.receiveShadow = true; }
+      });
+
+      centerpiece = group;
+      modelPivot = new THREE.Group();
+      scene.add(modelPivot);
+      modelPivot.add(centerpiece);
+
+      // 1. scale so max dimension = 3.5
+      const boxInitial = new THREE.Box3().setFromObject(centerpiece);
+      const sizeInitial = boxInitial.getSize(new THREE.Vector3());
+      const maxDim = Math.max(sizeInitial.x, sizeInitial.y, sizeInitial.z);
+      centerpiece.scale.setScalar(3.5 / (maxDim > 0.0001 ? maxDim : 1));
+
+      // 2. update world matrix so the box accounts for scale
+      centerpiece.updateMatrixWorld(true);
+
+      // 3. exact geometric centre of the scaled sculpture, then recentre inside the pivot
+      const centerScaled = new THREE.Box3().setFromObject(centerpiece).getCenter(new THREE.Vector3());
+      centerpiece.position.sub(centerScaled);
+
+      // 4. lower the pivot for a grounded stance
+      modelPivot.position.y = -0.4;
+    }
+
+    // Soft studio reflections so the metal has something to reflect. Optional: the scene works without it.
+    async function addEnvironment() {
+      try {
+        const { RoomEnvironment } = await import('three/examples/jsm/environments/RoomEnvironment.js');
+        const pmrem = new THREE.PMREMGenerator(renderer);
+        scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+        pmrem.dispose();
+      } catch (e) {
+        console.warn('Environment map unavailable, continuing without it:', e);
+      }
+    }
+
+    /* ---------------- Per-letter titles ---------------- */
+    function splitTitlesIntoChars() {
+      document.querySelectorAll('.slide-title').forEach((title) => {
+        title.setAttribute('aria-label', title.textContent.replace(/\s+/g, ' ').trim());
+        const parts = title.innerHTML.split(/(<br\s*\/?>)/i);
+        let newHTML = '';
+        let delayCounter = 0;
+        parts.forEach((part) => {
+          if (part.toLowerCase().startsWith('<br')) {
+            newHTML += part;
+          } else {
+            for (let i = 0; i < part.length; i++) {
+              if (part[i] === ' ') {
+                newHTML += ' ';
+              } else {
+                newHTML += `<span class="char" style="transition-delay: ${delayCounter * 0.035}s">${part[i]}</span>`;
+                delayCounter++;
+              }
+            }
+          }
+        });
+        title.innerHTML = newHTML;
+      });
+    }
+
+    /* ---------------- Grid dots + slides ---------------- */
+    function updateGridDots(scroll) {
+      gridDots.forEach((dot, i) => {
+        const startY = (i * 17) % 80 + 10;
+        let speed = 90 + (i * 55) % 180;
+        if (i % 2 === 0) speed = -speed;
+        let y = startY + scroll * speed;
+        y = ((y % 100) + 100) % 100;
+        dot.style.top = `${y}%`;
+      });
+    }
+
+    function updateSlides(scroll) {
+      const [slide1, slide2, slide3, slide4] = slideEls;
+
+      dashFills.forEach((fill, idx) => {
+        const start = idx * 0.25;
+        const end = (idx + 1) * 0.25;
+        const progress = Math.max(0, Math.min(1, (scroll - start) / (end - start)));
+        fill.style.height = `${progress * 100}%`;
+      });
+
+      const isActive = (val, start, end) => val >= start && val <= end;
+
+      if (slide1) slide1.classList.toggle('active', isActive(scroll, -0.10, 0.12));
+      if (slide2) {
+        const active2 = isActive(scroll, 0.28, 0.40);
+        slide2.classList.toggle('active', active2);
+        if (slide2Img) slide2Img.classList.toggle('active', active2);
+      }
+      if (slide3) slide3.classList.toggle('active', isActive(scroll, 0.56, 0.68));
+      if (slide4) slide4.classList.toggle('active', isActive(scroll, 0.84, 1.05));
+    }
+
+    /* ---------------- Navigation ---------------- */
+    function setupNavigation() {
+      const navLinks = document.querySelectorAll('.header-nav .nav-link');
+      const targetScrolls = [0.0, 0.34, 0.62, 0.94];
+      navLinks.forEach((link, index) => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+          window.scrollTo({ top: maxScroll * targetScrolls[index], behavior: 'smooth' });
+        });
+      });
+    }
+
+    function applyLoginState() {
+      let loggedIn = false;
+      try { loggedIn = !!localStorage.getItem('va_token'); } catch (e) {}
+      if (!loggedIn) return;
+      const btn = document.getElementById('header-btn');
+      btn.href = 'dashboard.html';
+      document.getElementById('header-btn-label').textContent = 'Dashboard';
+      const start = document.getElementById('cta-start');
+      start.href = 'dashboard.html';
+      start.innerHTML = 'Open my dashboard <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>';
+      const join = document.getElementById('cta-join');
+      join.href = 'dashboard.html';
+      join.innerHTML = 'Open my dashboard <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>';
+    }
+
+    /* ---------------- Resize ---------------- */
+    function onWindowResize() {
+      sizes.width = window.innerWidth;
+      sizes.height = window.innerHeight;
+      camera.aspect = sizes.width / sizes.height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(sizes.width, sizes.height);
+      renderer.setPixelRatio(maxPixelRatio());
+      shaderUniforms.uResolution.value.set(sizes.width, sizes.height);
+
+      function hidePreloader() {
+        const el = document.getElementById('preloader');
+        if (!el) return;
+        const ready = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+        ready.then(() => {
+          setTimeout(() => {
+            el.classList.add('done');
+            setTimeout(() => el.remove(), 900);
+          }, Math.max(0, 900 - performance.now()));   // show it for at least 0.9s total
+        });
+      }
+
+    }
+
+    /* ---------------- Animation loop ---------------- */
+    function animate() {
+      requestAnimationFrame(animate);
+      const deltaTime = Math.min(clock.getDelta(), 0.05);
+
+      // target scroll [0..1]
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollTop = window.scrollY !== undefined ? window.scrollY
+        : (window.pageYOffset !== undefined ? window.pageYOffset : document.documentElement.scrollTop);
+      const targetScroll = maxScroll > 0 ? scrollTop / maxScroll : 0;
+
+      currentScroll += (targetScroll - currentScroll) * SCROLL_EASE;
+
+      mouseX += (targetMouseX - mouseX) * 0.05;
+      mouseY += (targetMouseY - mouseY) * 0.05;
+
+      outerCursorX += (cursorX - outerCursorX) * 0.2;
+      outerCursorY += (cursorY - outerCursorY) * 0.2;
+      if (cursorOuterEl) { cursorOuterEl.style.left = `${outerCursorX}px`; cursorOuterEl.style.top = `${outerCursorY}px`; }
+
+      if (modelPivot) {
+        modelPivot.rotation.y = mouseX * 0.25;
+        modelPivot.rotation.x = mouseY * 0.15;
+      }
+      if (centerpiece) centerpiece.rotation.y += deltaTime * 0.08;   // slow idle turn
+
+      // ticks: faster and more turbulent while scrolling quickly
+      if (sparkParticles) {
+        const positions = sparkParticles.geometry.attributes.position.array;
+        const time = clock.getElapsedTime();
+        const scrollVelocity = Math.abs(targetScroll - currentScroll);
+        const speedMultiplier = 1.0 + scrollVelocity * 9.0;
+        const turbulence = scrollVelocity * 0.8;
+
+        for (let i = 0; i < sparkCount; i++) {
+          const idx = i * 3;
+          const data = sparkData[i];
+          positions[idx]     += data.speedX * deltaTime * speedMultiplier;
+          positions[idx + 1] += data.speedY * deltaTime * speedMultiplier;
+          positions[idx + 2] += data.speedZ * deltaTime * speedMultiplier;
+
+          const currentSway = data.swayRadius * (1.0 + turbulence * 4.0);
+          positions[idx]     += Math.sin(time * data.swaySpeed + data.phase) * currentSway * deltaTime;
+          positions[idx + 2] += Math.cos(time * data.swaySpeed + data.phase) * currentSway * deltaTime;
+
+          if (positions[idx + 1] > 3.0 || Math.abs(positions[idx]) > 3.5 || Math.abs(positions[idx + 2]) > 3.5) {
+            positions[idx + 1] = -2.5;
+            positions[idx]     = (Math.random() - 0.5) * 3.0;
+            positions[idx + 2] = (Math.random() - 0.5) * 3.0;
+          }
+        }
+        sparkParticles.geometry.attributes.position.needsUpdate = true;
+      }
+
+      // camera orbits the sculpture 360° driven by scroll
+      const phi = currentScroll * Math.PI * 2.0;
+      const y = 0.35 + Math.sin(currentScroll * Math.PI) * 0.8;
+      const radius = 4.2 - Math.sin(currentScroll * Math.PI) * 0.6;
+      const x = radius * Math.sin(phi);
+      const z = radius * Math.cos(phi);
+
+      // on the first screen, shift the framing left to leave room for the text columns
+      const transitionProgress = Math.min(1.0, currentScroll / 0.28);
+      const easeFactor = (Math.cos(transitionProgress * Math.PI) + 1.0) * 0.5;
+      const lookAtXOffset = -0.9 * easeFactor;
+      camera.position.lerp(new THREE.Vector3(x, y, z), CAMERA_EASE);
+      camera.lookAt(new THREE.Vector3(lookAtXOffset, -0.15, 0));
+
+      shaderUniforms.uTime.value = clock.getElapsedTime();
+      shaderUniforms.uMouse.value.set(mouseX, -mouseY);
+      shaderUniforms.uScroll.value = currentScroll;
+
+      updateSlides(currentScroll);
+      updateGridDots(currentScroll);
+      renderer.render(scene, camera);
+      if (!window.__vaShown) { window.__vaShown = true; hidePreloader(); }
+    }
+
+    /* ---------------- Boot ---------------- */
+    function init() {
+      slideEls = ['slide-1', 'slide-2', 'slide-3', 'slide-4'].map((id) => document.getElementById(id));
+      dashFills = [1, 2, 3, 4].map((i) => document.getElementById(`dash-fill-${i}`));
+      gridDots = Array.from(document.querySelectorAll('.grid-dot'));
+      slide2Img = document.getElementById('slide-2-img');
+      cursorInnerEl = document.querySelector('.cursor-inner');
+      cursorOuterEl = document.querySelector('.cursor-outer');
+
+      splitTitlesIntoChars();
+      applyLoginState();
+      setupNavigation();
+
+      if (typeof COURSE_DATA !== 'undefined') {
+        const el = document.getElementById('stat-lessons');
+        if (el) el.textContent = COURSE_DATA.length;
+      }
+
+      window.addEventListener('mousemove', (event) => {
+        cursorX = event.clientX;
+        cursorY = event.clientY;
+        if (cursorInnerEl) { cursorInnerEl.style.left = `${cursorX}px`; cursorInnerEl.style.top = `${cursorY}px`; }
+        targetMouseX = (event.clientX / window.innerWidth) * 2 - 1;
+        targetMouseY = (event.clientY / window.innerHeight) * 2 - 1;
+      });
+      document.addEventListener('mouseover', (e) => {
+        if (cursorOuterEl) cursorOuterEl.classList.toggle('hover', !!(e.target.closest && e.target.closest('a, button')));
+      });
+      window.addEventListener('resize', onWindowResize);
+
+      // scene
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color('#000000');
+      scene.fog = new THREE.FogExp2('#000000', 0.01);
+
+      camera = new THREE.PerspectiveCamera(50, sizes.width / sizes.height, 0.1, 100);
+      camera.position.set(0, 0.2, 3.0);
+      scene.add(camera);
+
+      createBackgroundShader();
+
+      try {
+        renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
+      } catch (err) {
+        console.warn('WebGL unavailable:', err);
+        document.documentElement.classList.add('no-webgl');
+        return;
+      }
+      renderer.setSize(sizes.width, sizes.height);
+      renderer.setPixelRatio(maxPixelRatio());
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 2.2;
+
+      // chiaroscuro lighting
+      scene.add(new THREE.AmbientLight('#ffffff', 0.1));
+
+      const keyLight = new THREE.SpotLight('#ffffff', 18.0);
+      keyLight.position.set(4, 6, 3);
+      keyLight.angle = Math.PI / 4;
+      keyLight.penumbra = 0.9;
+      keyLight.castShadow = true;
+      keyLight.shadow.mapSize.width = 2048;
+      keyLight.shadow.mapSize.height = 2048;
+      keyLight.shadow.camera.near = 1.0;
+      keyLight.shadow.camera.far = 15;
+      keyLight.shadow.bias = -0.001;
+      scene.add(keyLight);
+
+      const rimLight = new THREE.DirectionalLight('#e3f2ff', 10.0);
+      rimLight.position.set(-5, 3, -4);
+      scene.add(rimLight);
+
+      const fillLight = new THREE.DirectionalLight('#fff3e6', 0.8);
+      fillLight.position.set(-2, -4, 2);
+      scene.add(fillLight);
+
+      createSparks();
+      buildCenterpiece();
+      addEnvironment();
+
+      onWindowResize();
+      animate();
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+  </script>
+</body>
+</html>

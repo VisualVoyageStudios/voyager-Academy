@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function() {
+      const saved = localStorage.getItem("va_theme");
+      if (saved === "dark" || (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz — Voyager Academy</title>
+  <meta property="og:title" content="Voyager Academy — Lesson Quiz">
+  <meta property="og:description" content="Part of Voyager Academy's free trading curriculum — lessons, quizzes and certificates.">
+  <meta property="og:image" content="https://visualvoyagestudios.github.io/voyager-Academy/assets/images/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/loader.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#111114">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+  <style>
+    .qz-card { border: 2px solid var(--color-border, #e6e6e9); border-radius: var(--radius-lg); padding: var(--sp-4); background: var(--color-surface, #fff); color: var(--color-text, #111114); }
+    .qz-h { font-family: var(--font-heading); font-size: 1.3rem; margin: 0 0 var(--sp-2); }
+    .qz-sub { font-family: var(--font-heading); font-size: 1.05rem; margin: var(--sp-4) 0 var(--sp-1); }
+    .qz-facts { margin: 0 0 var(--sp-3); padding-left: 1.1rem; color: var(--color-text-muted, #6b6b72); line-height: 1.7; }
+    .qz-note { border-radius: 12px; padding: 10px 12px; font-size: 0.9rem; margin-bottom: var(--sp-3); background: var(--color-surface-2, #f7f7f8); border: 1px solid var(--color-border, #e6e6e9); line-height: 1.5; }
+    .qz-note--ok { border-color: var(--va-bull, #16a34a); }
+    .qz-note--err { border-color: var(--va-red); color: var(--va-red); }
+    .qz-top { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--color-text-muted, #6b6b72); margin-bottom: 6px; }
+    .qz-bar { height: 6px; border-radius: 100px; background: var(--color-surface-2, #f7f7f8); overflow: hidden; margin-bottom: var(--sp-3); }
+    .qz-bar div { height: 100%; background: var(--va-red); border-radius: 100px; transition: width 0.3s; }
+    .qz-q { font-family: var(--font-heading); font-size: 1.25rem; line-height: 1.35; margin: 0 0 var(--sp-3); outline: none; }
+    .qz-opts { display: grid; gap: 8px; margin-bottom: var(--sp-3); }
+    .qz-opt { width: 100%; text-align: left; font: inherit; color: var(--color-text, #111114); display: flex; gap: 12px; align-items: flex-start; margin: 0; }
+    .qz-opt:disabled { opacity: 1; cursor: default; }
+    .qz-opt.correct { border-color: var(--va-bull, #16a34a); background: rgba(22,163,74,0.1); }
+    .qz-opt.incorrect { border-color: var(--va-red); background: rgba(200,16,46,0.08); }
+    .qz-key { flex: none; width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--color-border, #e6e6e9); display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; color: var(--color-text-muted, #6b6b72); }
+    .qz-fb { border-radius: 12px; padding: 12px 14px; margin-bottom: var(--sp-3); line-height: 1.55; background: var(--color-surface-2, #f7f7f8); border-left: 4px solid var(--color-border, #e6e6e9); }
+    .qz-fb.ok { border-left-color: var(--va-bull, #16a34a); }
+    .qz-fb.bad { border-left-color: var(--va-red); }
+    .qz-fb p { margin: 6px 0 0; }
+    .qz-hint, .qz-muted { font-size: 0.8rem; color: var(--color-text-muted, #6b6b72); }
+    .qz-best { font-size: 0.9rem; color: var(--color-text-muted, #6b6b72); margin: 0 0 var(--sp-3); }
+    .qz-result { display: flex; gap: var(--sp-4); align-items: center; flex-wrap: wrap; margin-bottom: var(--sp-3); }
+    .qz-ring { --p: 0; width: 120px; height: 120px; border-radius: 50%; display: grid; place-items: center; flex: none; background: conic-gradient(var(--va-red) calc(var(--p) * 1%), var(--color-border, #e6e6e9) 0); }
+    .qz-ring > div { width: 92px; height: 92px; border-radius: 50%; background: var(--color-surface, #fff); display: grid; place-items: center; font-family: var(--font-mono); font-weight: 700; font-size: 1.5rem; }
+    .qz-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: var(--sp-3); }
+    .qz-ghost { background: transparent; border: 2px solid var(--color-border, #e6e6e9); color: var(--color-text, #111114); }
+    .qz-rev { border-top: 1px solid var(--color-border, #e6e6e9); padding: var(--sp-3) 0; }
+    .qz-rev h3 { font-size: 1rem; margin: 0 0 6px; }
+    .qz-rev p { margin: 4px 0; font-size: 0.9rem; line-height: 1.5; }
+    .qz-yours { color: var(--va-red); }
+    .qz-right { color: var(--va-bull, #16a34a); }
+    .qz-more summary { cursor: pointer; font-weight: 600; margin-top: var(--sp-3); }
+    @media (hover: none) { .qz-hint { display: none; } }
+  </style>
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="courses.html" class="active">Courses</a></li>
+      <li><a href="community.html">Community</a></li>
+      <li><a href="certificates.html">Certificates</a></li>
+      <li id="nav-auth-slot"><a href="auth.html">Log In</a></li>
+    </ul>
+  </nav>
+
+  <div class="va-lesson">
+    <a href="courses.html" class="va-lesson__back" id="back-link">&larr; Back to lesson</a>
+    <div class="va-lesson__tag" id="quiz-tag"></div>
+    <h1 id="quiz-title">Quiz</h1>
+    <div id="quiz-area"><div class='va-loading' role='status'><div class='va-loader' aria-hidden='true'><span></span><span></span><span></span><span></span></div><span class='va-sr'>Loading</span></div></div>
+  </div>
+
+  <script src="js/courses-data.js"></script>
+  <script src="js/quizzes.js"></script>
+  <script src="js/quiz-why.js"></script>
+  <script src="js/quizzes-2.js"></script>
+  <script src="js/toast.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/badges.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const area = $("quiz-area");
+    const slug = new URLSearchParams(location.search).get("slug");
+    const meta = COURSE_DATA.find((c) => c.slug === slug);
+    const RAW = typeof QUIZ_DATA !== "undefined" ? QUIZ_DATA[slug] : null;
+    const TRACK_LABELS = {
+      beginner: "Liftoff", intermediate: "Ascent", advanced: "Summit",
+      macro: "Mission Control", tradingview: "The Bridge", funded: "Proving Ground",
+    };
+    const PASS = 0.7;
+    const loggedIn = !!vaGetToken();
+    const student = vaGetStudent();
+    let alreadyDone = false;
+    let S = { phase: "start", qs: [], idx: 0, correct: 0, answers: [], locked: false };
+    let attemptId = null, legacy = false, startP = null;
+
+    const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const norm = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, "");
+    const need = () => Math.ceil(PASS * RAW.length - 1e-9);
+
+    function shuffle(a) {
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+
+    function whyFor(text) {
+      const list = (typeof QUIZ_WHY !== "undefined" && QUIZ_WHY[slug]) || [];
+      const n = norm(text);
+      const hit = list.find((e) => n.startsWith(norm(e[0])));
+      return hit ? hit[1] : "";
+    }
+
+    const bestKey = "va_qbest_" + slug;
+    const getBest = () => { try { return JSON.parse(localStorage.getItem(bestKey)); } catch (e) { return null; } };
+    function saveBest(score, total) {
+      const b = getBest();
+      if (!b || score > b.score) localStorage.setItem(bestKey, JSON.stringify({ score, total }));
+    }
+
+    // Missed questions feed Review mode's "Weak spots"
+    function trackWeak(i, ok) {
+      let w = {};
+      try { w = JSON.parse(localStorage.getItem("va_weak") || "{}"); } catch (e) {}
+      const key = `${slug}|${i}`;
+      if (ok) { if (w[key]) { w[key]--; if (w[key] <= 0) delete w[key]; } }
+      else w[key] = Math.min(3, (w[key] || 0) + 1);
+      localStorage.setItem("va_weak", JSON.stringify(w));
+    }
+
+    const loginHref = (tab) => `auth.html?${tab ? "tab=register&" : ""}next=${encodeURIComponent("quiz.html?slug=" + slug)}`;
+
+    function showStart() {
+      S.phase = "start";
+      const n = RAW.length;
+      const best = getBest();
+      const banner = !loggedIn
+        ? `<div class="qz-note">You're not logged in. You can take the quiz as practice, but <a href="${loginHref(false)}">log in</a> to save your progress.</div>`
+        : alreadyDone ? `<div class="qz-note qz-note--ok">✓ You've already completed this lesson. Retaking is just practice.</div>` : "";
+      area.innerHTML = `<div class="qz-card">
+        ${banner}
+        <h2 class="qz-h">Ready to test yourself?</h2>
+        <ul class="qz-facts">
+          <li>${n} questions</li>
+          <li>Pass mark: ${need()} of ${n} (${Math.round(PASS * 100)}%)</li>
+          <li>You see the answer and a short explanation after each question</li>
+        </ul>
+        ${best ? `<p class="qz-best">Your best so far: ${best.score}/${best.total}</p>` : ""}
+        <button class="va-btn" type="button" data-qz="start">Start quiz</button>
+      </div>`;
+    }
+
+    function startQuiz() {
+      const shuffleOpts = !!vaGetPrefs().shuffleQuiz;
+      S = {
+        phase: "question", idx: 0, correct: 0, answers: [], locked: false,
+        qs: RAW.map((q, i) => {
+          const opts = q.options.map((t, k) => ({ t, ok: k === q.correct, k }));
+          if (shuffleOpts) shuffle(opts);
+          return { i, q: q.q, opts, why: whyFor(q.q) };
+        }),
+      };
+      attemptId = null; legacy = false;
+      startP = loggedIn
+        ? vaQuizStart(slug).then((r) => { attemptId = r.attempt_id; }).catch((e) => { legacy = e.status === 404; })
+        : null;
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const q = S.qs[S.idx];
+      area.innerHTML = `<div class="qz-card">
+        <div class="qz-top"><span>Question ${S.idx + 1} of ${S.qs.length}</span><span>${S.correct} correct</span></div>
+        <div class="qz-bar"><div style="width:${(S.idx / S.qs.length) * 100}%"></div></div>
+        <h2 class="qz-q" id="qz-q" tabindex="-1">${esc(q.q)}</h2>
+        <div class="qz-opts" role="group" aria-labelledby="qz-q">
+          ${q.opts.map((o, k) => `<button type="button" class="va-quiz__option qz-opt" data-qz="pick" data-k="${k}"><span class="qz-key">${String.fromCharCode(65 + k)}</span><span>${esc(o.t)}</span></button>`).join("")}
+        </div>
+        <div id="qz-feedback" aria-live="polite"></div>
+        <p class="qz-hint">Tip: press A–D to answer, then Enter for the next question.</p>
+      </div>`;
+      $("qz-q").focus({ preventScroll: true });
+    }
+
+    function choose(k) {
+      if (S.locked || S.phase !== "question") return;
+      S.locked = true;
+      const q = S.qs[S.idx];
+      const ok = q.opts[k].ok;
+      S.answers[S.idx] = k;
+      if (ok) S.correct++;
+      trackWeak(q.i, ok);
+      area.querySelectorAll(".qz-opt").forEach((b, j) => {
+        b.disabled = true;
+        if (q.opts[j].ok) b.classList.add("correct");
+        else if (j === k) b.classList.add("incorrect");
+      });
+      const last = S.idx + 1 === S.qs.length;
+      $("qz-feedback").innerHTML = `<div class="qz-fb ${ok ? "ok" : "bad"}"><strong>${ok ? "Correct ✓" : "Not quite"}</strong>${
+        q.why ? `<p>${esc(q.why)}</p>` : (!ok ? "<p>The correct answer is highlighted.</p>" : "")
+      }</div><button class="va-btn" id="qz-next" type="button" data-qz="next">${last ? "See results" : "Next question"}</button>`;
+      $("qz-next").focus();
+    }
+
+    function next() {
+      if (S.phase !== "question" || !S.locked) return;
+      if (S.idx + 1 < S.qs.length) { S.idx++; S.locked = false; showQuestion(); }
+      else finish();
+    }
+
+    async function finish() {
+      S.phase = "results";
+      saveBest(S.correct, S.qs.length);
+      let server = null;
+      if (loggedIn) {
+        area.innerHTML = `<div class="qz-card"><p class="qz-muted">Scoring your answers…</p></div>`;
+        await startP;
+        if (!legacy) {
+          if (!attemptId) server = { error: "Couldn't reach the server to record this attempt. Please retake the quiz." };
+          else {
+            try { server = await vaQuizSubmit(slug, attemptId, S.qs.map((q, i) => q.opts[S.answers[i]].k)); }
+            catch (e) { server = { error: e.message }; }
+          }
+        }
+      }
+      const passed = server && !server.error ? server.passed : S.correct >= need();
+      showResults(passed, server);
+    }
+
+    function showResults(passed, server) {
+      const n = S.qs.length;
+      const pct = Math.round((S.correct / n) * 100);
+      const rows = S.qs.map((q, i) => ({ q, i, yours: q.opts[S.answers[i]], right: q.opts.find((o) => o.ok) }));
+      const missed = rows.filter((r) => !r.yours.ok);
+      const got = rows.filter((r) => r.yours.ok);
+      const rev = (r) => `<div class="qz-rev"><h3>${r.i + 1}. ${esc(r.q.q)}</h3>${
+        r.yours.ok ? "" : `<p class="qz-yours">Your answer: ${esc(r.yours.t)}</p>`
+      }<p class="qz-right">Correct: ${esc(r.right.t)}</p>${r.q.why ? `<p>${esc(r.q.why)}</p>` : ""}</div>`;
+
+      area.innerHTML = `<div class="qz-card">
+        <div class="qz-result">
+          <div class="qz-ring" style="--p:${pct}"><div>${S.correct}/${n}</div></div>
+          <div>
+            <h2 class="qz-h">${passed ? "You passed!" : "Not quite there yet"}</h2>
+            <p class="qz-muted">You needed ${need()} of ${n} (${Math.round(PASS * 100)}%).${passed ? "" : " Re-read the lesson and try again. Questions you missed will also come back in Review mode."}</p>
+          </div>
+        </div>
+        <div id="qz-save"></div>
+        ${missed.length ? `<h3 class="qz-sub">To review (${missed.length})</h3>${missed.map(rev).join("")}` : `<p>Perfect score — nothing to review.</p>`}
+        ${got.length ? `<details class="qz-more"><summary>Questions you got right (${got.length})</summary>${got.map(rev).join("")}</details>` : ""}
+      </div>`;
+
+      const retake = (solid) => `<button class="va-btn ${solid ? "" : "qz-ghost"}" type="button" data-qz="retake">${passed ? "Retake for practice" : "Retake quiz"}</button>`;
+      if (passed) onPass(server);
+      else $("qz-save").innerHTML = `<div class="qz-actions">${retake(true)}<a class="va-btn qz-ghost" href="lesson.html?slug=${slug}">Re-read the lesson</a></div>`;
+    }
+
+    async function onPass(server) {
+      const box = $("qz-save");
+      if (!box) return;
+      const here = COURSE_DATA.findIndex((c) => c.slug === slug);
+      const nextLesson = COURSE_DATA[here + 1];
+      const nextCta = nextLesson
+        ? `<a class="va-btn" href="lesson.html?slug=${nextLesson.slug}">Next lesson: ${esc(nextLesson.title)} →</a>`
+        : `<a class="va-btn" href="certificates.html">View your certificates</a>`;
+      const retake = `<button class="va-btn qz-ghost" type="button" data-qz="retake">Retake for practice</button>`;
+
+      if (!loggedIn) {
+        box.innerHTML = `<div class="qz-note">You're not logged in, so this attempt wasn't saved. Create a free account or log in, then retake the quiz to save your progress.</div>
+          <div class="qz-actions"><a class="va-btn" href="${loginHref(true)}">Create free account</a><a class="va-btn qz-ghost" href="${loginHref(false)}">Log in</a>${retake}</div>`;
+        return;
+      }
+      if (alreadyDone) {
+        box.innerHTML = `<div class="qz-note qz-note--ok">✓ You've already completed this lesson, so this was practice.</div><div class="qz-actions">${nextCta}${retake}</div>`;
+        return;
+      }
+
+      if (server && server.error) {
+        box.innerHTML = `<div class="qz-note qz-note--err">${esc(server.error)}</div><div class="qz-actions">${retake}</div>`;
+        return;
+      }
+      if (!server) {   // lesson without a server-graded quiz: the old save path
+        box.innerHTML = `<p class="qz-muted">Saving your progress…</p>`;
+        try { await vaMarkComplete(slug); }
+        catch (e) {
+          box.innerHTML = `<div class="qz-note qz-note--err">Couldn't save your progress. The server may be waking up.</div>
+            <div class="qz-actions"><button class="va-btn" type="button" data-qz="save">Try saving again</button>${retake}</div>`;
+          return;
+        }
+      }
+      alreadyDone = true;
+
+
+      if (window.vaCelebrate) vaCelebrate();
+      box.innerHTML = `<div class="qz-note qz-note--ok">✓ Lesson complete — progress saved.<div id="qz-extra"></div></div><div class="qz-actions">${nextCta}${retake}</div>`;
+
+      try {
+        const [progress, certs, streak] = await Promise.all([
+          vaGetProgress().catch(() => []), vaGetCertificates().catch(() => []), vaGetStreak().catch(() => null),
+        ]);
+        const bits = [];
+        if (streak && streak.current > 0) bits.push(`<i class="fa-solid fa-fire" aria-hidden="true"></i> ${streak.current}-day streak`);
+        if (certs.find((c) => c.track === meta.track && c.earned)) {
+          bits.push(`<i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> ${esc(TRACK_LABELS[meta.track] || meta.track)} complete — your certificate is ready`);
+        }
+        const extra = $("qz-extra");
+        if (extra && bits.length) extra.innerHTML = bits.map((b) => `<div>${b}</div>`).join("");
+        if (window.vaBadges && student) vaBadges.announce(student.id, vaBadges.list(vaBadges.context(progress, certs, streak)));
+      } catch (e) {}
+    }
+
+    area.addEventListener("click", (e) => {
+      const b = e.target.closest("[data-qz]");
+      if (!b) return;
+      const a = b.dataset.qz;
+      if (a === "start" || a === "retake") startQuiz();
+      else if (a === "next") next();
+      else if (a === "pick") choose(Number(b.dataset.k));
+      else if (a === "save") onPass();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (S.phase !== "question" || e.ctrlKey || e.metaKey || e.altKey) return;
+      const t = e.target;
+      if (t && t.matches && t.matches("input, textarea, select")) return;
+      if (!S.locked) {
+        const q = S.qs[S.idx];
+        const k = /^[a-f]$/i.test(e.key) ? e.key.toLowerCase().charCodeAt(0) - 97 : /^[1-6]$/.test(e.key) ? Number(e.key) - 1 : -1;
+        if (k >= 0 && k < q.opts.length) { e.preventDefault(); choose(k); }
+      } else if (e.key === "Enter" && document.activeElement !== $("qz-next")) {
+        e.preventDefault();
+        next();
+      }
+    });
+
+    (async function init() {
+      if (!meta || !RAW || !RAW.length) {
+        $("quiz-title").textContent = "Quiz not found";
+        area.innerHTML = `<p>There's no quiz for this lesson yet.</p><a href="courses.html" class="va-btn">Browse courses</a>`;
+        return;
+      }
+      $("quiz-tag").textContent = TRACK_LABELS[meta.track] || meta.track;
+      $("quiz-title").textContent = meta.title;
+      document.title = `Quiz: ${meta.title} — Voyager Academy`;
+      $("back-link").href = `lesson.html?slug=${slug}`;
+      showStart();
+      if (loggedIn) {
+        try {
+          const p = await vaGetProgress();
+          alreadyDone = p.some((x) => x.lesson_slug === slug);
+          if (alreadyDone && S.phase === "start") showStart();
+        } catch (e) {}
+      }
+    })();
+  </script>
+</body>
+</html>

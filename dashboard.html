@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function() {
+      const saved = localStorage.getItem("va_theme");
+      if (saved === "dark" || (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Voyager Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#111114">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+  <style>
+    .dash-head { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--sp-3); flex-wrap: wrap; margin-bottom: var(--sp-4); }
+    .dash-head h1 { font-family: var(--font-heading); font-size: clamp(1.7rem, 2.6vw, 2.3rem); letter-spacing: -0.02em; margin: 0; color: var(--color-text, #111114); }
+    .dash-sub { font-family: var(--font-mono); font-size: 0.85rem; color: var(--color-text-muted, #6b6b72); }
+    .dash-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--sp-4); margin-bottom: var(--sp-4); }
+    .dash-card { background: var(--color-surface, #fff); border: 1px solid var(--color-border, #e6e6e9); border-radius: 20px; padding: var(--sp-4); color: var(--color-text, #111114); }
+    .dash-card h2 { font-family: var(--font-heading); font-size: 1.05rem; margin: 0 0 var(--sp-3); }
+    .dash-continue { grid-column: span 8; position: relative; overflow: hidden; color: #fff; border: none; background: radial-gradient(120% 140% at 100% 0%, var(--va-red-dark, #8c0c20) 0%, #17171b 55%, #0d0d10 100%); }
+    .dash-continue--full { grid-column: 1 / -1; }
+    .dash-eyebrow { font-size: 0.8rem; opacity: 0.8; margin-bottom: var(--sp-2); }
+    .dash-title { font-family: var(--font-heading); font-size: clamp(1.4rem, 2.2vw, 1.9rem); letter-spacing: -0.01em; margin: 0 0 var(--sp-2) !important; color: #fff; }
+    .dash-muted { color: rgba(255,255,255,0.72); font-size: 0.9rem; margin: 0 0 var(--sp-3); }
+    .dash-bar { height: 8px; border-radius: 100px; background: rgba(255,255,255,0.18); overflow: hidden; margin-bottom: 8px; }
+    .dash-bar__fill { height: 100%; background: #fff; border-radius: 100px; }
+    .dash-actions { display: flex; gap: var(--sp-2); flex-wrap: wrap; }
+    .dash-ghost { background: transparent; border: 2px solid rgba(255,255,255,0.4); }
+    .dash-side { grid-column: span 4; display: flex; flex-direction: column; gap: var(--sp-4); }
+    .dash-side .va-streak { margin: 0; flex-direction: column; align-items: flex-start; gap: var(--sp-2); }
+    .dash-tracks { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: var(--sp-3); }
+    .dash-track { border: 1px solid var(--color-border, #e6e6e9); border-radius: 14px; padding: var(--sp-3); background: var(--color-surface-2, #f7f7f8); }
+    .dash-track strong { display: block; margin-bottom: 8px; font-size: 0.95rem; }
+    .dash-track small { color: var(--color-text-muted, #6b6b72); display: block; margin: 6px 0 8px; }
+    .dash-track a { font-size: 0.85rem; font-weight: 600; }
+    .dash-section { grid-column: 1 / -1; }
+    .dash-certs { grid-column: span 5; }
+    .dash-links { grid-column: span 7; }
+    .dash-bignum { font-family: var(--font-mono); font-size: 2.4rem; font-weight: 700; color: var(--va-red); line-height: 1; }
+    .dash-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--sp-2); }
+    .dash-tile { display: flex; align-items: center; gap: 10px; padding: 12px; border: 1px solid var(--color-border, #e6e6e9); border-radius: 12px; text-decoration: none; color: var(--color-text, #111114); font-size: 0.9rem; font-weight: 500; }
+    .dash-tile:hover { border-color: var(--va-red); }
+    @media (max-width: 900px) {
+      .dash-continue, .dash-side, .dash-certs, .dash-links { grid-column: 1 / -1; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="courses.html">Courses</a></li>
+      <li><a href="community.html">Community</a></li>
+      <li><a href="certificates.html">Certificates</a></li>
+      <li id="nav-auth-slot"><a href="auth.html">Log In</a></li>
+    </ul>
+  </nav>
+
+  <div class="va-lesson">
+    <div class="dash-head">
+      <h1>Welcome back, <span id="greeting-name">…</span></h1>
+      <span class="dash-sub" id="overall-stat"></span>
+    </div>
+
+    <div class="dash-grid">
+      <div class="dash-card dash-continue" id="continue-card"><div id="continue-card-body"><span class="va-skel" style="height:14px;width:40%;margin-bottom:14px;"></span><span class="va-skel" style="height:28px;width:70%;margin-bottom:12px;"></span><span class="va-skel" style="height:14px;width:55%;margin-bottom:24px;"></span><span class="va-skel" style="height:40px;width:140px;"></span></div></div>
+
+      <div class="dash-side" id="dash-side">
+        <div class="dash-card va-streak" id="streak-card" hidden>
+          <div class="va-streak__main"><span class="va-streak__num" id="streak-num">0</span><span class="va-streak__label">day streak</span></div>
+          <div class="va-streak__week" id="streak-week"></div>
+          <div class="va-streak__meta" id="streak-meta"></div>
+        </div>
+        <div class="dash-card" id="goal-card" hidden>
+          <div class="va-streak__label" id="goal-label"></div>
+          <div class="va-progress-bar" style="margin:8px 0 0;"><div class="va-progress-bar__fill" id="goal-fill" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <div class="dash-card dash-section">
+        <h2>Your tracks</h2>
+        <div class="dash-tracks" id="track-grid"></div>
+      </div>
+
+      <div class="dash-card dash-section">
+        <h2>Achievements <span id="badge-count" style="font-weight:400;color:var(--color-text-muted,#6b6b72);font-size:0.85rem;"></span></h2>
+        <div class="badges" id="badge-grid"></div>
+      </div>
+
+      <div class="dash-card dash-certs">
+        <h2>Certificates</h2>
+        <div class="dash-bignum" id="cert-big">–</div>
+        <p id="cert-teaser" style="color:var(--color-text-muted,#6b6b72);font-size:0.9rem;margin:8px 0 var(--sp-3);">Loading…</p>
+        <a href="certificates.html" class="va-btn">View certificates</a>
+      </div>
+
+      <div class="dash-card dash-links">
+        <h2>Jump to</h2>
+        <div class="dash-tiles">
+          <a class="dash-tile" href="review.html"><i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i>Review mode</a>
+          <a class="dash-tile" href="chat.html"><i class="fa-solid fa-comments" aria-hidden="true"></i>Live chat</a>
+          <a class="dash-tile" href="community.html"><i class="fa-solid fa-users" aria-hidden="true"></i>Community</a>
+          <a class="dash-tile" href="tools.html"><i class="fa-solid fa-calculator" aria-hidden="true"></i>Calculators</a>
+          <a class="dash-tile" href="calendar.html"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i>Calendar</a>
+          <a class="dash-tile" href="live-chart.html"><i class="fa-solid fa-chart-line" aria-hidden="true"></i>Live chart</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/courses-data.js"></script>
+  <script src="js/toast.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/badges.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const TRACK_LABELS = {
+      beginner: "Liftoff (Beginner)", intermediate: "Ascent (Intermediate)", advanced: "Summit (Advanced)",
+      macro: "Mission Control", tradingview: "The Bridge (TradingView)", funded: "Proving Ground (Funded Prep)",
+    };
+
+    function renderStreak(s) {
+      if (!s || vaGetPrefs().showStreak === false) return;
+      $("streak-card").hidden = false;
+      $("streak-num").textContent = s.current;
+      $("streak-week").innerHTML = s.week
+        .map((d) => `<div class="va-streak__day ${d.active ? "is-active" : ""}"><span class="va-streak__dot"></span><span>${d.label}</span></div>`).join("");
+      const msg = s.completed_today ? "Today's lesson is done — see you tomorrow."
+        : s.current > 0 ? "Complete a lesson today to keep your streak going." : "Complete a lesson today to start a streak.";
+      $("streak-meta").textContent = `${msg}  Best: ${s.best} ${s.best === 1 ? "day" : "days"}.`;
+    }
+
+    function renderGoal(progress) {
+      const goal = Number(vaGetPrefs().weeklyGoal || 0);
+      if (!goal) return;
+      const weekAgo = Date.now() - 7 * 24 * 3600 * 1000;
+      const done = progress.filter((p) => new Date(p.completed_at).getTime() >= weekAgo).length;
+      $("goal-card").hidden = false;
+      $("goal-label").textContent = done >= goal
+        ? `Weekly goal reached — ${done} of ${goal} lessons in the last 7 days 🎉`
+        : `Weekly goal: ${done} of ${goal} lessons in the last 7 days`;
+      $("goal-fill").style.width = Math.min(100, Math.round((done / goal) * 100)) + "%";
+    }
+
+    async function initDashboard() {
+      const student = vaGetStudent();
+      if (!student) { location.href = "auth.html"; return; }
+      $("greeting-name").textContent = student.name.split(" ")[0];
+
+      const [progress, certs, streak] = await Promise.all([
+        vaGetProgress().catch(() => []), vaGetCertificates().catch(() => []), vaGetStreak().catch(() => null),
+      ]);
+      const doneSet = new Set(progress.map((p) => p.lesson_slug));
+      const total = COURSE_DATA.length;
+      const completed = COURSE_DATA.filter((c) => doneSet.has(c.slug)).length;
+      const pct = total ? Math.round((completed / total) * 100) : 0;
+      $("overall-stat").textContent = `${completed}/${total} lessons complete`;
+
+      const next = COURSE_DATA.find((c) => !doneSet.has(c.slug));
+      $("continue-card-body").innerHTML = next
+        ? `<div class="dash-eyebrow">Continue learning · ${TRACK_LABELS[next.track] || next.track}</div>
+           <h2 class="dash-title">${next.title}</h2>
+           <p class="dash-muted">${next.summary}</p>
+           <div class="dash-bar"><div class="dash-bar__fill" style="width:${pct}%"></div></div>
+           <p class="dash-muted" style="margin-bottom:var(--sp-3);">${completed} of ${total} lessons complete (${pct}%)</p>
+           <a href="lesson.html?slug=${next.slug}" class="va-btn">Continue</a>`
+        : `<div class="dash-eyebrow">All caught up</div>
+           <h2 class="dash-title">You've completed every lesson</h2>
+           <p class="dash-muted">Check your certificates, or keep it all fresh with Review mode.</p>
+           <div class="dash-actions"><a href="certificates.html" class="va-btn">View certificates</a><a href="review.html" class="va-btn dash-ghost">Review mode</a></div>`;
+
+      renderStreak(streak);
+      renderGoal(progress);
+      if ($("streak-card").hidden && $("goal-card").hidden) {
+        $("dash-side").hidden = true;
+        $("continue-card").classList.add("dash-continue--full");
+      }
+
+      $("track-grid").innerHTML = Object.keys(TRACK_LABELS).map((t) => {
+        const lessons = COURSE_DATA.filter((c) => c.track === t);
+        if (!lessons.length) return "";
+        const done = lessons.filter((c) => doneSet.has(c.slug)).length;
+        const p = Math.round((done / lessons.length) * 100);
+        return `<div class="dash-track">
+          <strong>${TRACK_LABELS[t]}</strong>
+          <div class="va-progress-bar"><div class="va-progress-bar__fill" style="width:${p}%"></div></div>
+          <small>${done}/${lessons.length} lessons complete</small>
+          <a href="courses.html?track=${t}">View lessons →</a>
+        </div>`;
+      }).join("");
+
+      const trackCerts = certs.filter((c) => c.track !== "master");
+      const earned = trackCerts.filter((c) => c.earned).length;
+      const master = certs.find((c) => c.track === "master");
+      $("cert-big").textContent = `${earned}/${trackCerts.length || Object.keys(TRACK_LABELS).length}`;
+      $("cert-teaser").textContent = "track certificates earned" + (master && master.earned ? " — plus the Full Curriculum certificate!" : ".");
+    
+    
+      if (window.vaBadges) {
+      if (vaGetPrefs().showBadges === false) {
+        $("badge-grid").closest(".dash-card").hidden = true;
+      } else {
+        const badges = vaBadges.list(vaBadges.context(progress, certs, streak));
+        vaBadges.render($("badge-grid"), badges);
+        $("badge-count").textContent = `${badges.filter((b) => b.earned).length} of ${badges.length} earned`;
+        vaBadges.announce(student.id, badges);
+      }
+    }
+    
+    }
+    initDashboard();
+  </script>
+</body>
+</html>

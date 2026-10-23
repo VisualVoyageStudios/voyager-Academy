@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function() {
+      const saved = localStorage.getItem("va_theme");
+      if (saved === "dark" || (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saved lessons — Voyager Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#111114">
+  <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+  <style>
+    .sv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--sp-3); }
+    .sv-remove { background: none; border: none; color: var(--color-text-muted, #6b6b72); cursor: pointer; font: inherit; font-size: 0.8rem; margin-top: 6px; padding: 0; }
+    .sv-remove:hover { color: var(--va-red); }
+  </style>
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="courses.html">Courses</a></li>
+      <li><a href="community.html">Community</a></li>
+      <li><a href="certificates.html">Certificates</a></li>
+      <li id="nav-auth-slot"><a href="auth.html">Log In</a></li>
+    </ul>
+  </nav>
+
+  <div class="va-lesson">
+    <h1>Saved lessons</h1>
+    <p style="color:var(--color-text-muted,#6b6b72);">Lessons you've bookmarked with ☆ Save. Stored on this device.</p>
+    <div id="saved-list"></div>
+  </div>
+
+  <script src="js/courses-data.js"></script>
+  <script src="js/toast.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const TRACK_LABELS = {
+      beginner: "Liftoff (Beginner)", intermediate: "Ascent (Intermediate)", advanced: "Summit (Advanced)",
+      macro: "Mission Control", tradingview: "The Bridge (TradingView)", funded: "Proving Ground (Funded Prep)",
+    };
+    const getSaved = () => { try { return JSON.parse(localStorage.getItem("va_saved") || "[]"); } catch (e) { return []; } };
+    const el = document.getElementById("saved-list");
+
+    function render() {
+      const slugs = getSaved().filter((s) => COURSE_DATA.some((c) => c.slug === s));
+      if (!slugs.length) {
+        el.innerHTML = `<p style="color:var(--color-text-muted,#6b6b72);">Nothing saved yet. Open any lesson and tap ☆ Save to keep it here.</p><a href="courses.html" class="va-btn">Browse courses</a>`;
+        return;
+      }
+      el.innerHTML = `<div class="sv-grid">${slugs.map((s) => {
+        const c = COURSE_DATA.find((x) => x.slug === s);
+        return `<div>
+          <a class="va-card" href="lesson.html?slug=${c.slug}" style="display:block;">
+            <div class="va-card__tag">${TRACK_LABELS[c.track] || c.track}</div>
+            <h3>${c.title}</h3><p>${c.summary}</p>
+          </a>
+          <button type="button" class="sv-remove" data-slug="${c.slug}">Remove</button>
+        </div>`;
+      }).join("")}</div>`;
+    }
+
+    el.addEventListener("click", (e) => {
+      const b = e.target.closest(".sv-remove");
+      if (!b) return;
+      localStorage.setItem("va_saved", JSON.stringify(getSaved().filter((s) => s !== b.dataset.slug)));
+      render();
+    });
+    render();
+  </script>
+</body>
+</html>

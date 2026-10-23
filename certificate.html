@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificate — Voyager Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Allura&family=Great+Vibes&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#111114">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <style>
+    .va-cert-wrap { max-width: 900px; margin: var(--sp-5) auto; padding: 0 var(--sp-4); text-align: center; }
+    #cert-canvas { width: 100%; height: auto; border: 1px solid var(--va-border); border-radius: var(--radius-md); }
+  </style>
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="courses.html">Courses</a></li>
+      <li><a href="certificates.html">Certificates</a></li>
+      <li id="nav-auth-slot"><a href="auth.html">Log In</a></li>
+    </ul>
+  </nav>
+
+  <div class="va-cert-wrap">
+    <canvas id="cert-canvas" width="1400" height="990"></canvas>
+    <p id="cert-status" style="margin-top:var(--sp-3);color:var(--va-text-muted);">Loading…</p>
+    <button class="va-btn" id="download-btn" style="display:none;margin-top:var(--sp-2);">Download Certificate</button>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js" integrity="sha384-8FWZA6BGMXhsfO+BLtrJK0We6gg5o1JyO8xQm6peWDEUs17ACA5ziE/NIAkl9z2k" crossorigin="anonymous"></script>
+  <script>
+    const TRACK_LABELS = {
+      beginner: "Liftoff (Beginner)",
+      intermediate: "Ascent (Intermediate)",
+      advanced: "Summit (Advanced)",
+      macro: "Mission Control",
+      tradingview: "The Bridge (TradingView)",
+      funded: "Proving Ground (Funded Prep)",
+      master: "Full Curriculum",
+    };
+
+    const CERT_W = 1400, CERT_H = 990;
+    const HEAD = "'Space Grotesk', 'Inter', Arial, sans-serif";
+    const BODY = "'Inter', Arial, sans-serif";
+    const MONO = "'JetBrains Mono', 'Courier New', monospace";
+    const SCRIPT_A = "'Allura', 'Brush Script MT', cursive";
+    const SCRIPT_B = "'Great Vibes', 'Brush Script MT', cursive";
+
+    function certRoundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath(); ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+    }
+    // Letter-spaced text; align = "left" | "center" | "right" (works in every browser)
+    function certSpaced(ctx, text, x, y, spacing, align) {
+      const chars = [...text], widths = chars.map((c) => ctx.measureText(c).width);
+      const total = widths.reduce((a, b) => a + b, 0) + spacing * (chars.length - 1);
+      let px = align === "left" ? x : align === "right" ? x - total : x - total / 2;
+      const keep = ctx.textAlign; ctx.textAlign = "left";
+      chars.forEach((c, i) => { ctx.fillText(c, px, y); px += widths[i] + spacing; });
+      ctx.textAlign = keep;
+    }
+    function certFit(ctx, text, maxW, start, min, style, family) {
+      let size = start;
+      while (size > min) { ctx.font = `${style} ${size}px ${family}`; if (ctx.measureText(text).width <= maxW) break; size -= 2; }
+      ctx.font = `${style} ${size}px ${family}`; return size;
+    }
+    function certWrap(ctx, text, maxW) {
+      const words = text.split(" "), lines = []; let line = "";
+      words.forEach((w) => { const t = line ? line + " " + w : w; if (ctx.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t; });
+      if (line) lines.push(line); return lines;
+    }
+    function certRingText(ctx, text, cx, cy, r) {
+      const chars = [...text], step = (Math.PI * 2) / chars.length;
+      chars.forEach((c, i) => { ctx.save(); ctx.translate(cx, cy); ctx.rotate(i * step); ctx.fillText(c, 0, -r); ctx.restore(); });
+    }
+    // Faint deterministic candlestick row: hollow = up candle, filled = down candle
+    function certCandles(ctx, x, base, w, h, n, color, alpha) {
+      ctx.save(); ctx.globalAlpha = alpha; ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 2;
+      const gap = w / n, Y = (p) => base - p * h;
+      for (let i = 0; i < n; i++) {
+        const t = i * 1.7, o = 0.5 + Math.sin(t) * 0.26 + Math.sin(t * 0.43) * 0.14, c = o + Math.sin(t * 2.3 + 1) * 0.16;
+        const hi = Math.max(o, c) + 0.07 + Math.abs(Math.sin(t * 3.1)) * 0.06, lo = Math.min(o, c) - 0.07 - Math.abs(Math.sin(t * 1.9)) * 0.06;
+        const cx = x + gap * i + gap / 2, bw = gap * 0.5;
+        ctx.beginPath(); ctx.moveTo(cx, Y(hi)); ctx.lineTo(cx, Y(lo)); ctx.stroke();
+        const top = Y(Math.max(o, c)), bh = Math.max(4, Math.abs(Y(o) - Y(c)));
+        if (c >= o) ctx.strokeRect(cx - bw / 2, top, bw, bh); else ctx.fillRect(cx - bw / 2, top, bw, bh);
+      }
+      ctx.restore();
+    }
+
+    // QR code on a white plate (needs the qrcode-generator library)
+    function certQr(ctx, url, x, y, size, dark) {
+      if (typeof qrcode !== "function") return;
+      const qr = qrcode(0, "M"); qr.addData(url); qr.make();
+      const n = qr.getModuleCount(), cell = Math.floor(((size - 14) / n) * 4) / 4, qs = cell * n, off = (size - qs) / 2;
+      ctx.fillStyle = "#fff"; certRoundRect(ctx, x, y, size, size, 8); ctx.fill();
+      ctx.fillStyle = dark;
+      for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (qr.isDark(r, c)) ctx.fillRect(x + off + c * cell, y + off + r * cell, cell + 0.3, cell + 0.3);
+    }
+
+    /* ---------------- Course certificate: light, charcoal + brand red ---------------- */
+    function drawCourseCert(ctx, o) {
+      const W = CERT_W, H = CERT_H, cx = W / 2, INK = "#2a2b30", RED = "#c8102e", MUTE = "#5d5f68";
+      ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, W, H);
+      const pg = ctx.createLinearGradient(0, 48, 0, H - 48); pg.addColorStop(0, "#ececf0"); pg.addColorStop(1, "#e0e1e7");
+      ctx.fillStyle = pg; ctx.fillRect(48, 48, W - 96, H - 96);
+      ctx.strokeStyle = "#cfd0d7"; ctx.lineWidth = 1.5; ctx.strokeRect(48, 48, W - 96, H - 96);
+
+      ctx.save(); ctx.beginPath(); ctx.rect(48, 48, W - 96, H - 96); ctx.clip();
+      certCandles(ctx, 70, H - 62, 600, 210, 24, INK, 0.07);
+      // dark corner wedge (bottom-right) with a thin brand-red edge
+      ctx.fillStyle = INK; ctx.beginPath();
+      ctx.moveTo(700, H - 48); ctx.lineTo(W - 48, H - 48); ctx.lineTo(W - 48, 430); ctx.lineTo(W - 108, 862); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = RED; ctx.lineWidth = 3; ctx.beginPath();
+      ctx.moveTo(W - 108 - 10, 858); ctx.lineTo(700 + 8, H - 48 - 10); ctx.moveTo(W - 108 - 10, 858); ctx.lineTo(W - 48 - 6, 440); ctx.stroke();
+      ctx.restore();
+
+      // bookmark ribbon with logo
+      ctx.fillStyle = INK; ctx.beginPath();
+      ctx.moveTo(108, 48); ctx.lineTo(206, 48); ctx.lineTo(206, 226); ctx.lineTo(157, 190); ctx.lineTo(108, 226); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = "#fff"; ctx.save(); ctx.translate(157, 112); ctx.rotate(Math.PI / 4);
+      certRoundRect(ctx, -26, -26, 52, 52, 8); ctx.fill(); ctx.restore();
+      ctx.fillStyle = RED; ctx.font = `700 30px ${HEAD}`; ctx.textAlign = "center"; ctx.fillText("V", 157, 123);
+      ctx.fillStyle = INK; ctx.font = `700 22px ${HEAD}`; certSpaced(ctx, "VOYAGER ACADEMY", 234, 112, 5, "left");
+      ctx.fillStyle = MUTE; ctx.font = `500 13px ${BODY}`; certSpaced(ctx, "FOREX TRADING EDUCATION", 234, 138, 4, "left");
+      ctx.fillStyle = MUTE; ctx.font = `600 13px ${BODY}`; certSpaced(ctx, "EUR/USD  ·  GBP/JPY  ·  XAU/USD  ·  USD/ZAR", W - 108, 112, 3, "right");
+
+      ctx.textAlign = "center";
+      ctx.fillStyle = INK; ctx.font = `700 80px ${HEAD}`; certSpaced(ctx, "CERTIFICATE", cx, 296, 7, "center");
+      ctx.font = `500 25px ${BODY}`; certSpaced(ctx, "OF COMPLETION", cx, 342, 9, "center");
+      ctx.fillStyle = "#3b3c42"; ctx.font = `400 26px ${BODY}`; ctx.fillText("This certificate is presented to", cx, 418);
+      certFit(ctx, o.name, 780, 118, 40, "400", SCRIPT_A); ctx.fillStyle = INK; ctx.fillText(o.name, cx, 524);
+      const uw = Math.min(Math.max(ctx.measureText(o.name).width / 2 + 30, 340), 400);
+      ctx.strokeStyle = "#3b3c42"; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(cx - uw, 546); ctx.lineTo(cx + uw, 546); ctx.stroke();
+      ctx.fillStyle = "#3b3c42"; ctx.font = `italic 400 23px ${BODY}`;
+      ctx.fillText("for successfully completing every lesson in the", cx, 600);
+      certFit(ctx, o.label, 700, 38, 24, "italic 700", HEAD); ctx.fillStyle = RED; ctx.fillText(o.label, cx, 645);
+      ctx.fillStyle = "#3b3c42"; ctx.font = `italic 400 23px ${BODY}`; ctx.fillText("track of the Voyager Academy forex trading curriculum", cx, 686);
+      if (o.lessons) { ctx.fillStyle = MUTE; ctx.font = `600 13px ${BODY}`; certSpaced(ctx, `${o.lessons} LESSONS COMPLETED`, cx, 716, 4, "center"); }
+
+      // medal with candlestick glyph
+      const mx = cx, my = 790;
+      ctx.fillStyle = INK;
+      [[-1, -30], [1, 10]].forEach(([s, ox]) => { ctx.beginPath(); ctx.moveTo(mx + ox, my + 22); ctx.lineTo(mx + ox + 22, my + 28); ctx.lineTo(mx + ox + 10 * s + 12, my + 70); ctx.lineTo(mx + ox + 10 * s - 8, my + 58); ctx.closePath(); ctx.fill(); });
+      ctx.beginPath(); ctx.arc(mx, my, 40, 0, Math.PI * 2); ctx.fillStyle = INK; ctx.fill();
+      ctx.beginPath(); ctx.arc(mx, my, 31, 0, Math.PI * 2); ctx.strokeStyle = "#fff"; ctx.lineWidth = 2; ctx.stroke();
+      ctx.strokeStyle = "#fff"; ctx.fillStyle = "#fff"; ctx.lineWidth = 2.5;
+      [[-12, 12, 4, 10, true], [0, 16, 2, 8, false], [12, 8, 6, 12, true]].forEach(([dx, top, , bh, hollow]) => {
+        ctx.beginPath(); ctx.moveTo(mx + dx, my - top - 6); ctx.lineTo(mx + dx, my + 14 - (top - 12)); ctx.stroke();
+        if (hollow) ctx.strokeRect(mx + dx - 5, my - top, 10, bh + 6); else ctx.fillRect(mx + dx - 5, my - top + 2, 10, bh + 4);
+      });
+
+      // date + id blocks
+      if (o.verifyUrl) certQr(ctx, o.verifyUrl, 108, 760, 112, INK);
+      const lx = 400, rx = W - 400, ly = 800;
+      ctx.strokeStyle = "#3b3c42"; ctx.lineWidth = 1.5; ctx.textAlign = "center";
+      [lx, rx].forEach((x) => { ctx.beginPath(); ctx.moveTo(x - 130, ly); ctx.lineTo(x + 130, ly); ctx.stroke(); });
+      ctx.fillStyle = INK; ctx.font = `600 25px ${BODY}`; ctx.fillText(o.date, lx, ly - 14);
+      certFit(ctx, o.certId, 255, 18, 11, "500", MONO); ctx.fillText(o.certId, rx, ly - 14);
+      ctx.fillStyle = MUTE; ctx.font = `600 13px ${BODY}`; certSpaced(ctx, "DATE ISSUED", lx, ly + 24, 4, "center"); certSpaced(ctx, "CERTIFICATE ID", rx, ly + 24, 4, "center");
+
+      ctx.fillStyle = MUTE; ctx.font = `400 14px ${BODY}`; ctx.textAlign = "left";
+      ctx.fillText("Verify at visualvoyagestudios.github.io/voyager-Academy/verify.html", 108, 906);
+      ctx.fillStyle = "#7c7e87"; ctx.font = `400 12px ${BODY}`;
+      ctx.fillText("A certificate of course completion. Not an accredited qualification or financial advice.", 108, 926);
+    }
+
+    /* ---------------- Master certificate: navy + gold swoosh ---------------- */
+    function drawMasterCert(ctx, o) {
+      const W = CERT_W, H = CERT_H, x0 = 140;
+      const bg = ctx.createLinearGradient(0, 0, W, H); bg.addColorStop(0, "#111722"); bg.addColorStop(1, "#080b10");
+      ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+      ctx.strokeStyle = "rgba(255,255,255,0.03)"; ctx.lineWidth = 1;
+      for (let y = 90; y < H; y += 90) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+      certCandles(ctx, 700, H - 40, 640, 230, 26, "#d4a537", 0.13);
+
+      const gold = ctx.createLinearGradient(0, 0, 1200, 480);
+      [[0, "#7a4f10"], [0.18, "#e8c35a"], [0.36, "#fff1b0"], [0.52, "#d9a93a"], [0.72, "#fbe58f"], [1, "#8a5a12"]].forEach(([p, c]) => gold.addColorStop(p, c));
+      const left = () => { ctx.beginPath(); ctx.moveTo(-40, -40); ctx.bezierCurveTo(380, 60, 800, 260, 1112, 452); };
+      const right = () => { ctx.beginPath(); ctx.moveTo(1112, 452); ctx.bezierCurveTo(1220, 340, 1330, 230, 1440, 120); };
+      ctx.lineJoin = "miter"; ctx.lineCap = "butt";
+      ctx.save(); ctx.translate(0, 38); left(); ctx.strokeStyle = "#151d2a"; ctx.lineWidth = 120; ctx.stroke(); ctx.restore();
+      ctx.save(); ctx.translate(6, 44); right(); ctx.strokeStyle = "#151d2a"; ctx.lineWidth = 70; ctx.stroke(); ctx.restore();
+      ctx.fillStyle = "#151d2a"; ctx.beginPath(); ctx.arc(1116, 482, 30, 0, Math.PI * 2); ctx.fill();
+      ctx.lineCap = "round";
+      left(); ctx.strokeStyle = gold; ctx.lineWidth = 36; ctx.stroke();
+      left(); ctx.strokeStyle = "rgba(255,248,210,0.75)"; ctx.lineWidth = 9; ctx.stroke();
+      ctx.save(); ctx.translate(0, -52); left(); ctx.strokeStyle = gold; ctx.lineWidth = 4; ctx.stroke(); ctx.restore();
+      ctx.save(); ctx.translate(0, -76); left(); ctx.strokeStyle = "rgba(232,195,90,0.55)"; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
+      right(); ctx.strokeStyle = gold; ctx.lineWidth = 8; ctx.stroke();
+      ctx.save(); ctx.translate(-26, 40); right(); ctx.strokeStyle = "rgba(232,195,90,0.8)"; ctx.lineWidth = 3; ctx.stroke(); ctx.restore();
+
+      ctx.textAlign = "left";
+      ctx.fillStyle = "#fff"; ctx.font = `700 84px ${HEAD}`; certSpaced(ctx, "CERTIFICATE", x0, 372, 3, "left");
+      ctx.font = `500 28px ${BODY}`; certSpaced(ctx, "OF ACHIEVEMENT", x0, 418, 9, "left");
+      ctx.fillStyle = "#b9bdc8"; ctx.font = `700 19px ${BODY}`; certSpaced(ctx, "PROUDLY PRESENTED TO", x0, 496, 7, "left");
+      const ng = ctx.createLinearGradient(x0, 0, x0 + 700, 0); ng.addColorStop(0, "#c8932a"); ng.addColorStop(0.5, "#f6d97a"); ng.addColorStop(1, "#d4a537");
+      certFit(ctx, o.name, 760, 112, 38, "400", SCRIPT_B); ctx.fillStyle = ng; ctx.fillText(o.name, x0, 618);
+      ctx.strokeStyle = "rgba(255,255,255,0.75)"; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(x0, 644); ctx.lineTo(x0 + 760, 644); ctx.stroke();
+      ctx.fillStyle = "#fff"; ctx.font = `700 14px ${BODY}`; certSpaced(ctx, `FULL VOYAGER ACADEMY FOREX CURRICULUM${o.lessons ? "  ·  " + o.lessons + " LESSONS" : ""}`, x0, 692, 3, "left");
+      ctx.fillStyle = "#d3d6df"; ctx.font = `400 17px ${BODY}`;
+      certWrap(ctx, "Completed all three core tracks: Liftoff (forex fundamentals, pips, lots and risk management), Ascent (technical analysis, indicators and trade planning) and Summit (liquidity, market structure and positioning).", 700)
+        .forEach((l, i) => ctx.fillText(l, x0, 724 + i * 26));
+
+      const ly = 872;
+      ctx.strokeStyle = "rgba(255,255,255,0.55)"; ctx.lineWidth = 1.5;
+      [[x0 + 90, 90], [x0 + 400, 150]].forEach(([c, hw]) => { ctx.beginPath(); ctx.moveTo(c - hw, ly); ctx.lineTo(c + hw, ly); ctx.stroke(); });
+      ctx.textAlign = "center"; ctx.fillStyle = "#fff"; ctx.font = `600 20px ${BODY}`; ctx.fillText(o.date, x0 + 90, ly - 12);
+      certFit(ctx, o.certId, 290, 17, 11, "500", MONO); ctx.fillText(o.certId, x0 + 400, ly - 12);
+      ctx.fillStyle = "#aeb3c0"; ctx.font = `600 12px ${BODY}`; certSpaced(ctx, "DATE", x0 + 90, ly + 22, 4, "center"); certSpaced(ctx, "CERTIFICATE ID", x0 + 400, ly + 22, 4, "center");
+
+      // gold medal + ribbons
+      const sx = 1140, sy = 640, bumps = 30;
+      [[1096, 1136], [1138, 1178]].forEach(([a, b]) => {
+        const rg = ctx.createLinearGradient(0, sy + 60, 0, sy + 160); rg.addColorStop(0, "#f3cf6a"); rg.addColorStop(1, "#a8761a");
+        ctx.fillStyle = rg; ctx.beginPath(); ctx.moveTo(a, sy + 62); ctx.lineTo(b, sy + 62); ctx.lineTo(b - 6, sy + 156); ctx.lineTo((a + b) / 2 - 3, sy + 134); ctx.lineTo(a + 6, sy + 156); ctx.closePath(); ctx.fill();
+      });
+      ctx.beginPath();
+      for (let i = 0; i < bumps * 2; i++) { const a = (Math.PI * i) / bumps, r = i % 2 ? 90 : 100; ctx.lineTo(sx + Math.cos(a) * r, sy + Math.sin(a) * r); }
+      ctx.closePath();
+      const mg = ctx.createRadialGradient(sx - 25, sy - 30, 10, sx, sy, 104); mg.addColorStop(0, "#fff1b0"); mg.addColorStop(0.55, "#e0b84a"); mg.addColorStop(1, "#8a5a12");
+      ctx.fillStyle = mg; ctx.fill();
+      ctx.beginPath(); ctx.arc(sx, sy, 80, 0, Math.PI * 2); ctx.strokeStyle = "rgba(255,255,255,0.7)"; ctx.lineWidth = 2; ctx.stroke();
+      ctx.beginPath(); ctx.arc(sx, sy, 58, 0, Math.PI * 2); ctx.fillStyle = "#0d121b"; ctx.fill(); ctx.strokeStyle = "rgba(255,255,255,0.5)"; ctx.stroke();
+      ctx.fillStyle = "#2a1c05"; ctx.font = `700 12px ${BODY}`; ctx.textBaseline = "middle";
+      certRingText(ctx, "MASTER GRADUATE  ·  FULL CURRICULUM  ·  ", sx, sy, 69); ctx.textBaseline = "alphabetic";
+      ctx.fillStyle = ng; ctx.font = `700 54px ${HEAD}`; ctx.textAlign = "center"; ctx.fillText("V", sx, sy + 12);
+      ctx.fillStyle = "#e8c35a"; ctx.font = `700 11px ${BODY}`; certSpaced(ctx, "MASTER", sx, sy + 34, 4, "center");
+
+      if (o.verifyUrl) { certQr(ctx, o.verifyUrl, 1208, 812, 112, "#0d121b"); ctx.fillStyle = "#c9a13b"; ctx.font = `600 11px ${BODY}`; certSpaced(ctx, "SCAN TO VERIFY", 1264, 936, 3, "center"); }
+      ctx.textAlign = "left"; ctx.fillStyle = "#8e93a0"; ctx.font = `400 13px ${BODY}`;
+      ctx.fillText("Verify at visualvoyagestudios.github.io/voyager-Academy/verify.html", x0, 944);
+      ctx.fillStyle = "#6c7280"; ctx.font = `400 12px ${BODY}`;
+      ctx.fillText("A certificate of course completion. Not an accredited qualification or financial advice.", x0, 964);
+      ctx.fillStyle = "#c9a13b"; ctx.font = `600 12px ${BODY}`; certSpaced(ctx, "EUR/USD  ·  GBP/USD  ·  USD/JPY  ·  XAU/USD  ·  USD/ZAR", W - 80, 964, 3, "right");
+    }
+
+    function drawCertificate(canvas, o) {
+      const S = 2; canvas.width = CERT_W * S; canvas.height = CERT_H * S;   // 2x so the download is sharp
+      const ctx = canvas.getContext("2d"); ctx.scale(S, S); ctx.textBaseline = "alphabetic";
+      (o.master ? drawMasterCert : drawCourseCert)(ctx, o);
+    }
+
+    async function init() {
+      const status = document.getElementById("cert-status");
+      const canvas = document.getElementById("cert-canvas");
+      const track = new URLSearchParams(window.location.search).get("track");
+
+      if (!vaGetToken()) { status.textContent = "Please log in to view your certificate."; return; }
+      if (!TRACK_LABELS[track]) { status.textContent = "Unknown certificate."; return; }
+
+      const student = (await vaGetMe().catch(() => null)) || vaGetStudent();
+      if (!student) { status.textContent = "Please log in to view your certificate."; return; }
+
+      const certs = await vaGetCertificates();
+      const cert = certs.find((c) => c.track === track);
+      if (!cert || !cert.earned) { status.textContent = "This certificate hasn't been earned yet. Keep going!"; return; }
+      if (!cert.cert_id) { status.textContent = "Certificate ID unavailable. Please refresh."; return; }
+
+      // Make sure every font is loaded before drawing, not just the ones the page happens to use
+      await Promise.all([
+        "700 40px 'Space Grotesk'", "400 20px 'Inter'", "500 20px 'Inter'", "600 20px 'Inter'", "700 20px 'Inter'",
+        "500 16px 'JetBrains Mono'", "400 40px 'Allura'", "400 40px 'Great Vibes'",
+      ].map((f) => document.fonts.load(f).catch(() => {})));
+
+      const dateStr = new Date(cert.completed_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+      const base = location.origin + location.pathname.replace(/[^/]*$/, "");
+      const verifyUrl = `${base}verify.html?id=${encodeURIComponent(cert.cert_id)}`;
+      drawCertificate(canvas, {
+        name: student.certificate_name || student.name,
+        label: TRACK_LABELS[track],
+        date: dateStr,
+        certId: cert.cert_id,
+        verifyUrl: verifyUrl,
+        lessons: Number(String(cert.progress || "").split("/")[1]) || 0,
+        master: track === "master",
+      });
+
+      status.textContent = "Congratulations!";
+      await navigator.clipboard.writeText(verifyUrl);
+      const btn = document.getElementById("download-btn");
+      btn.style.display = "inline-flex";
+      btn.addEventListener("click", () => {
+        const link = document.createElement("a");
+        link.download = `voyager-academy-${track}-certificate.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      });
+
+      const copy = document.createElement("button");
+      copy.className = "va-btn";
+      copy.type = "button";
+      copy.textContent = "Copy verification link";
+      copy.style.cssText = "margin:var(--sp-2) 0 0 var(--sp-2);background:transparent;border:2px solid var(--va-border);color:var(--va-text-muted);";
+      btn.insertAdjacentElement("afterend", copy);
+
+      const issued = new Date(cert.completed_at);
+      const li = document.createElement("a");
+      li.className = "va-btn"; li.target = "_blank"; li.rel = "noopener"; li.textContent = "Add to LinkedIn";
+      li.style.cssText = "margin:var(--sp-2) 0 0 var(--sp-2);";
+      li.href = "https://www.linkedin.com/profile/add?" + new URLSearchParams({
+        startTask: "CERTIFICATION_NAME", name: `${TRACK_LABELS[track]} (Voyager Academy)`, organizationName: "Voyager Academy",
+        issueYear: issued.getFullYear(), issueMonth: issued.getMonth() + 1, certUrl: verifyUrl, certId: cert.cert_id,
+      });
+      copy.insertAdjacentElement("afterend", li);
+      
+    
+      copy.addEventListener("click", async () => {
+        const base = location.origin + location.pathname.replace(/[^/]*$/, "");
+        try {
+          await navigator.clipboard.writeText(`${base}verify.html?id=${encodeURIComponent(cert.cert_id)}`);
+          copy.textContent = "Link copied ✓";
+        } catch (e) { copy.textContent = "Couldn't copy"; }
+        setTimeout(() => { copy.textContent = "Copy verification link"; }, 2000);
+      });
+    }
+    init();
+</script>
+</body>
+</html>

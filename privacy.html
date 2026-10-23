@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function() {
+      const saved = localStorage.getItem("va_theme");
+      if (saved === "dark" || (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — Voyager Academy</title>
+  <meta name="description" content="What personal information Voyager Academy collects, why, who sees it, and how to download or delete it.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#111114">
+  <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="courses.html">Courses</a></li>
+      <li><a href="community.html">Community</a></li>
+      <li><a href="certificates.html">Certificates</a></li>
+      <li id="nav-auth-slot"><a href="auth.html">Log In</a></li>
+    </ul>
+  </nav>
+
+  <main class="lg">
+    <header class="lg__head">
+      <h1>Privacy Policy</h1>
+      <p class="lg__meta">Last updated <span data-site="updated"></span> · <a href="#" id="lg-print">Print</a></p>
+      <div class="lg__notice"><strong>The short version:</strong> we collect only what we need to run your account and learning progress. We don't sell your data or use it for advertising. You can download or delete everything yourself in Settings.</div>
+    </header>
+
+    <aside class="lg__toc" id="lg-toc" aria-label="On this page"></aside>
+
+    <article class="lg__body">
+      <h2>Who we are</h2>
+      <p>Voyager Academy is run by <span data-site="operator"></span> in South Africa, which is the "responsible party" under the Protection of Personal Information Act (POPIA). For any question or request about your information, contact <span data-site="email"></span>.</p>
+
+      <h2>What we collect</h2>
+      <ul>
+        <li><strong>Account:</strong> your display name (and an optional separate name for certificates), your email address, and a one-way hash of your password — we never store the password itself. We also record when you joined.</li>
+        <li><strong>Learning activity:</strong> which lessons you've completed and when. Streaks, badges and certificates are worked out from this.</li>
+        <li><strong>Community:</strong> forum posts, replies and reports you make, and chat messages you send.</li>
+        <li><strong>Settings:</strong> your notification preference and, if sync is on, your appearance and learning preferences.</li>
+        <li><strong>Technical data:</strong> our servers record standard request details such as your IP address, browser type and the endpoints requested. We use these for security, rate limiting and troubleshooting.</li>
+        <li><strong>Email:</strong> we send emails you trigger — password resets, and reply notifications if you leave them switched on.</li>
+      </ul>
+      <p>We don't ask for payment details, ID numbers or broker account details, because nothing here is paid. Please don't share them in posts or chat.</p>
+
+      <h2>What stays on your device</h2>
+      <p>Some things are stored in your browser. Your login session is kept there and sent to our server with your requests so we know it's you. Your lesson notes, saved lessons, weak-spot practice data, last-viewed lesson and offline cache never leave your device. Your appearance settings stay on your device unless sync is on. Clearing your browser data removes all of it.</p>
+
+      <h2>Why we use it</h2>
+      <ul>
+        <li>To create and run your account and provide lessons, quizzes, certificates, the community and chat — the service you asked for.</li>
+        <li>To keep things safe: preventing abuse, moderating content, rate limiting and investigating problems.</li>
+        <li>To send the service emails described above.</li>
+        <li>To understand which pages are used so we can improve the site (see the next section).</li>
+      </ul>
+      <p>We don't use your information for advertising, and we don't sell it.</p>
+
+      <h2>Analytics, cookies and third parties</h2>
+      <p>We use your browser's local storage, not tracking cookies of our own, to keep you logged in and remember settings.</p>
+      <!-- ANALYTICS: delete the next paragraph if you don't use Google Analytics -->
+      <p>We use Google Analytics to see, in aggregate, which pages are visited and how people find the site. It may set cookies and receives your IP address and device and browser details. You can block it using your browser's privacy settings or an extension.</p>
+      <p>Charts, the economic calendar and the market ticker are loaded from TradingView's servers, which receive your IP address and may set their own cookies under their own privacy policy. Fonts load from Google Fonts.</p>
+
+      <h2>Who we share it with</h2>
+      <ul>
+        <li><strong>Service providers</strong> that process data on our behalf: GitHub (website hosting), Render (our API server), Neon (our database) and Brevo (email delivery).</li>
+        <li><strong>Other students:</strong> your display name and anything you post. Forum posts may be visible to anyone who visits the site; chat is visible to logged-in students.</li>
+        <li><strong>Authorities</strong>, where the law requires it or to protect people's rights and safety.</li>
+      </ul>
+      <p>Some of these providers store or process data outside South Africa. Where that happens we rely on providers with appropriate safeguards, in line with POPIA. We don't sell or rent personal information.</p>
+
+      <h2>How long we keep it</h2>
+      <p>We keep your account data, progress, posts and chat messages until you delete your account. When you delete it, they are removed from our live database straight away; copies may remain in provider backups for a short time before being overwritten. Server logs are kept for a limited period by our host.</p>
+
+      <h2>Your rights</h2>
+      <p>Under POPIA you can:</p>
+      <ul>
+        <li>ask what we hold about you — Settings → Privacy &amp; data → <em>Download my data</em>;</li>
+        <li>correct it — Settings → Account;</li>
+        <li>delete it — Settings → Security → <em>Delete my account</em>;</li>
+        <li>object to or limit some processing, or withdraw consent, by emailing us.</li>
+      </ul>
+      <p>If you think we've handled your information badly, you can complain to the Information Regulator (South Africa) at inforegulator.org.za. We'd appreciate the chance to put it right first.</p>
+
+      <h2>Security</h2>
+      <p>Passwords are stored as hashes, connections use HTTPS, sign-in and password-reset attempts are rate limited, and you can end sessions on all devices from Settings. No online service is completely secure, so please use a strong, unique password.</p>
+
+      <h2>Children</h2>
+      <p>Voyager Academy is for people aged 18 and over. We don't knowingly collect information from anyone younger. If you think a child has an account, contact us and we'll delete it.</p>
+
+      <h2>Changes to this policy</h2>
+      <p>If our practices change we'll update this page and its date, and tell you on the site if the change is significant.</p>
+
+      <h2>Contact</h2>
+      <p>Privacy questions or requests: <span data-site="email"></span>.</p>
+    </article>
+
+    <nav class="lg__siblings" aria-label="Other legal documents">
+      <a href="terms.html">Terms of Use</a>
+      <a href="risk-disclaimer.html">Risk Disclaimer</a>
+    </nav>
+  </main>
+
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/site-config.js"></script>
+  <script src="js/legal.js"></script>
+</body>
+</html>

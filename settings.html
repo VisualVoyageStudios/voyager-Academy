@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function() {
+      const saved = localStorage.getItem("va_theme");
+      if (saved === "dark" || (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings — Voyager Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#111114">
+  <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+  <style>
+    .st-sec { margin-top: var(--sp-5); padding-top: var(--sp-5); border-top: 1px solid var(--color-border, #e6e6e9); scroll-margin-top: 80px; }
+    .st-sec h2 { font-family: var(--font-heading); font-size: 1.15rem; margin: 0 0 var(--sp-1); color: var(--color-text, #111114); }
+    .st-hint { color: var(--color-text-muted, #6b6b72); font-size: 0.85rem; margin: 0 0 var(--sp-3); }
+    .st-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-text-muted, #6b6b72); margin-bottom: 4px; }
+    .st-row { display: flex; justify-content: space-between; align-items: center; gap: var(--sp-3); padding: var(--sp-2) 0; flex-wrap: wrap; font-size: 0.95rem; color: var(--color-text, #111114); }
+    .st-row input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--va-red); }
+    .st-jump { display: flex; gap: var(--sp-3); flex-wrap: wrap; font-size: 0.85rem; margin-bottom: var(--sp-2); }
+    .seg { display: inline-flex; flex-wrap: wrap; border: 2px solid var(--color-border, #e6e6e9); border-radius: var(--radius-sm); overflow: hidden; }
+    .seg button { background: transparent; border: none; padding: 6px 12px; font: inherit; font-size: 0.85rem; cursor: pointer; color: var(--color-text-muted, #6b6b72); }
+    .seg button[aria-pressed="true"] { background: var(--color-text, #111114); color: var(--color-bg, #fff); }
+    .swatches { display: flex; gap: 10px; }
+    .swatch { width: 28px; height: 28px; border-radius: 50%; border: 3px solid transparent; cursor: pointer; padding: 0; }
+    .swatch[aria-pressed="true"] { border-color: var(--color-text, #111114); }
+    .va-badge { display: inline-block; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.03em; }
+    .va-badge--admin { background: rgba(200,16,46,0.1); color: var(--va-red); }
+    .va-badge--student { background: var(--color-surface-2, #f7f7f8); color: var(--color-text-muted, #6b6b72); }
+    .st-ghost { background: transparent; border: 2px solid var(--color-border, #e6e6e9); color: var(--color-text, #111114); }
+    .st-danger { border: 2px solid #c8102e; border-radius: var(--radius-md); padding: var(--sp-4); margin-top: var(--sp-4); }
+    .st-inline { display: flex; gap: 8px; }
+  </style>
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="courses.html">Courses</a></li>
+      <li><a href="community.html">Community</a></li>
+      <li><a href="certificates.html">Certificates</a></li>
+      <li id="nav-auth-slot"><a href="auth.html">Log In</a></li>
+    </ul>
+  </nav>
+
+  <div class="va-lesson" style="max-width:640px;">
+    <h1>Settings</h1>
+    <div class="st-jump">
+      <a href="#account">Account</a><a href="#appearance">Appearance</a><a href="#learning">Learning</a>
+      <a href="#notifications">Notifications</a><a href="#sync">Sync</a><a href="#app">App</a>
+      <a href="#privacy">Privacy</a><a href="#security">Security</a>
+    </div>
+    <p id="account-error" class="st-hint" hidden style="color:var(--va-red);">Couldn't load your account — the server may be waking up. Refresh in a moment, or <a href="auth.html">log in again</a>.</p>
+
+    <section class="st-sec" id="account">
+      <h2>Account</h2>
+      <div class="st-row"><span>Account type</span><span id="account-type-badge">—</span></div>
+      <div class="st-row"><span>Member since</span><span id="member-since">—</span></div>
+      <form id="profile-form" style="margin-top:var(--sp-3);">
+        <label class="st-label" for="settings-name">Display name</label>
+        <input class="va-input" id="settings-name" required maxlength="100" style="margin-bottom:4px;">
+        <p class="st-hint">Shown in community posts and chat. A nickname is fine.</p>
+        <label class="st-label" for="settings-cert-name">Name on certificates (optional)</label>
+        <input class="va-input" id="settings-cert-name" maxlength="100" placeholder="Same as display name" style="margin-bottom:4px;">
+        <p class="st-hint">Use your full name here if your display name is a nickname.</p>
+        <label class="st-label" for="settings-email">Email</label>
+        <input class="va-input" type="email" id="settings-email" required>
+        <div id="email-pw-wrap" hidden>
+          <label class="st-label" for="email-password">Current password (needed to change your email)</label>
+          <input class="va-input" type="password" id="email-password" autocomplete="current-password">
+        </div>
+        <button class="va-btn" type="submit">Save profile</button>
+      </form>
+    </section>
+
+    <section class="st-sec" id="appearance">
+      <h2>Appearance</h2>
+      <p class="st-hint">Changes apply instantly.</p>
+      <div id="appearance-body"></div>
+      <button class="va-btn st-ghost" id="reset-appearance" type="button" style="margin-top:var(--sp-3);">Reset appearance</button>
+    </section>
+
+    <section class="st-sec" id="learning">
+      <h2>Learning &amp; tools</h2>
+      <div id="learning-body"></div>
+    </section>
+
+    <section class="st-sec" id="notifications">
+      <h2>Notifications</h2>
+      <div class="st-row"><label for="notify-toggle">Email me when someone replies to my posts</label><input type="checkbox" id="notify-toggle"></div>
+    </section>
+
+    <section class="st-sec" id="sync">
+      <h2>Sync</h2>
+      <div class="st-row"><label for="sync-toggle">Sync my settings across devices</label><input type="checkbox" id="sync-toggle"></div>
+      <p class="st-hint">Appearance and learning preferences follow your account. Changes show up on other devices the next time you open the site there. When this is off, settings stay on this device only.</p>
+    </section>
+
+    <section class="st-sec" id="app">
+      <h2>App &amp; device</h2>
+      <p class="st-hint">On iPhone or iPad: tap Share, then "Add to Home Screen". On Android and desktop Chrome, an Install button appears below when your browser allows it.</p>
+      <button class="va-btn" id="install-btn" type="button" hidden style="margin-bottom:var(--sp-3);">Install Voyager Academy</button>
+      <p class="st-hint">Seeing an old version of a page, or something looks broken after an update? This clears the cached site files on this device and reloads.</p>
+      <button class="va-btn st-ghost" id="clear-cache-btn" type="button">Clear cached files &amp; reload</button>
+    </section>
+
+    <section class="st-sec" id="privacy">
+      <h2>Privacy &amp; data</h2>
+      <p class="st-hint">Download a copy of what we hold about you — profile, lesson progress, posts, replies and chat messages — as a JSON file. Your password is never included. See our <a href="privacy.html">Privacy Policy</a>.</p>
+      <button class="va-btn st-ghost" id="export-btn" type="button">Download my data</button>
+    </section>
+
+    <section class="st-sec" id="security">
+      <h2>Security</h2>
+      <form id="password-form">
+        <label class="st-label" for="current-password">Current password</label>
+        <input class="va-input" type="password" id="current-password" autocomplete="current-password" required>
+        <label class="st-label" for="new-password">New password (min. 8 characters)</label>
+        <input class="va-input" type="password" id="new-password" minlength="8" autocomplete="new-password" required>
+        <button class="va-btn" type="submit">Change password</button>
+      </form>
+      <div class="st-inline" style="margin-top:var(--sp-3);flex-wrap:wrap;">
+        <button class="va-btn st-ghost" id="logout-btn" type="button">Log out of this device</button>
+        <button class="va-btn st-ghost" id="logout-all-btn" type="button">Log out of all devices</button>
+      </div>
+      <p class="st-hint" style="margin-top:var(--sp-2);">"All devices" signs out every other browser and phone where you're logged in. You stay logged in here.</p>
+
+      <div class="st-inline" style="flex-wrap:wrap;margin-top:var(--sp-3);">
+        <button class="va-btn st-ghost" id="reset-learning" type="button">Reset learning settings</button>
+        <button class="va-btn st-ghost" id="clear-notes" type="button">Clear notes &amp; saved lessons</button>
+      </div>
+      <p class="st-hint" style="margin-top:var(--sp-2);">Notes and saved lessons are stored only on this device. Clearing them can't be undone.</p>
+
+      <div class="st-danger">
+      <h2 style="color:var(--va-red);">Danger zone</h2>
+      <p class="st-hint">Both actions need your password and can't be undone. Tip: use "Download my data" first.</p>
+      <input class="va-input" type="password" id="danger-password" autocomplete="current-password" placeholder="Your password">
+      <div class="st-inline" style="flex-wrap:wrap;margin-top:var(--sp-2);">
+        <button class="va-btn st-ghost" id="erase-data-btn" type="button" style="border-color:var(--va-red);color:var(--va-red);">Erase my data</button>
+        <button class="va-btn" id="delete-account-btn" type="button" style="background:var(--va-red);">Delete my account</button>
+      </div>
+        <p class="st-hint" style="margin-top:var(--sp-2);"><strong>Erase my data</strong> removes your lesson progress, certificates, streak, posts, replies, chat messages and saved settings. You keep your account and can log in again.</p>
+        <p class="st-hint"><strong>Delete my account</strong> does all of that and permanently deletes your account.</p>
+      </div>
+    </section>
+  </div>
+
+  <script src="js/toast.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const toast = (m, t) => (typeof vaToast === "function" ? vaToast(m, t) : alert(m));
+    const ROOMS = { general: "General", beginners: "Beginners", setups: "Trade Setups" };
+    const APPEARANCE_KEYS = ["accent", "text", "font", "width", "density", "reduceMotion", "contrast", "links", "lineHeight"];
+    let originalEmail = "";
+
+    const SEGMENTS = {
+      appearance: {
+        text: ["Text size", [["sm", "Small"], ["md", "Default"], ["lg", "Large"], ["xl", "X-large"]], "md"],
+        font: ["Reading font", [["inter", "Outfit"], ["system", "System"], ["serif", "Serif"]], "inter"],
+        width: ["Lesson width", [["narrow", "Narrow"], ["normal", "Comfortable"], ["wide", "Wide"]], "normal"],
+        lineHeight: ["Line spacing", [["normal", "Normal"], ["relaxed", "Relaxed"], ["loose", "Loose"]], "normal"],
+        density: ["Spacing", [["comfortable", "Comfortable"], ["compact", "Compact"]], "comfortable"],
+        contrast: ["Contrast", [["normal", "Normal"], ["high", "High"]], "normal"],
+        links: ["Links", [["default", "Default"], ["underline", "Underlined"]], "default"],
+      },
+      learning: {
+        weeklyGoal: ["Weekly lesson goal", [["0", "Off"], ["1", "1"], ["2", "2"], ["3", "3"], ["5", "5"], ["7", "7"]], "0"],
+        reviewLength: ["Review session length", [["5", "5"], ["10", "10"], ["20", "20"]], "10"],
+      },
+    };
+
+    function savePrefs(patch) {
+      localStorage.setItem("va_prefs", JSON.stringify({ ...vaGetPrefs(), ...patch }));
+      vaApplyPreferences();
+      if (typeof vaQueuePush === "function") vaQueuePush();
+    }
+
+    function applyTheme(mode) {
+      if (mode === "system") localStorage.removeItem("va_theme"); else localStorage.setItem("va_theme", mode);
+      vaApplyThemeFromStorage();
+      if (typeof vaQueuePush === "function") vaQueuePush();
+    }
+
+    function segRows(group) {
+      const p = vaGetPrefs();
+      return Object.entries(SEGMENTS[group]).map(([key, [label, opts, def]]) => {
+        const cur = String(p[key] ?? def);
+        return `<div class="st-row"><span>${label}</span><div class="seg" data-seg="${key}">${
+          opts.map(([v, l]) => `<button type="button" data-val="${v}" aria-pressed="${cur === v}">${l}</button>`).join("")
+        }</div></div>`;
+      }).join("");
+    }
+
+    function renderAppearance() {
+      const p = vaGetPrefs();
+      const mode = localStorage.getItem("va_theme") || "system";
+      $("appearance-body").innerHTML =
+        `<div class="st-row"><span>Theme</span><div class="seg">${
+          [["system", "System"], ["light", "Light"], ["dark", "Dark"]]
+            .map(([v, l]) => `<button type="button" data-theme-val="${v}" aria-pressed="${mode === v}">${l}</button>`).join("")
+        }</div></div>` +
+        `<div class="st-row"><span>Accent colour</span><div class="swatches">${
+          Object.entries(VA_ACCENTS)
+            .map(([k, c]) => `<button type="button" class="swatch" data-accent="${k}" style="background:${c[0]}" aria-label="${k}" aria-pressed="${(p.accent || "red") === k}"></button>`).join("")
+        }</div></div>` +
+        segRows("appearance") +
+        `<div class="st-row"><label for="pref-motion">Reduce motion</label><input type="checkbox" id="pref-motion" ${p.reduceMotion ? "checked" : ""}></div>`;
+    }
+
+    function renderLearning() {
+      const p = vaGetPrefs();
+      const room = ROOMS[p.chatRoom] ? p.chatRoom : "general";
+      $("learning-body").innerHTML =
+        segRows("learning") +
+        `<div class="st-row"><label for="pref-shuffle">Shuffle answer order in quizzes</label><input type="checkbox" id="pref-shuffle" ${p.shuffleQuiz !== false ? "checked" : ""}></div>` +
+        `<div class="st-row"><label for="pref-streak">Show my streak on the dashboard</label><input type="checkbox" id="pref-streak" ${p.showStreak !== false ? "checked" : ""}></div>` +
+        `<div class="st-row"><label for="pref-room">Default chat room</label><select class="va-input" id="pref-room" style="width:auto;margin:0;"> ${
+          Object.entries(ROOMS).map(([k, l]) => `<option value="${k}" ${k === room ? "selected" : ""}>${l}</option>`).join("")
+        }</select></div>` +
+        `<div class="st-row"><span>Calculator defaults</span><span class="st-inline">
+          <input class="va-input" id="pref-balance" type="number" min="0" step="any" placeholder="Balance" value="${p.calcBalance ?? ""}" style="width:110px;margin:0;">
+          <input class="va-input" id="pref-risk" type="number" min="0" step="any" placeholder="Risk %" value="${p.calcRisk ?? ""}" style="width:90px;margin:0;">
+          <input class="va-input" id="pref-stop" type="number" min="0" step="any" placeholder="Stop (pips)" value="${p.calcStop ?? ""}" style="width:110px;margin:0;">
+          </span></div>` +
+        `<div class="st-row"><label for="pref-extras">Show key takeaways under lessons</label><input type="checkbox" id="pref-extras" ${p.showExtras !== false ? "checked" : ""}></div>` +
+        `<div class="st-row"><label for="pref-readbar">Show reading progress bar</label><input type="checkbox" id="pref-readbar" ${p.showReadbar !== false ? "checked" : ""}></div>` +
+        `<div class="st-row"><label for="pref-hidedone">Hide completed lessons in Courses</label><input type="checkbox" id="pref-hidedone" ${p.hideDone ? "checked" : ""}></div>` +
+        `<div class="st-row"><label for="pref-badges">Show achievements on the dashboard</label><input type="checkbox" id="pref-badges" ${p.showBadges !== false ? "checked" : ""}></div>` +
+        `<div class="st-row"><label for="pref-sound">Play a sound for new chat messages</label><input type="checkbox" id="pref-sound" ${p.chatSound ? "checked" : ""}></div>` +
+        `<div class="st-row"><label for="pref-emoji">Show emoji reactions in chat</label><input type="checkbox" id="pref-emoji" ${p.chatEmoji !== false ? "checked" : ""}></div>`;
+    }
+
+    const page = document.querySelector(".va-lesson");
+    page.addEventListener("click", (e) => {
+      const t = e.target.closest("button");
+      if (!t) return;
+      if (t.dataset.themeVal) { applyTheme(t.dataset.themeVal); renderAppearance(); }
+      else if (t.dataset.accent) { savePrefs({ accent: t.dataset.accent }); renderAppearance(); }
+      else if (t.dataset.val !== undefined) {
+        savePrefs({ [t.closest("[data-seg]").dataset.seg]: t.dataset.val });
+        renderAppearance(); renderLearning();
+      }
+    });
+    page.addEventListener("change", (e) => {
+      const id = e.target.id;
+      if (id === "pref-motion") savePrefs({ reduceMotion: e.target.checked });
+      else if (id === "pref-shuffle") savePrefs({ shuffleQuiz: e.target.checked });
+      else if (id === "pref-streak") savePrefs({ showStreak: e.target.checked });
+      else if (id === "pref-room") savePrefs({ chatRoom: e.target.value });
+      else if (id === "pref-balance") savePrefs({ calcBalance: e.target.value || undefined });
+      else if (id === "pref-risk") savePrefs({ calcRisk: e.target.value || undefined });
+    
+      else if (id === "pref-extras") savePrefs({ showExtras: e.target.checked });
+      else if (id === "pref-readbar") savePrefs({ showReadbar: e.target.checked });
+      else if (id === "pref-hidedone") savePrefs({ hideDone: e.target.checked });
+      else if (id === "pref-badges") savePrefs({ showBadges: e.target.checked });
+      else if (id === "pref-sound") savePrefs({ chatSound: e.target.checked });
+      else if (id === "pref-stop") savePrefs({ calcStop: e.target.value || undefined });
+    
+    });
+
+    $("reset-appearance").addEventListener("click", () => {
+      const keep = { ...vaGetPrefs() };
+      APPEARANCE_KEYS.forEach((k) => delete keep[k]);
+      localStorage.setItem("va_prefs", JSON.stringify(keep));
+      applyTheme("system");
+      vaApplyPreferences();
+      renderAppearance();
+      toast("Appearance reset.", "success");
+    });
+
+    const LEARNING_KEYS = ["weeklyGoal", "reviewLength", "shuffleQuiz", "showStreak", "showExtras", "showReadbar",
+      "hideDone", "showBadges", "chatSound", "chatRoom", "calcBalance", "calcRisk", "calcStop"];
+
+    $("reset-learning").addEventListener("click", () => {
+      const keep = { ...vaGetPrefs() };
+      LEARNING_KEYS.forEach((k) => delete keep[k]);
+      localStorage.setItem("va_prefs", JSON.stringify(keep));
+      vaApplyPreferences();
+      if (typeof vaQueuePush === "function") vaQueuePush();
+      renderLearning();
+      toast("Learning settings reset.", "success");
+    });
+
+    $("clear-notes").addEventListener("click", () => {
+      if (!confirm("Delete all your lesson notes and saved lessons on this device?")) return;
+      Object.keys(localStorage)
+        .filter((k) => k.startsWith("va_note_") || k === "va_saved")
+        .forEach((k) => localStorage.removeItem(k));
+      toast("Notes and saved lessons cleared from this device.", "success");
+    });
+
+
+    // Sync
+    $("sync-toggle").addEventListener("change", (e) => {
+      localStorage.setItem("va_sync", e.target.checked ? "1" : "0");
+      if (e.target.checked) { vaPushPreferences(); toast("Settings will now follow your account.", "success"); }
+      else toast("Settings will stay on this device only.", "success");
+    });
+
+    // Install prompt
+    let deferredPrompt = null;
+    window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferredPrompt = e; $("install-btn").hidden = false; });
+    window.addEventListener("appinstalled", () => { $("install-btn").hidden = true; });
+    $("install-btn").addEventListener("click", async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      $("install-btn").hidden = true;
+    });
+
+    // Clear cache
+    $("clear-cache-btn").addEventListener("click", async () => {
+      try {
+        if ("serviceWorker" in navigator) {
+          const regs = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(regs.map((r) => r.unregister()));
+        }
+        if (window.caches) {
+          const keys = await caches.keys();
+          await Promise.all(keys.map((k) => caches.delete(k)));
+        }
+      } catch (e) {}
+      toast("Cache cleared — reloading…", "success");
+      setTimeout(() => location.reload(), 600);
+    });
+
+    // Profile
+    $("settings-email").addEventListener("input", () => {
+      $("email-pw-wrap").hidden = $("settings-email").value.trim() === originalEmail;
+    });
+    $("profile-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        const s = await vaUpdateProfile($("settings-name").value, $("settings-email").value.trim(), $("email-password").value, $("settings-cert-name").value);
+        originalEmail = s.email;
+        $("email-pw-wrap").hidden = true;
+        $("email-password").value = "";
+        toast("Profile updated.", "success");
+      } catch (err) { toast(err.message, "error"); }
+    });
+
+    // Notifications
+    $("notify-toggle").addEventListener("change", async (e) => {
+      try {
+        await vaUpdateNotifications(e.target.checked);
+        toast("Notification preference saved.", "success");
+      } catch (err) {
+        toast(err.message, "error");
+        e.target.checked = !e.target.checked;
+      }
+    });
+
+    // Data export
+    $("export-btn").addEventListener("click", async () => {
+      try {
+        const data = await vaExportData();
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "voyager-academy-my-data.json";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(a.href);
+        toast("Your data has been downloaded.", "success");
+      } catch (err) { toast(err.message, "error"); }
+    });
+
+    // Security
+    $("password-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        await vaChangePassword($("current-password").value, $("new-password").value);
+        toast("Password changed. Please log in again.", "success");
+        setTimeout(() => vaLogout(), 1500);
+      } catch (err) { toast(err.message, "error"); }
+    });
+    $("logout-btn").addEventListener("click", () => vaLogout());
+    $("logout-all-btn").addEventListener("click", async () => {
+      if (!confirm("Sign out every other device where you're logged in?")) return;
+      try {
+        await vaLogoutEverywhere();
+        toast("All other devices have been signed out.", "success");
+      } catch (err) { toast(err.message, "error"); }
+    });
+
+    function dangerPassword() {
+      const pw = $("danger-password").value;
+      if (!pw) { toast("Enter your password to confirm.", "error"); $("danger-password").focus(); return null; }
+      return pw;
+    }
+
+    $("erase-data-btn").addEventListener("click", async () => {
+      const pw = dangerPassword(); if (!pw) return;
+      if (!confirm("Erase your lesson progress, certificates, streak, posts, replies and chat messages? Your account stays, but this can't be undone.")) return;
+      try {
+        await vaEraseMyData(pw);
+        const keep = ["va_token", "va_student", "va_theme", "va_sync"];
+        Object.keys(localStorage).filter((k) => k.startsWith("va_") && !keep.includes(k)).forEach((k) => localStorage.removeItem(k));
+        sessionStorage.removeItem("va_synced");
+        const s = vaGetStudent(); if (s) { s.certificate_name = null; vaSetStudent(s); }
+        toast("Your data has been erased.", "success");
+        setTimeout(() => location.reload(), 1200);
+      } catch (err) { toast(err.message, "error"); }
+    });
+
+    $("delete-account-btn").addEventListener("click", async () => {
+      const pw = dangerPassword(); if (!pw) return;
+      if (!confirm("This permanently deletes your account, posts, replies, chat messages and progress. Are you absolutely sure?")) return;
+      if (!confirm("Really sure? This cannot be undone.")) return;
+      try {
+        await vaDeleteAccount(pw);
+        vaLogout();
+      } catch (err) { toast(err.message, "error"); }
+    });
+
+    async function init() {
+      if (!vaGetToken()) { window.location.href = "auth.html"; return; }
+      renderAppearance();
+      renderLearning();
+      $("sync-toggle").checked = vaSyncEnabled();
+
+      let student = null;
+      try { student = await vaGetMe(); } catch (e) {}
+      if (!student) { $("account-error").hidden = false; return; }
+
+      originalEmail = student.email;
+      $("settings-name").value = student.name;
+      $("settings-cert-name").value = student.certificate_name || "";
+      $("settings-email").value = student.email;
+      $("notify-toggle").checked = student.notify_on_reply;
+      $("account-type-badge").innerHTML = student.is_admin
+        ? `<span class="va-badge va-badge--admin">Administrator</span>`
+        : `<span class="va-badge va-badge--student">Student</span>`;
+      $("member-since").textContent = new Date(student.created_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+    }
+    init();
+  </script>
+</body>
+</html>

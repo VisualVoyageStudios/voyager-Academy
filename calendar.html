@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function() {
+      const saved = localStorage.getItem("va_theme");
+      if (saved === "dark" || (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Economic Calendar — Voyager Academy</title>
+  <meta name="description" content="A live economic calendar: data releases and central bank events that move the currency markets.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#111114">
+  <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+</head>
+<body>
+  <nav class="va-nav">
+    <div class="va-nav__logo">Voyager <span>Academy</span></div>
+    <ul class="va-nav__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="courses.html">Courses</a></li>
+      <li><a href="community.html">Community</a></li>
+      <li><a href="certificates.html">Certificates</a></li>
+      <li id="nav-auth-slot"><a href="auth.html">Log In</a></li>
+    </ul>
+  </nav>
+
+  <div class="va-lesson" style="max-width:960px;">
+    <h1>Economic Calendar</h1>
+    <p style="color:var(--color-text-muted,#6b6b72);">Live data releases and central bank events. New to reading one? Start with the <a href="lesson.html?slug=economic-calendar-mastery">Reading the Economic Calendar</a> lesson.</p>
+
+    <div class="va-track-tabs" id="imp-tabs" style="justify-content:flex-start;margin:var(--sp-3) 0;">
+      <button class="va-track-tab" data-imp="high">High impact</button>
+      <button class="va-track-tab active" data-imp="medium">Medium + high</button>
+      <button class="va-track-tab" data-imp="all">All events</button>
+    </div>
+
+    <div id="cal-host"></div>
+    <p id="cal-fallback" hidden style="color:var(--va-red);font-size:0.9rem;">The calendar didn't load. You can open it directly at <a href="https://www.tradingview.com/economic-calendar/" target="_blank" rel="noopener">tradingview.com/economic-calendar</a>.</p>
+    <p style="font-size:0.8rem;color:var(--color-text-muted,#6b6b72);margin-top:var(--sp-3);">Calendar data provided by TradingView. Educational use only — not financial advice.</p>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const IMPORTANCE = { high: "1", medium: "0,1", all: "-1,0,1" };
+    let importance = "medium", fallbackTimer = null;
+
+    function renderCalendar() {
+      const host = document.getElementById("cal-host");
+      host.innerHTML = "";
+      const wrap = document.createElement("div");
+      wrap.className = "tradingview-widget-container";
+      wrap.innerHTML = '<div class="tradingview-widget-container__widget"></div>';
+      const script = document.createElement("script");
+      script.src = "https://s3.tradingview.com/external-embedding/embed-widget-events.js";
+      script.async = true;
+      script.textContent = JSON.stringify({
+        width: "100%",
+        height: 600,
+        colorTheme: document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light",
+        isTransparent: false,
+        locale: "en",
+        importanceFilter: IMPORTANCE[importance],
+        countryFilter: "us,eu,gb,jp,au,ca,za,cn,de,fr",
+      });
+      wrap.appendChild(script);
+      host.appendChild(wrap);
+
+      document.getElementById("cal-fallback").hidden = true;
+      clearTimeout(fallbackTimer);
+      fallbackTimer = setTimeout(() => {
+        document.getElementById("cal-fallback").hidden = !!host.querySelector("iframe");
+      }, 8000);
+    }
+
+    document.querySelectorAll("#imp-tabs button").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#imp-tabs button").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        importance = btn.dataset.imp;
+        renderCalendar();
+      });
+    });
+    document.addEventListener("click", (e) => {
+      if (e.target.closest("#theme-toggle-btn")) setTimeout(renderCalendar, 50);
+    });
+    renderCalendar();
+  </script>
+</body>
+</html>

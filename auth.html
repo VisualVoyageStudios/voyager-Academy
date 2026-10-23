@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function() {
+      const saved = localStorage.getItem("va_theme");
+      if (saved === "dark" || (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log in or sign up — Voyager Academy</title>
+  <meta name="description" content="Log in or create a free Voyager Academy account to save your progress, build streaks and earn certificates.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#111114">
+  <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+</head>
+<body data-focus>
+  <div class="au">
+    <aside class="au__brand" id="au-brand"></aside>
+
+    <main class="au__main">
+      <div class="au__top" id="au-top"></div>
+
+      <div class="au__card">
+        <div id="au-already" hidden>
+          <h1>You're signed in</h1>
+          <p class="au__sub">Logged in as <strong id="au-already-name"></strong>.</p>
+          <a class="va-btn au__btn" id="au-continue" href="dashboard.html">Continue</a>
+          <button class="va-btn au__btn au__ghost" id="au-logout" type="button">Log out</button>
+        </div>
+
+        <div id="au-form-wrap">
+          <div class="au__tabs" role="tablist">
+            <button type="button" role="tab" id="tab-login" aria-selected="true">Log in</button>
+            <button type="button" role="tab" id="tab-register" aria-selected="false">Create account</button>
+          </div>
+          <h1 id="au-title">Welcome back</h1>
+          <p class="au__sub" id="au-sub">Log in to pick up where you left off.</p>
+
+          <div class="au__alert" id="au-alert" role="alert" hidden></div>
+
+          <form id="au-form" novalidate>
+            <div class="au__field" id="f-name-wrap" hidden>
+              <label for="f-name">Display name</label>
+              <input class="va-input" id="f-name" autocomplete="name" maxlength="100" aria-describedby="e-name">
+              <div class="au__hint" id="e-name">Shown in the community and chat. A nickname is fine.</div>
+            </div>
+
+            <div class="au__field">
+              <label for="f-email">Email</label>
+              <input class="va-input" id="f-email" type="email" autocomplete="email" inputmode="email" aria-describedby="e-email">
+              <div class="au__hint" id="e-email"></div>
+            </div>
+
+            <div class="au__field">
+              <label for="f-password"><span>Password</span><a href="forgot-password.html" id="f-forgot">Forgot password?</a></label>
+              <div class="au__pw">
+                <input class="va-input" id="f-password" type="password" autocomplete="current-password" aria-describedby="e-password">
+                <button type="button" class="au__eye" aria-label="Show password" aria-pressed="false">Show</button>
+              </div>
+              <div class="au__hint" id="e-password"></div>
+              <div id="f-meter" hidden>
+                <div class="au__meter" id="au-meter" data-s="0"><span></span><span></span><span></span><span></span></div>
+                <div class="au__hint" id="au-meter-label">At least 8 characters</div>
+              </div>
+              <div class="au__hint" id="f-caps"></div>
+            </div>
+
+            <label class="au__check" id="f-consent" hidden>
+              <input type="checkbox" id="f-agree">
+              <span>I'm 18 or older, I agree to the <a href="terms.html" target="_blank" rel="noopener">Terms</a> and <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>, and I understand trading involves risk.</span>
+            </label>
+            <div class="au__hint" id="e-consent"></div>
+
+            <button class="va-btn au__btn" id="au-submit" type="submit">Log in</button>
+            <div class="au__status" id="au-status" aria-live="polite"></div>
+          </form>
+
+          <p class="au__alt">Just looking? <a href="courses.html">Browse the lessons</a> — no account needed.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/toast.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/auth-ui.js"></script>
+  <script>
+    (function () {
+      const { $, busy, showAlert, slowHint, setHint, meter, wirePasswordToggles } = AU;
+      AU.fillShell();
+      wirePasswordToggles();
+      meter($("f-password"), $("au-meter"), $("au-meter-label"));
+
+      const params = new URLSearchParams(location.search);
+      const BLOCK = /^(index|auth|forgot-password|reset-password)\.html/;
+      const okPath = (p) => /^[A-Za-z0-9_\-]+\.html(\?[A-Za-z0-9_\-=&%.]*)?$/.test(p) && !BLOCK.test(p);
+      function safeNext() {
+        const n = params.get("next");
+        if (n && okPath(n)) return n;
+        try {
+          const r = new URL(document.referrer);
+          if (r.origin === location.origin) {
+            const p = r.pathname.split("/").pop() + r.search;
+            if (okPath(p)) return p;
+          }
+        } catch (e) {}
+        return "dashboard.html";
+      }
+      const next = safeNext();
+
+      const student = vaGetStudent();
+      if (vaGetToken() && student) {
+        $("au-form-wrap").hidden = true;
+        $("au-already").hidden = false;
+        $("au-already-name").textContent = student.name;
+        $("au-continue").href = next;
+        $("au-logout").addEventListener("click", () => vaLogout());
+        return;
+      }
+
+      let mode = params.get("tab") === "register" ? "register" : "login";
+
+      function setMode(m) {
+        mode = m;
+        const reg = m === "register";
+        $("tab-login").setAttribute("aria-selected", String(!reg));
+        $("tab-register").setAttribute("aria-selected", String(reg));
+        $("au-title").textContent = reg ? "Create your free account" : "Welcome back";
+        $("au-sub").textContent = reg ? "Save your progress, build a streak and earn certificates." : "Log in to pick up where you left off.";
+        $("f-name-wrap").hidden = !reg;
+        $("f-consent").hidden = !reg;
+        $("f-meter").hidden = !reg;
+        $("f-forgot").hidden = reg;
+        $("au-submit").textContent = reg ? "Create account" : "Log in";
+        $("f-password").autocomplete = reg ? "new-password" : "current-password";
+        showAlert($("au-alert"), "");
+        ["f-name:e-name", "f-email:e-email", "f-password:e-password"].forEach((p) => setHint(p.split(":")[0], p.split(":")[1], ""));
+        setHint(null, "e-consent", "");
+        const q = new URLSearchParams(location.search);
+        if (reg) q.set("tab", "register"); else q.delete("tab");
+        history.replaceState(null, "", "auth.html" + (q.toString() ? "?" + q : ""));
+      }
+      $("tab-login").addEventListener("click", () => setMode("login"));
+      $("tab-register").addEventListener("click", () => setMode("register"));
+      setMode(mode);
+
+      [["f-name", "e-name"], ["f-email", "e-email"], ["f-password", "e-password"]].forEach(([i, h]) =>
+        $(i).addEventListener("input", () => setHint(i, h, "")));
+      $("f-agree").addEventListener("change", () => setHint(null, "e-consent", ""));
+      $("f-password").addEventListener("keyup", (e) => {
+        $("f-caps").textContent = e.getModifierState && e.getModifierState("CapsLock") ? "Caps Lock is on" : "";
+      });
+
+      function validate(reg, name, email, pw) {
+        let ok = true;
+        const bad = (i, h, msg) => { setHint(i, h, msg); ok = false; };
+        if (reg && name.length < 2) bad("f-name", "e-name", "Enter your name (at least 2 characters).");
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) bad("f-email", "e-email", "Enter a valid email address.");
+        if (reg && /[<>&"`]/.test(name)) bad("f-name", "e-name", "Names can't contain < > & \" or `.");
+        if (reg ? pw.length < 8 : !pw) bad("f-password", "e-password", reg ? "Use at least 8 characters." : "Enter your password.");
+        if (reg && !$("f-agree").checked) bad(null, "e-consent", "Please agree to continue.");
+        return ok;
+      }
+
+      $("au-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const reg = mode === "register";
+        const name = $("f-name").value.trim(), email = $("f-email").value.trim(), pw = $("f-password").value;
+        showAlert($("au-alert"), "");
+        if (!validate(reg, name, email, pw)) {
+          const first = document.querySelector('.au [aria-invalid="true"]');
+          if (first) first.focus();
+          return;
+        }
+        const done = slowHint($("au-status"));
+        busy($("au-submit"), true, reg ? "Creating account…" : "Logging in…");
+        try {
+          if (reg) await vaRegister(name, email, pw); else await vaLogin(email, pw);
+          location.href = next;
+        } catch (err) {
+          showAlert($("au-alert"), (err && err.message) || "Something went wrong. Please try again.");
+          busy($("au-submit"), false);
+        } finally {
+          done();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

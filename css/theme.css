@@ -1,0 +1,490 @@
+/* ============================================================
+   Voyager Academy — cinematic theme layer
+   Loads AFTER main.css. Dark-only. Screen only (print is untouched).
+   ============================================================ */
+@import url("https://fonts.googleapis.com/css2?family=Italiana&family=Outfit:wght@300;400;500;600&display=swap");
+@import url("./loader.css");
+
+@media screen {
+  /* ---------- 1. Tokens ---------- */
+  :root,
+  [data-theme="light"],
+  [data-theme="dark"] {
+    color-scheme: dark;
+
+    --font-base:
+      "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-heading: "Outfit", sans-serif;
+    --font-display: "Italiana", Georgia, serif;
+
+    /* legacy palette, remapped so every older rule that reads it goes dark */
+    --va-white: #000000;
+    --va-off-white: #0f0f13;
+    --va-black: #fff6ed;
+    --va-black-soft: #1c1c20;
+    --va-border: rgba(255, 255, 255, 0.12);
+    --va-text: #ececf0;
+    --va-text-muted: #9d9da6;
+
+    --color-bg: #000000;
+    --color-surface: #0b0b0e;
+    --color-surface-2: #121216;
+    --color-text: #f4f0ea;
+    --color-text-muted: #9d9da6;
+    --color-border: rgba(255, 255, 255, 0.12);
+
+    --line: rgba(255, 255, 255, 0.12);
+    --line-strong: rgba(255, 255, 255, 0.28);
+    --line-faint: rgba(255, 255, 255, 0.06);
+
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+
+    --page-pad: clamp(20px, 4vw, 60px);
+    --page-max: 1180px;
+    --footer-max: 1240px;
+  }
+
+  /* ---------- 2. Base, ambient glow, hairline grid ---------- */
+  html {
+    background: #000;
+    scrollbar-width: thin;
+    scrollbar-color: #2b2b32 #000;
+  }
+  body {
+    background: transparent !important; /* lets the glow and grid show behind content */
+    color: var(--color-text);
+    font-family: var(--font-base);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: rgba(200, 16, 46, 0.65);
+    color: #fff;
+  }
+
+  html::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        90% 60% at 0% 0%,
+        rgba(200, 16, 46, 0.14),
+        transparent 60%
+      ),
+      radial-gradient(
+        70% 50% at 100% 100%,
+        rgba(37, 99, 235, 0.08),
+        transparent 60%
+      );
+  }
+  @supports (background: color-mix(in srgb, red 10%, transparent)) {
+    html::after {
+      background:
+        radial-gradient(
+          90% 60% at 0% 0%,
+          color-mix(in srgb, var(--va-red) 16%, transparent),
+          transparent 60%
+        ),
+        radial-gradient(
+          70% 50% at 100% 100%,
+          rgba(37, 99, 235, 0.08),
+          transparent 60%
+        );
+    }
+  }
+
+  /* five vertical hairlines, like the landing page */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 40px;
+    right: 40px;
+    z-index: -1;
+    pointer-events: none;
+    background-image: linear-gradient(
+      to right,
+      var(--line-faint) 1px,
+      transparent 1px
+    );
+    background-size: 25% 100%;
+    border-right: 1px solid var(--line-faint);
+  }
+  @media (min-width: 1100px) {
+    html.va-shell body::before {
+      left: calc(var(--side-w) + 40px);
+    }
+    html.va-shell.va-side-collapsed body::before {
+      left: calc(var(--side-w-collapsed) + 40px);
+    }
+  }
+  @media (max-width: 900px) {
+    body::before {
+      left: 16px;
+      right: 16px;
+      background-size: 50% 100%;
+    }
+  }
+  /* no lines behind long-form reading, forms and discussions */
+  body:has(#lesson-body)::before,
+  body:has(.lg__body)::before,
+  body:has(#quiz-area)::before,
+  body:has(#rv-area)::before,
+  body:has(#post-container)::before,
+  body:has(.st-sec)::before {
+    display: none;
+  }
+
+  /* ---------- 3. Typography ---------- */
+  h1 {
+    --font-heading: var(--font-display);
+    font-family: var(--font-display);
+    font-weight: 400;
+  }
+
+  html .va-lesson h1,
+  html .va-app .va-lesson > h1,
+  html .va-public .va-lesson > h1,
+  html .va-pagehead h1,
+  html .dash-head h1,
+  html .lg__head h1,
+  html .au__card h1,
+  html .nf h1 {
+    font-size: clamp(2.3rem, 4.4vw, 3.75rem);
+    line-height: 1.04;
+    letter-spacing: 1px;
+    border: 0;
+    padding-bottom: 0;
+  }
+
+  .va-lesson__body {
+    font-weight: 400;
+    line-height: var(--va-lh, 1.75);
+  }
+  .va-lesson__body p,
+  .va-lesson__body li {
+    color: #d4d4da;
+  }
+  .va-lesson__body p {
+    margin-bottom: 1.1em;
+  }
+  .va-lesson__body h2 {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    margin: var(--sp-6) 0 var(--sp-3);
+  }
+
+  /* small caps-style labels */
+  .va-card__tag,
+  .va-post-card__category,
+  .va-lesson__tag,
+  .va-side__label {
+    text-transform: uppercase;
+    letter-spacing: 1.8px;
+    font-size: 0.68rem;
+    font-weight: 600;
+  }
+  .va-card__tag,
+  .va-post-card__category {
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    color: var(--color-text);
+    padding: 3px 12px;
+  }
+
+  /* ---------- 4. Layout: one container system ---------- */
+  html .va-lesson,
+  html .va-app .va-lesson {
+    padding-left: var(--page-pad);
+    padding-right: var(--page-pad);
+  }
+  html .va-app .va-lesson {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  } /* centred, no empty right half on wide screens */
+
+  html .va-main > .va-pagehead,
+  html .va-main > .va-track-tabs,
+  html .va-main > .va-grid {
+    max-width: var(--page-max);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--page-pad);
+    padding-right: var(--page-pad);
+  }
+
+  .va-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr));
+    gap: var(--sp-4);
+  }
+  .va-track-tabs {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* ---------- 5. Navigation, sidebar, footer ---------- */
+  .va-nav {
+    position: sticky;
+    top: 0;
+    z-index: 30; /* main.css later reset this to relative, so the bar never stuck */
+    min-height: 64px;
+    padding-left: var(--page-pad);
+    padding-right: var(--page-pad);
+    border-bottom-width: 1px;
+  }
+  html.va-shell .va-nav {
+    padding-left: var(--page-pad);
+    padding-right: var(--page-pad);
+  }
+
+  .va-nav__logo {
+    font: 600 0.8rem var(--font-base);
+    letter-spacing: 5px;
+    text-transform: uppercase;
+  }
+  .va-nav__logo span {
+    color: inherit;
+  }
+  .va-nav__links a {
+    font-size: 0.66rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .va-nav__links a.active {
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 4px;
+  }
+  .va-nav__links li:has(#theme-toggle-btn) {
+    display: none;
+  } /* dark-only */
+  @media (max-width: 1100px) {
+    .va-nav__links {
+      border-bottom-width: 1px;
+      padding-left: var(--page-pad);
+      padding-right: var(--page-pad);
+    }
+  }
+
+  .va-side__brand {
+    font: 600 0.78rem var(--font-base);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+  .va-side__brand b {
+    color: inherit;
+    font-weight: 600;
+  }
+  .va-side__link {
+    border-radius: 12px;
+    font-size: 0.88rem;
+  }
+  .va-side__link.active {
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  .va-footer-mega {
+    background: #000;
+    border-top: 1px solid var(--line);
+    padding: var(--sp-6) var(--page-pad) var(--sp-4);
+  }
+  .va-footer-mega__grid {
+    max-width: var(--footer-max);
+    grid-template-columns: minmax(220px, 1.6fr) repeat(5, minmax(0, 1fr)); /* six blocks: brand + five link columns */
+    gap: var(--sp-5) var(--sp-4);
+    border-bottom-color: var(--line);
+  }
+  .va-footer-mega__bottom {
+    max-width: var(--footer-max);
+  }
+  .va-footer-mega h4 {
+    font-size: 0.68rem;
+    letter-spacing: 1.8px;
+    color: #fff;
+  }
+  .va-footer-mega li {
+    margin-bottom: var(--sp-2);
+  }
+  @media (min-width: 1100px) and (max-width: 1500px) {
+    html.va-shell .va-footer-mega__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    html.va-shell .va-footer-mega__brand {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 1099px) {
+    .va-footer-mega__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .va-footer-mega__brand {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 700px) {
+    .va-footer-mega__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* ---------- 6. Components ---------- */
+  /* buttons: white pills */
+  .va-btn {
+    border-radius: 100px;
+    padding: 13px 28px;
+    font: 600 0.72rem/1 var(--font-base);
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    background: #fff;
+    color: #000;
+    box-shadow: none;
+  }
+  .va-btn::before {
+    display: none;
+  }
+  .va-btn:hover {
+    background: #f0f0f0;
+    transform: translateY(-1px) scale(1.03);
+    box-shadow: 0 8px 24px rgba(255, 255, 255, 0.12);
+  }
+  .va-btn[style*="va-red"] {
+    color: #fff;
+  } /* destructive buttons keep white text on red */
+  .va-btn--outline {
+    border-width: 1px;
+  }
+  .va-btn--outline:hover {
+    background: #fff;
+    color: #000;
+  }
+
+  /* inputs */
+  .va-input {
+    border-width: 1px;
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    font-family: var(--font-base);
+  }
+  .va-input:focus {
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
+  }
+
+  /* cards and panels */
+  .va-card,
+  .va-track-card,
+  .va-stats-card,
+  .va-post-card,
+  .va-cert-card {
+    border-width: 1px;
+    border-radius: var(--radius-lg);
+    box-shadow: none;
+  }
+  .va-card {
+    border-left-width: 1px;
+  }
+  .va-extras__card,
+  .va-toc,
+  .va-notes,
+  .va-calc {
+    border-radius: var(--radius-lg);
+  }
+  .va-card:hover,
+  .va-post-card:hover,
+  .va-track-card:hover {
+    box-shadow: none;
+  }
+
+  /* tabs: pills */
+  .va-track-tab {
+    border-width: 1px;
+    border-radius: 100px;
+    padding: 8px 18px;
+    font-family: var(--font-base);
+    font-size: 0.72rem;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+  }
+
+  /* hairlines instead of thick rules */
+  .va-footer {
+    border-top-width: 1px;
+  }
+  .va-disclaimer {
+    border-top-color: var(--line);
+  }
+
+  /* ---------- 7. Small things ---------- */
+  .va-toast {
+    background: #101014;
+    border-radius: 14px;
+    box-shadow:
+      0 8px 24px rgba(0, 0, 0, 0.5),
+      0 0 0 1px var(--line);
+  }
+  .va-top {
+    background: #fff;
+    color: #000;
+  }
+  .va-video {
+    background: #000;
+  }
+  .st-row:has([data-theme-val]) {
+    display: none;
+  } /* settings: theme picker, dark-only now */
+
+  @media (max-width: 700px) {
+    .va-lesson__body table {
+      display: block;
+      max-width: 100%;
+      overflow-x: auto;
+    }
+  }
+
+  /* ---------- 8. Icons ---------- */
+  .fa-solid,
+  .fa-regular,
+  .fa-brands {
+    line-height: 1;
+  }
+  .va-side__ico i {
+    font-size: 0.95rem;
+  }
+  html.va-side-collapsed #va-side-collapse i {
+    transform: rotate(180deg);
+  }
+  #va-search-btn {
+    color: var(--color-text);
+    font-size: 1rem;
+  }
+  .va-tabbar i {
+    font-size: 1.15rem;
+  }
+  .dash-tile i {
+    width: 1.2em;
+    text-align: center;
+    color: var(--va-red);
+  }
+  .va-cert-card__icon i {
+    color: var(--va-red);
+  }
+  .va-cert-card.locked .va-cert-card__icon i {
+    color: var(--color-text-muted);
+  }
+  .badge__icon i {
+    color: var(--color-text-muted);
+  }
+  .badge.earned .badge__icon i {
+    color: var(--va-red);
+  }
+
+  .va-diagram [fill="#fff"] {
+    fill: var(--color-bg);
+  }
+}
