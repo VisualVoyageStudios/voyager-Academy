@@ -1,0 +1,10 @@
+fastapi>=0.143,<1
+slowapi>=0.1.10
+uvicorn[standard]==0.30.6
+sqlalchemy>=2.0.44,<2.1
+psycopg2-binary>=2.9.11
+bcrypt>=4.1
+python-jose[cryptography]>=3.5.0
+python-dotenv==1.2.2
+email-validator
+alembic
