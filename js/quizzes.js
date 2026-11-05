@@ -1,4 +1,5 @@
 const QUIZ_DATA = {
+
   // Basic
   "what-is-forex": [
     { q: "In EUR/USD, which is the base currency?", options: ["USD", "Neither — it varies by broker", "EUR", "Both, equally"], correct: 2 },
