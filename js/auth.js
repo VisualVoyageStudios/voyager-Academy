@@ -1,4 +1,4 @@
-const API_BASE = "https://voyager-academy.onrender.com";
+const API_BASE = "https://voyager-academy-pdur.onrender.com";
 
 let vaWakeupToastShown = false;
 async function vaFetchWithWakeupHint(url, options) {
