@@ -9,6 +9,10 @@ import models
 import schemas
 import auth
 
+import traceback
+from starlette.middleware.base import BaseHTTPMiddleware
+from fastapi.responses import JSONResponse
+
 from fastapi import FastAPI, Depends, HTTPException, status, Query
 from fastapi import BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
@@ -35,6 +39,21 @@ FRONTEND_URL = os.getenv("FRONTEND_URL", "https://visualvoyagestudios.github.io/
 "models.Base.metadata.create_all(bind=engine)"
 
 app = FastAPI(title="Voyager Academy API")
+
+class CatchCrashesMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Requesr, call_next):
+        try:
+            response = await call_next(request)
+            return response
+        except Exception as e:
+            traceback.print_exc()
+            return JSOMResponse(
+                content=["detail": "Internal server error."],
+            )
+
+app.add_middleware(CatchCrashesMiddleware)
+
+
 
 app.add_middleware(
     CORSMiddleware,
