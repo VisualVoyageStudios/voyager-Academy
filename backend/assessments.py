@@ -70,8 +70,7 @@ def submit_attempt(slug: str, payload: SubmitIn, student: models.Student = Depen
         models.QuizAttempt.id == payload.attempt_id,
         models.QuizAttempt.student_id == student.id,
         models.QuizAttempt.lesson_slug == slug,
-        models.QuizAttempt.with_for_update(),
-    ).first()
+    ).wait_for_update.first()
     if not attempt or attempt.finished_at is not None:
         raise HTTPException(status_code=400, detail="Invalid or already-submitted attempt.")
     keys = _keys(db, slug)
