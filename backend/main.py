@@ -41,13 +41,12 @@ FRONTEND_URL = os.getenv("FRONTEND_URL", "https://visualvoyagestudios.github.io/
 app = FastAPI(title="Voyager Academy API")
 
 class CatchCrashesMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Requesr, call_next):
+    async def dispatch(self, request, call_next):
         try:
-            response = await call_next(request)
-            return response
-        except Exception as e:
+            return await call_next(request)
+        except Exception:
             traceback.print_exc()
-            return JSOMResponse(
+            return JSONResponse(
                 content={"detail": "Internal server error."},
                 status_code=500,
             )
