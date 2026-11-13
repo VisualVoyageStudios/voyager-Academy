@@ -48,7 +48,8 @@ class CatchCrashesMiddleware(BaseHTTPMiddleware):
         except Exception as e:
             traceback.print_exc()
             return JSOMResponse(
-                content=["detail": "Internal server error."],
+                content={"detail": "Internal server error."},
+                status_code=500,
             )
 
 app.add_middleware(CatchCrashesMiddleware)
