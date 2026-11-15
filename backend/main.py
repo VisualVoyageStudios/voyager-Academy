@@ -1,5 +1,6 @@
 import os
 import secrets
+import traceback
 from datetime import datetime, timedelta, timezone
 import email_utils
 import hmac, hashlib, base64
@@ -9,8 +10,7 @@ import models
 import schemas
 import auth
 
-import traceback
-from starlette.middleware.base import BaseHTTPMiddleware
+from  starlette.middleware.base import BaseHTTPMiddleware
 from fastapi.responses import JSONResponse
 
 from fastapi import FastAPI, Depends, HTTPException, status, Query
@@ -41,10 +41,11 @@ FRONTEND_URL = os.getenv("FRONTEND_URL", "https://visualvoyagestudios.github.io/
 app = FastAPI(title="Voyager Academy API")
 
 class CatchCrashesMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request, call_next):
+    async def dispatch(self, request: Request, call_next):
         try:
-            return await call_next(request)
-        except Exception:
+            response = await call_next(request)
+            return response
+        except Exception as e:
             traceback.print_exc()
             return JSONResponse(
                 content={"detail": "Internal server error."},
@@ -53,12 +54,11 @@ class CatchCrashesMiddleware(BaseHTTPMiddleware):
 
 app.add_middleware(CatchCrashesMiddleware)
 
-
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://visualvoyagestudios.github.io",
+        "https://visualvoyagestudios.github.io/voyager-Academy",
         "http://localhost:5500",
         "http://127.0.0.1:5500",
     ],
@@ -783,7 +783,6 @@ def dismiss_report(
     post.is_reported = False
     db.commit()
     return {"message": "Report dismissed."}
-
 
 
 @app.get("/admin/stats")
