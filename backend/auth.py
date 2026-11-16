@@ -1,7 +1,9 @@
 import os, secrets, hashlib
 import bcrypt
 from datetime import datetime, timedelta
-from jose import jwt, JWTError
+import jwt
+from jwt import InvalidTokenError as JWTError
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
@@ -27,7 +29,7 @@ def verify_password(plain: str, hashed: str) -> bool:
         return bcrypt.checkpw(plain.encode("utf-8"), hashed.encode("utf-8"))
     except ValueError:          # bcrypt 5 raises on passwords over 72 bytes
         return False
-
+    
 def hash_reset_token(token: str) -> str:
     return hashlib.sha256(token.encode("utf-8")).hexdigest()
 
