@@ -23,7 +23,8 @@ from sqlalchemy import Boolean
 
 from database import get_db, SessionLocal
 from fastapi import WebSocket, WebSocketDisconnect
-from jose import jwt
+import jwt
+from jwt import InvalidTokenError as JWTError
 from starlette.concurrency import run_in_threadpool
 
 from fastapi import Request
@@ -33,8 +34,12 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
+from auth import hash_password
+
 
 FRONTEND_URL = os.getenv("FRONTEND_URL", "https://visualvoyagestudios.github.io/voyager-Academy")
+
+_DUMMY_HASH = hash_password("d21e2c54b360d36ea55598240f2bee1a")
 
 "models.Base.metadata.create_all(bind=engine)"
 
@@ -54,14 +59,17 @@ class CatchCrashesMiddleware(BaseHTTPMiddleware):
 
 app.add_middleware(CatchCrashesMiddleware)
 
+origins = [
+    "https://visualvoyagestudios.github.io",
+    "https://visualvoyagestudios.github.io/voyager-Academy",
+]
+
+if os.getenv("ENV") == "development":
+    origins += ["http://localhost:5500", "http://127.0.0.1:5500"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://visualvoyagestudios.github.io",
-        "https://visualvoyagestudios.github.io/voyager-Academy",
-        "http://localhost:5500",
-        "http://127.0.0.1:5500",
-    ],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -120,9 +128,11 @@ def register(request: Request, payload: schemas.RegisterRequest, db: Session = D
 @app.post("/auth/login", response_model=schemas.TokenResponse)
 @limiter.limit("10/minute")
 def login(request: Request, payload: schemas.LoginRequest, db: Session = Depends(get_db)):
+
     student = db.query(models.Student).filter(models.Student.email == payload.email).first()
-    if not student or not auth.verify_password(payload.password, student.hashed_password):
-        raise HTTPException(status_code=401, detail="Incorrect email or password.")
+    hashed = student.hashed_password if student else _DUMMY_HASH
+    if not student or not auth.verify_password(payload.password, hashed):
+        raise HTTPException(401, "Incorrect email or password.")
     token = auth.create_access_token(student.id)
     result = schemas.TokenResponse(access_token=token, student=student)
     return JSONResponse(content=jsonable_encoder(result))
