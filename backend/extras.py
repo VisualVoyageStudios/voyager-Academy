@@ -2,7 +2,8 @@ import time
 from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect
-from jose import jwt
+import jwt
+from jwt import InvalidTokenError as JWTError
 from sqlalchemy.orm import Session
 from starlette.concurrency import run_in_threadpool
 
@@ -14,10 +15,8 @@ from database import SessionLocal, get_db
 
 router = APIRouter()
 
-
 # ---------- Real-time chat ----------
 CHAT_ROOMS = {"general": "General", "beginners": "Beginners", "setups": "Trade Setups"}
-
 
 class ChatManager:
     def __init__(self):
@@ -136,5 +135,4 @@ def logout_everywhere(
     current_student.tokens_valid_after = datetime.now(timezone.utc)
     db.commit()
     return {"access_token": auth.create_access_token(current_student.id)}
-
 
